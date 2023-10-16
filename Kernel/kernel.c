@@ -3,6 +3,8 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include "video.h"
+#include "font.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -100,5 +102,13 @@ int main()
 	ncNewline();
 
 	ncPrint("[Finished]");
+
+	uint8_t letter[13][8] = {0};
+
+	int i=0;
+	for(i; i<92; i++){
+		getLetter(i, letter);
+		drawLetter(letter, 0x0000FF, 200+(8*i), 200);
+	}
 	return 0;
 }
