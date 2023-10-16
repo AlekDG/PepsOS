@@ -103,6 +103,16 @@ int main()
 
 	ncPrint("[Finished]");
 
+	char *time;
+	timeToStr(time);
+
+	uint8_t letterMatrixAux[13][8] = {0};
+	for (int i = 0; i < 8; i++)
+	{
+		getLetter(time[i], letterMatrixAux);
+		drawLetter(letterMatrixAux, 0x0000FF, 0 + (8 * i), 0);
+	}
+
 	uint8_t letter[13][8] = {0};
 
 	int i=0;
