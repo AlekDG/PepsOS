@@ -32,7 +32,7 @@ void timeToStr(char *dest)
 {
       uint8_t s = seconds();
       uint8_t m = minutes();
-      uint8_t h = hours();
+      uint8_t h = hours() - 3;
 
       dest[0] = (h / 10) % 10 + '0';
       dest[1] = h % 10 + '0';
