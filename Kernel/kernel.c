@@ -115,10 +115,21 @@ int main()
 
 	uint8_t letter[13][8] = {0};
 
-	int i=0;
-	for(i; i<92; i++){
+	int i=' ';
+	for(i; i<127; i++){
 		getLetter(i, letter);
-		drawLetter(letter, 0x0000FF, 200+(8*i), 200);
+		drawLetter(letter, 0x0000FF, (8*i)-' '*8, 200);
 	}
+
+	for(int j=' '; j<127; j++){
+		getLetter(j, letter);
+		drawLetterResizable(letter, 0x0000FF, (8*j*2)-' '*8*2, 220, 2);
+	}									//fontwidth*letter*fontResize	
+
+	for(int j=' '; j<127; j++){
+		getLetter(j, letter);
+		drawLetterResizable(letter, 0x0000FF, (8*j*3)-' '*8*3, 250, 3);
+	}		
+
 	return 0;
 }

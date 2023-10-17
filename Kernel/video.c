@@ -47,11 +47,11 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x5c00;
 
 
 void putpixel(uint32_t hexColor, uint32_t x, uint32_t y){
-	uint8_t * framebuffer = (uint8_t * )VBE_mode_info -> framebuffer;
+	uint8_t * framebuffer = (uint8_t * )VBE_mode_info -> framebuffer; //FRAMEBUFFER ES VRAM
 	
 	uint64_t offset = (x * (VBE_mode_info->bpp/8)) + (y * VBE_mode_info->pitch);
 	
-	framebuffer[offset] = (hexColor)&0xFF;  
+	framebuffer[offset] = (hexColor) & 0xFF;  
 	framebuffer[offset+1] = (hexColor>>8) & 0xFF;
 	framebuffer[offset+2] = (hexColor >> 16) & 0xFF; 
 	
@@ -108,5 +108,44 @@ void drawLetter(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset, uin
 				//putpixel(0xFFFFFF, i+x_offset, j+y_offset);
 			}
 		}
+	}
+}
+void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size){
+	uint8_t * framebuffer = (uint8_t * )VBE_mode_info -> framebuffer;
+	uint64_t offset = (x * (VBE_mode_info->bpp/8)) + (y * VBE_mode_info->pitch);
+
+	uint16_t myWidth = (uint16_t * ) VBE_mode_info->width;
+	uint16_t myHeight = (uint16_t * ) VBE_mode_info->height;//todo LIMITAR LA POSIBILIDAD DE DIBUJAR FUERA DE LA PANTALLA
+	uint16_t myPitch = (uint16_t * ) VBE_mode_info->pitch;
+
+	//dibujo un cuadrado de tamaño size*size ---> cuando size=1 es equivalente a hacer putpixel
+	for(int i=0; i<size; i++){
+		for(int j=0; j<size; j++){
+			uint64_t offset = ((x+j) * (VBE_mode_info->bpp/8)) + ((y+i) * myPitch);
+			framebuffer[offset] = (hexColor)&0xFF;  
+			framebuffer[offset+1] = (hexColor>>8) & 0xFF;
+			framebuffer[offset+2] = (hexColor >> 16) & 0xFF; 
+			
+		}
+		//framebuffer+=myPitch;
+	}	
+}
+void drawLetterResizable(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset, uint32_t y_offset, int size){
+	uint16_t myWidth = (uint16_t *) VBE_mode_info->width;
+
+	for(int i=0; i<13; i++){
+		for(int j=0; j<8; j++){	
+			/*if(x_offset >= myWidth){	PARA MANEJAR EL TAMAÑO DE LA PANTALLA
+				x_offset = 0;
+				y_offset += 13*size;
+			}*/
+			if(letter[12-i][7-j]==1){
+				putpixelResizable(hexColor, j*size+x_offset, i*size+y_offset, size);
+			}
+			else{
+				putpixelResizable(0xFFFFFF, j*size+x_offset, i*size+y_offset, size);
+			}
+		}
+		//x_offset += 8*size;
 	}
 }
