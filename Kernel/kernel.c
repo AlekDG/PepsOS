@@ -5,6 +5,7 @@
 #include <naiveConsole.h>
 #include "video.h"
 #include "font.h"
+#include "./include/getKey.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -90,7 +91,7 @@ int main()
 	ncPrintHex((uint64_t)sampleCodeModuleAddress);
 	ncNewline();
 	ncPrint("  Calling the sample code module returned: ");
-	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)());
+	ncPrintHex(((EntryPoint)sampleCodeModuleAddress)()); 	//vale 400 000
 	ncNewline();
 	ncNewline();
 
@@ -121,11 +122,15 @@ int main()
 		drawLetter(letter, 0x0000FF, (8*i)-' '*8, 200);
 	}
 
-	write("FIUMBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 0, 50);
-	setSize(2);
-	setFGColor(0xFF00FF);
-	setBGColor(0xFF0000);
-	write("FIUMBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 0, 70);
+
+	uint8_t key = getKey();
+	char mystr[20];
+	for(int i=0; mystr[i]!=0; i++){
+		int num = key/16;
+		if(num==0){break;}
+		mystr[i] = '0'+num;
+	}
+	write(mystr, 0, 90);
 
 	return 0;
 }
