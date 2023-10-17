@@ -176,3 +176,14 @@ void write(char string[], uint32_t x_offset, uint32_t y_offset){
 		x_offset += (8*globalSize);
 	}
 }
+
+void setSize(unsigned int size){
+	globalSize = size;
+}
+void setFGColor(uint32_t hexColor){
+	globalFGColor = hexColor;
+}
+void setBGColor(uint32_t hexColor){
+	globalBGColor = hexColor;
+}
+

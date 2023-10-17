@@ -15,9 +15,9 @@ void drawLetter(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset, uin
 void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size);
 void drawLetterResizable(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset, uint32_t y_offset, int size);
 void write(char string[], uint32_t x_offset, uint32_t y_offset);
-void setSize()
-void setBGColor()
-void setFGColor()
+void setSize(unsigned int size);
+void setFGColor(uint32_t hexColor);
+void setBGColor(uint32_t hexColor);
 
 #endif
 
