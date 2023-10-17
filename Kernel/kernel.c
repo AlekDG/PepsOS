@@ -121,15 +121,7 @@ int main()
 		drawLetter(letter, 0x0000FF, (8*i)-' '*8, 200);
 	}
 
-	for(int j=' '; j<127; j++){
-		getLetter(j, letter);
-		drawLetterResizable(letter, 0x0000FF, (8*j*2)-' '*8*2, 220, 2);
-	}									//fontwidth*letter*fontResize	
-
-	for(int j=' '; j<127; j++){
-		getLetter(j, letter);
-		drawLetterResizable(letter, 0x0000FF, (8*j*3)-' '*8*3, 250, 3);
-	}		
+	write("FIUMBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", 0, 50);
 
 	return 0;
 }

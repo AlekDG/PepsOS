@@ -110,6 +110,11 @@ void drawLetter(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset, uin
 		}
 	}
 }
+
+int globalFGColor = 0x0000FF;
+int globalBGColor = 0xFFFFFF;
+int globalSize = 1;
+
 void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size){
 	uint8_t * framebuffer = (uint8_t * )VBE_mode_info -> framebuffer;
 	uint64_t offset = (x * (VBE_mode_info->bpp/8)) + (y * VBE_mode_info->pitch);
@@ -143,9 +148,31 @@ void drawLetterResizable(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_of
 				putpixelResizable(hexColor, j*size+x_offset, i*size+y_offset, size);
 			}
 			else{
-				putpixelResizable(0xFFFFFF, j*size+x_offset, i*size+y_offset, size);
+				putpixelResizable(globalBGColor, j*size+x_offset, i*size+y_offset, size);
 			}
 		}
 		//x_offset += 8*size;
+	}
+}
+
+
+
+void write(char string[], uint32_t x_offset, uint32_t y_offset){
+	uint16_t myHeight = (uint16_t *)VBE_mode_info->height;
+	uint16_t myWidth = (uint16_t *)VBE_mode_info->width;
+
+	uint8_t letterBuffer[13][8] = {0};
+
+	for(int i=0; string[i]!=0; i++){
+		if(x_offset + (globalSize * 8)>= myWidth){	//si se pasa ya se que la letra no va a entrar
+			x_offset = 0;
+			y_offset += (13*globalSize);
+			if(y_offset>=myHeight){
+				return;
+			}
+		}
+		getLetter(string[i], letterBuffer); 
+		drawLetterResizable(letterBuffer, globalFGColor, x_offset, y_offset, globalSize);
+		x_offset += (8*globalSize);
 	}
 }
