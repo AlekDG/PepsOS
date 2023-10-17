@@ -104,13 +104,13 @@ int main()
 
 	ncPrint("[Finished]");
 
-	char *time;
-	timeToStr(time);
+	char *date;
+	getDate(date);
 
 	uint8_t letterMatrixAux[13][8] = {0};
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 17; i++)
 	{
-		getLetter(time[i], letterMatrixAux);
+		getLetter(date[i], letterMatrixAux);
 		drawLetter(letterMatrixAux, 0x0000FF, 0 + (8 * i), 0);
 	}
 
