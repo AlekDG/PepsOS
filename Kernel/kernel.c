@@ -124,15 +124,24 @@ int main()
 	}
 
 
-	uint8_t key = getKey();
+	uint8_t keyHex = getKey();
+	char keyChar = hexToChar(keyHex);
+
 	char mystr[20];
 	for(int i=0; mystr[i]!=0; i++){
-		int num = key/16;
+		int num = keyHex/16;
 		if(num==0){break;}
 		mystr[i] = '0'+num;
 	}
 	write(mystr, 0, 90);
 
+	uint32_t writeIndxX = 0;
+	uint32_t writeIndxY = 98;
+	while (1)
+	{
+		writeKbInput(&writeIndxX,&writeIndxY);
+	}
+	
 	//buildMap();
 	//drawFace(250, 250);
 

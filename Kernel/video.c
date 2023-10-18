@@ -208,6 +208,22 @@ void write(char string[], uint32_t x_offset, uint32_t y_offset){
 	}
 }
 
+void writeKbInput(uint32_t*offSetX,uint32_t*offSetY){
+	uint8_t keyHex = getKey();
+	if(keyHex!=0){
+		char keyChar = hexToChar(keyHex);
+		if(keyChar!=0){
+			write(&keyChar,*offSetX,*offSetY);
+			if(*offSetX<VBE_mode_info->width)
+				*offSetX += 8;
+			else{
+				*offSetX=0;
+				*offSetY+=13;
+			}
+		}	
+	}
+}
+
 void setSize(unsigned int size){
 	globalSize = size;
 }

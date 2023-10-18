@@ -20,6 +20,7 @@ void setFGColor(uint32_t hexColor);
 void setBGColor(uint32_t hexColor);
 void drawCircle(uint32_t hexColor, int centerX, int centerY, int radius);
 void drawFace(int centerX, int centerY);
+void writeKbInput(uint32_t*offSetX,uint32_t*offSetY);
 
 #endif
 

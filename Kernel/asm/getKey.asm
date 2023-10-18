@@ -12,7 +12,10 @@ getKey:
         mov rbp, rsp
         xor rax, rax
         in al, 0x60
-
+        push rax
+        xor rax,rax
+        out 0x60,al
+        pop rax
         mov rsp, rbp
         pop rbp
         ret
