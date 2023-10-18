@@ -93,6 +93,37 @@ void drawRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t
 	}
 }
 
+void drawCircle(uint32_t hexColor, int centerX, int centerY, int radius)
+{
+	for (int y = -radius; y <= radius; y++)
+	{
+		for (int x = -radius; x <= radius; x++)
+		{
+			if (x * x + y * y <= radius * radius)
+			{
+				putpixel(hexColor, centerX + x, centerY + y);
+			}
+		}
+	}
+}
+
+void drawFace(int centerX, int centerY)
+{
+	drawCircle(0xFFFF00, centerX, centerY, 35); // Cara
+
+	drawCircle(0x000000, centerX - 10, centerY - 10, 3);
+	drawCircle(0x000000, centerX + 10, centerY - 10, 3);
+
+	// se podria hacer con drawRectangle x ahi qda mejor con eso
+	for (int x = centerX - 20; x <= centerX + 20; x++)
+	{
+		for (int y = centerY + 10; y <= centerY + 12; y++)
+		{
+			putpixel(0x000000, x, y);
+		}
+	}
+}
+
 void drawLetter(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset, uint32_t y_offset){
 	
 	for(int i=0; i<13; i++){
