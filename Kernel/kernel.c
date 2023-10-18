@@ -134,13 +134,6 @@ int main()
 		mystr[i] = '0'+num;
 	}
 	write(mystr, 0, 90);
-
-	uint32_t writeIndxX = 0;
-	uint32_t writeIndxY = 98;
-	while (1)
-	{
-		writeKbInput(&writeIndxX,&writeIndxY);
-	}
 	
 	//buildMap();
 	//drawFace(250, 250);

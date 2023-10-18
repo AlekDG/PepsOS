@@ -11,11 +11,14 @@ getKey:
         push rbp
         mov rbp, rsp
         xor rax, rax
+        push rax
         in al, 0x60
-
+        mov al,20h
+        out 20h,al
+        pop rax
         mov rsp, rbp
         pop rbp
-        ret
+        iret
 
 getSetting:
         push rbp
