@@ -5,6 +5,7 @@
 #include <naiveConsole.h>
 #include "video.h"
 #include "font.h"
+#include "buildSnakeMap.h"
 #include "./include/getKey.h"
 
 extern uint8_t text;
@@ -131,6 +132,9 @@ int main()
 		mystr[i] = '0'+num;
 	}
 	write(mystr, 0, 90);
+
+	//buildMap();
+	//drawFace(250, 250);
 
 	return 0;
 }
