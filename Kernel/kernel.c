@@ -123,7 +123,7 @@ int main()
 		drawLetter(letter, 0x0000FF, (8*i)-' '*8, 200);
 	}
 
-/*
+
 	uint8_t keyHex = getKey();
 	char keyChar = hexToChar(keyHex);
 
@@ -134,15 +134,7 @@ int main()
 		mystr[i] = '0'+num;
 	}
 	write(mystr, 0, 90);
-*/
-
-
-	for(int i=' '; i<126, i++){
-		putBufferedLetter(i);
-	}
-
-
-
+	
 	//buildMap();
 	//drawFace(250, 250);
 

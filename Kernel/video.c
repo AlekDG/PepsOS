@@ -61,9 +61,6 @@ typedef struct vbe_mode_info_structure * VBEInfoPtr;
 VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x5c00;
 
 
-int globalFGColor = 0x0000FF;
-int globalBGColor = 0xFFFFFF;
-int globalSize = 1;
 
 
 void putpixel(uint32_t hexColor, uint32_t x, uint32_t y){
@@ -162,7 +159,9 @@ void drawLetter(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset, uin
 	}
 }
 
-
+int globalFGColor = 0x0000FF;
+int globalBGColor = 0xFFFFFF;
+int globalSize = 1;
 
 void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size){
 	uint8_t * framebuffer = (uint8_t * )VBE_mode_info -> framebuffer;
@@ -184,19 +183,27 @@ void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size){
 		//framebuffer+=myPitch;
 	}	
 }
-void drawLetterResizable(uint8_t letter[13][8], uint32_t x_offset, uint32_t y_offset){
+void drawLetterResizable(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset, uint32_t y_offset, int size){
+	uint16_t myWidth = (uint16_t *) VBE_mode_info->width;
 
 	for(int i=0; i<13; i++){
-		for(int j=0; j<8; j++){
+		for(int j=0; j<8; j++){	
+			/*if(x_offset >= myWidth){	PARA MANEJAR EL TAMAÑO DE LA PANTALLA
+				x_offset = 0;
+				y_offset += 13*size;
+			}*/
 			if(letter[12-i][7-j]==1){
-				putpixelResizable(globalFGColor, j*size+x_offset, i*size+y_offset, globalSize);
+				putpixelResizable(hexColor, j*size+x_offset, i*size+y_offset, size);
 			}
 			else{
-				putpixelResizable(globalBGColor, j*size+x_offset, i*size+y_offset, globalSize);
+				putpixelResizable(globalBGColor, j*size+x_offset, i*size+y_offset, size);
 			}
 		}
+		//x_offset += 8*size;
 	}
 }
+
+
 
 void write(char string[], uint32_t x_offset, uint32_t y_offset){
 	uint16_t myHeight = (uint16_t *)VBE_mode_info->height;
@@ -229,27 +236,6 @@ void writeKbInput(){
 	}
 }
 
-void moveCursor(){
-	if(globalXPos + 8*globalSize >= width){		//desplazamiento del buffer automatico
-		globalXPos = 0;
-		if(globalYPos + 13*globalSize >= height){
-			globalYPos = 0;
-		}
-		else{
-			globalYPos += 13*globalSize;
-		}
-	}
-	else{
-		globalXPos + 8*globalSize;
-	}
-}
-
-void putBufferedLetter(char letter){
-	uint8_t buffer[13][8] = {0};
-	getLetter(letter, buffer);
-	moveCursor();
-	drawLetterResizable(buffer, x_offset, y_offset);
-}
 void setSize(unsigned int size){
 	globalSize = size;
 }
