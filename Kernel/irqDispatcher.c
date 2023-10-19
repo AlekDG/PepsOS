@@ -1,6 +1,5 @@
 #include <time.h>
 #include <stdint.h>
-#include "keyboard.h"
 
 static void int_20();
 
@@ -21,5 +20,5 @@ void int_20() {
 }
 
 void int_21(){
-	writeKbInput();
+	//metodo_keyvaosad
 }

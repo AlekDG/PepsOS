@@ -10,17 +10,15 @@ global getSetting
 getKey:
         push rbp
         mov rbp, rsp
-        mov rax,0
-.loop:
+        xor rax, rax
+        push rax
         in al, 0x60
-        mov cl,al
-        and al,0x01
-        cmp al,0
-        je .loop
-        in al,0x60
+        mov al,20h
+        out 20h,al
+        pop rax
         mov rsp, rbp
         pop rbp
-        ret
+        iret
 
 getSetting:
         push rbp

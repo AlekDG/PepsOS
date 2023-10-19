@@ -2,6 +2,23 @@
 #include "video.h" 
 #include "font.h"
 
+	uint32_t offSetX = 0;
+	uint32_t offSetY = 98;
+
+void shiftIndx(){
+	if(offSetX<VBE_mode_info->width)
+		offSetX += 8;
+	else{
+		offSetX=0;
+		if(offSetY<VBE_mode_info->height)
+			offSetY+=13;
+		else{
+			offSetY=0;
+			//TODO: clearScreen();
+			}
+		}
+}
+
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
 	uint8_t window_a;			// deprecated
@@ -45,22 +62,6 @@ VBEInfoPtr VBE_mode_info = (VBEInfoPtr) 0x5c00;
 
 
 
-	uint32_t offSetX = 0;
-	uint32_t offSetY = 98;
-
-void shiftIndx(){
-	if(offSetX<VBE_mode_info->width)
-		offSetX += 8;
-	else{
-		offSetX=0;
-		if(offSetY<VBE_mode_info->height)
-			offSetY+=13;
-		else{
-			offSetY=0;
-			//TODO: clearScreen();
-			}
-		}
-}
 
 void putpixel(uint32_t hexColor, uint32_t x, uint32_t y){
 	uint8_t * framebuffer = (uint8_t * )VBE_mode_info -> framebuffer; //FRAMEBUFFER ES VRAM
@@ -224,9 +225,15 @@ void write(char string[], uint32_t x_offset, uint32_t y_offset){
 	}
 }
 
-void writeChar(char* toPut){
-	write(toPut,offSetX,offSetY);
-	shiftIndx();
+void writeKbInput(){
+	uint8_t keyHex = getKey();
+	if(keyHex!=0){
+		char keyChar = hexToChar(keyHex);
+		if(keyChar!=0){
+			write(&keyChar,offSetX,offSetY);
+			shiftIndx();
+		}	
+	}
 }
 
 void setSize(unsigned int size){
