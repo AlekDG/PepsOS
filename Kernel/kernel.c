@@ -86,6 +86,7 @@ void * initializeKernelBinary()
 
 int main()
 {	
+	/*
 	ncPrint("[Kernel Main]");
 	ncNewline();
 	ncPrint("  Sample code module at 0x");
@@ -104,25 +105,20 @@ int main()
 	ncNewline();
 
 	ncPrint("[Finished]");
+	*/
 
+	initialState();
+/*
 	char *date;
 	getDate(date);
 
+	
 	uint8_t letterMatrixAux[13][8] = {0};
 	for (int i = 0; i < 17; i++)
 	{
 		getLetter(date[i], letterMatrixAux);
 		drawLetter(letterMatrixAux, 0x0000FF, 0 + (8 * i), 0);
 	}
-
-	uint8_t letter[13][8] = {0};
-
-	int i=' ';
-	for(i; i<127; i++){
-		getLetter(i, letter);
-		drawLetter(letter, 0x0000FF, (8*i)-' '*8, 200);
-	}
-
 
 	uint8_t keyHex = getKey();
 	char keyChar = hexToChar(keyHex);
@@ -134,9 +130,24 @@ int main()
 		mystr[i] = '0'+num;
 	}
 	write(mystr, 0, 90);
-	
+	*/
 	//buildMap();
 	//drawFace(250, 250);
 
+	for(int i=' '; i<126; i++){
+		drawLetterBuffered(i);
+	}
+	for(int i=' '; i<126; i++){
+		drawLetterBuffered(i);
+	}
+	for(int i=' '; i<126; i++){
+		drawLetterBuffered(i);
+	}
+	for(int i=' '; i<126; i++){
+		drawLetterBuffered(i);
+	}
+	for(int i=' '; i<126; i++){
+		drawLetterBuffered(i);
+	}
 	return 0;
 }
