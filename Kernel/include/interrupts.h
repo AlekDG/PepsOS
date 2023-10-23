@@ -7,6 +7,7 @@
 
 #ifndef INTERRUPS_H_
 #define INTERRUPS_H_
+#include <stdint.h>
 
 //#include <idtLoader.h>
 

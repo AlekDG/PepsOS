@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdbool.h>
 #include "video.h"
 
 
@@ -20,17 +21,20 @@ const unsigned char kbArrShift[128] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
+static bool shift = false;
+static bool blockMayus = false;
+
 char hexToChar(uint8_t hex){
-    //TODO: If shift is held
+    //TODO: Shift Implt
     return kbArrShiftless[hex];
 }
 
 void writeKbInput(){
 	uint8_t keyHex = getKey();
-	if(keyHex!=0){
+	if(keyHex!=0&&keyHex<0x82){
 		char keyChar = hexToChar(keyHex);
 		if(keyChar!=0){
-			writeChar(&keyChar);
+			drawLetterBuffered(keyChar);
 		}	
 	}
 }

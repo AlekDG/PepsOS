@@ -1,6 +1,8 @@
 {
     "files.associations": {
         "keyboard.h": "c",
-        "interrupts.h": "c"
+        "interrupts.h": "c",
+        "video.h": "c",
+        "idtloader.h": "c"
     }
 }

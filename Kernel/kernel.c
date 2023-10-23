@@ -3,6 +3,7 @@
 #include <lib.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include <idtLoader.h>
 #include "video.h"
 #include "font.h"
 #include "buildSnakeMap.h"
@@ -107,6 +108,7 @@ int main()
 	ncPrint("[Finished]");
 	*/
 
+	load_idt();
 	initialState();
 /*
 	char *date;
@@ -134,20 +136,10 @@ int main()
 	//buildMap();
 	//drawFace(250, 250);
 
-	for(int i=' '; i<126; i++){
-		drawLetterBuffered(i);
+	while (1)
+	{
+	
 	}
-	for(int i=' '; i<126; i++){
-		drawLetterBuffered(i);
-	}
-	for(int i=' '; i<126; i++){
-		drawLetterBuffered(i);
-	}
-	for(int i=' '; i<126; i++){
-		drawLetterBuffered(i);
-	}
-	for(int i=' '; i<126; i++){
-		drawLetterBuffered(i);
-	}
+	
 	return 0;
 }

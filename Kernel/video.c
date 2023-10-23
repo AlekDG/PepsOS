@@ -64,20 +64,6 @@ void initialState(){
 }
 
 
-void shiftIndx(){
-	if(offSetX<VBE_mode_info->width)
-		offSetX += 8;
-	else{
-		offSetX=0;
-		if(offSetY<VBE_mode_info->height)
-			offSetY+=13;
-		else{
-			offSetY=0;
-			//TODO: clearScreen();
-			}
-		}
-}
-
 void putpixel(uint32_t hexColor, uint32_t x, uint32_t y){
 	uint8_t * framebuffer = (uint8_t * )VBE_mode_info -> framebuffer; //FRAMEBUFFER ES VRAM
 	
@@ -231,10 +217,6 @@ void write(char string[], uint32_t x_offset, uint32_t y_offset){
 	}
 }
 
-void writeChar(char* toPut){
-	write(toPut,offSetX,offSetY);
-	shiftIndx();
-}
 
 void moveBuffer(){
 	if(globalXPos+globalSize*8 >= width){
