@@ -37,9 +37,9 @@ void writeKbInput(){
             case 0x3A:
                 blockMayus = !blockMayus;
                 break;
-            //case 0x0E: case 0xE0:
-                //deleteLetterBuffered();
-                //break;
+            case 0x0E: case 0xE0:
+                deleteLetterBuffered();
+                break;
             default:
                 keyChar = hexToChar(keyHex);
     		    if(keyChar!=0){

@@ -297,12 +297,7 @@ void backtrackBuffer(){
 }
 
 
-
-
-void deleteCharacter(){
-	uint32_t currentFGColor = getFGColor();	//guardo el color de font actual
+void deleteLetterBuffered(){
 	backtrackBuffer();
 	drawRectangle(globalBGColor, globalXPos, globalYPos, globalSize*8, globalSize*13);	//dibujo un rectangulo de color BGColor
-
-
 }

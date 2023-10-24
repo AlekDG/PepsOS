@@ -1,6 +1,6 @@
 #ifndef VIDEO_H
 #define VIDEO_H
-
+#include <stdint.h>
 
 /*
 *----->DIBUJA UN PIXEL EN PANTALLA<------
@@ -30,6 +30,7 @@ void setFGColor(uint32_t hexColor);
 void setBGColor(uint32_t hexColor);
 void setXBuffer(uint16_t xPos);
 void setYBuffer(uint16_t yPos);
+void deleteLetterBuffered();
 
 #endif
 
