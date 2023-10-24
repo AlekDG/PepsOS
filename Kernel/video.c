@@ -47,11 +47,11 @@ uint32_t offSetY = 98;
 
 uint16_t height;
 uint16_t width;
-int globalFGColor; 
-int globalBGColor;
-int globalSize;
-int globalXPos;
-int globalYPos;
+uint32_t globalFGColor; 
+uint32_t globalBGColor;
+uint32_t globalSize;
+uint32_t globalXPos;
+uint32_t globalYPos;
 
 void initialState(){
 	height = VBE_mode_info->height;
@@ -61,6 +61,45 @@ void initialState(){
 	globalSize = 1;
 	globalXPos = 0;
 	globalYPos = 0;
+}
+
+
+int getSize(){
+	return globalSize;
+}
+uint32_t getFGColor(){
+	return globalFGColor;
+}
+uint32_t getBGColor(){
+	return globalBGColor;
+}
+uint32_t getXBuffer(){
+	return globalXPos;
+}
+uint32_t getYBuffer(){
+	return globalYPos;
+}
+uint32_t getFullHeight(){
+	return height;
+}
+uint32_t getFullWidth(){
+	return width;
+}
+
+void setSize(unsigned int size){
+	globalSize = size;
+}
+void setFGColor(uint32_t hexColor){
+	globalFGColor = hexColor;
+}
+void setBGColor(uint32_t hexColor){
+	globalBGColor = hexColor;
+}
+void setXBuffer(uint16_t xPos){
+	globalXPos = xPos;
+}
+void setYBuffer(uint16_t yPos){
+	globalYPos = yPos;
 }
 
 
@@ -240,13 +279,30 @@ void drawLetterBuffered(char letter){
 	moveBuffer();
 }
 
-void setSize(unsigned int size){
-	globalSize = size;
-}
-void setFGColor(uint32_t hexColor){
-	globalFGColor = hexColor;
-}
-void setBGColor(uint32_t hexColor){
-	globalBGColor = hexColor;
+void backtrackBuffer(){
+	//tengo que hacer putpixel del color del bg
+	//mover el buffer para atras con 1*size
+
+	if(globalXPos<globalSize*8){	//estoy al ppio del buffer con x=0
+		if(globalYPos<globalSize*13){
+			return;			//nada que borrar
+		}
+		else{
+			globalYPos-=globalSize*13;
+		}
+	}
+	else{
+		globalXPos -= globalSize*8;
+	}
 }
 
+
+
+
+void deleteCharacter(){
+	uint32_t currentFGColor = getFGColor();	//guardo el color de font actual
+	backtrackBuffer();
+	drawRectangle(globalBGColor, globalXPos, globalYPos, globalSize*8, globalSize*13);	//dibujo un rectangulo de color BGColor
+
+
+}
