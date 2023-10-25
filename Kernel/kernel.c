@@ -6,7 +6,7 @@
 #include <idtLoader.h>
 #include "video.h"
 #include "font.h"
-#include "buildSnakeMap.h"
+#include "snake.h"
 #include "./include/getKey.h"
 
 extern uint8_t text;
@@ -135,6 +135,8 @@ int main()
 	*/
 	//buildMap();
 	//drawFace(250, 250);
+
+	start_game();
 
 	while (1)
 	{

@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "video.h"
-#include ""
+#include "snake.h"
 
 const unsigned char kbArr[2][128] = {
     {0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
@@ -72,7 +72,6 @@ void gameInput(){
         case 0x20:
             moveSnake(2);
             break;
-        default:
     }
 
 }

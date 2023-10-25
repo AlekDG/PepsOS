@@ -7,6 +7,6 @@ void drawRandomFace();
 void start_game();
 void eat();
 void initializeSnake();
-void moveSnake(uint_8 value);
+void moveSnake(uint8_t value);
 
 #endif
