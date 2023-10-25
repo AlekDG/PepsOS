@@ -164,17 +164,23 @@ void drawCircle(uint32_t hexColor, int centerX, int centerY, int radius)
 	}
 }
 
-void drawFace(int centerX, int centerY)
+void drawFace(uint32_t startingX, uint32_t startingY, uint32_t faceSize)
 {
-	drawCircle(0xFFFF00, centerX, centerY, 35); // Cara
+	drawRectangle(0xFFFF00, startingX, startingY, faceSize, faceSize); // Face
 
-	drawCircle(0x000000, centerX - 10, centerY - 10, 3);
-	drawCircle(0x000000, centerX + 10, centerY - 10, 3);
+	uint32_t eyeRadius = faceSize / 15;
+	uint32_t eyeXOffset = faceSize / 3;
+	uint32_t eyeYOffset = faceSize / 3;
 
-	// se podria hacer con drawRectangle x ahi qda mejor con eso
-	for (int x = centerX - 20; x <= centerX + 20; x++)
+	// Draw eyes
+	drawCircle(0x000000, startingX + eyeXOffset, startingY + eyeYOffset, eyeRadius);
+	drawCircle(0x000000, startingX + 2 * eyeXOffset, startingY + eyeYOffset, eyeRadius);
+
+	// Draw mouth
+	for (int x = startingX + eyeXOffset; x <= startingX + 2 * eyeXOffset; x++)
 	{
-		for (int y = centerY + 10; y <= centerY + 12; y++)
+		int mouthY = startingY + 2 * eyeYOffset;
+		for (int y = mouthY; y <= mouthY + 2; y++)
 		{
 			putpixel(0x000000, x, y);
 		}
