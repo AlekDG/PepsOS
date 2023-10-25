@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <clock.h>
 #include <time.h>
-#include "video.h"
+#include <video.h>
 
 #define SQUARE_SIZE 40
 #define DELAY_TICKS 2 // Ajustar esto segun la dificultad

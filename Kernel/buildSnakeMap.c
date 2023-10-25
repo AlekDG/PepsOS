@@ -1,6 +1,6 @@
 #include <buildSnakeMap.h>
 #include <stdint.h>
-#include "video.h"
+#include <video.h>
 
 // faltaria ver como hacer para que el mapa ocupe toda la pantalla
 

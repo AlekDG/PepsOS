@@ -4,10 +4,9 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idtLoader.h>
-#include "video.h"
-#include "font.h"
-#include "snake.h"
-#include "./include/getKey.h"
+#include <video.h>
+#include <font.h>
+#include <snake.h>
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -110,31 +109,6 @@ int main()
 
 	load_idt();
 	initialState();
-/*
-	char *date;
-	getDate(date);
-
-	
-	uint8_t letterMatrixAux[13][8] = {0};
-	for (int i = 0; i < 17; i++)
-	{
-		getLetter(date[i], letterMatrixAux);
-		drawLetter(letterMatrixAux, 0x0000FF, 0 + (8 * i), 0);
-	}
-
-	uint8_t keyHex = getKey();
-	char keyChar = hexToChar(keyHex);
-
-	char mystr[20];
-	for(int i=0; mystr[i]!=0; i++){
-		int num = keyHex/16;
-		if(num==0){break;}
-		mystr[i] = '0'+num;
-	}
-	write(mystr, 0, 90);
-	*/
-	//buildMap();
-	//drawFace(250, 250);
 
 	//start_game();
 
