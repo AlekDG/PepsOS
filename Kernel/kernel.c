@@ -136,7 +136,7 @@ int main()
 	//buildMap();
 	//drawFace(250, 250);
 
-	start_game();
+	//start_game();
 
 	while (1)
 	{

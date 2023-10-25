@@ -1,7 +1,7 @@
 #include <time.h>
 #include <stdint.h>
-#include "keyboard.h"
-#include "video.h"
+#include <keyboard.h>
+#include <video.h>
 
 static void int_20();
 
@@ -22,6 +22,6 @@ void int_20() {
 }
 
 void int_21(){
-		gameInput();
-		//writeKbInput();
+		//gameInput();
+		writeKbInput();
 }
