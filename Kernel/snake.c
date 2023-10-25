@@ -4,8 +4,13 @@
 #include <time.h>
 #include "video.h"
 
-#define SQUARESIZE 40
-#define DELAYTICKS 6 // Es aproximadamente 0.3 segs
+#define SQUARE_SIZE 40
+#define DELAY_TICKS 2 // Ajustar esto segun la dificultad
+#define FACE_RADIUS 15
+#define WHITE 0xFFFFFF
+#define CARAMEL_BROWN 0x613613
+#define RED 0xFF0000
+#define MAX_LENGTH 70
 
 enum Movement
 {
@@ -23,7 +28,7 @@ struct Point
 
 struct Snake
 {
-      struct Point body[20]; // Habria q ver cual seria la mayor cantidad de partecitas para la vibora
+      struct Point body[MAX_LENGTH]; // Habria q ver cual seria la mayor cantidad de partecitas para la vibora
       // body[0] seria la "cabeza", que es lo que marca el recorrido
       uint32_t length;
 };
@@ -31,6 +36,9 @@ struct Snake
 struct Snake snake;
 
 enum Movement mov = DOWN;
+
+uint32_t faceStartingX;
+uint32_t faceStartingY;
 
 // Habria que hacer un menu inicial para que cuando el jugador pierda pueda volver a jugar apretando ahi
 
@@ -44,80 +52,87 @@ void start_game()
       uint8_t flagSnake = 0;
       uint8_t checkFlag = 1; // Para el loop en el que vemos si la serpiente se choco consigo misma o no
 
-      int lastTick = ticks_elapsed();
-      int currentTick;
-      unsigned int delay = DELAYTICKS;
+      uint32_t lastTick = ticks_elapsed();
+      uint32_t currentTick;
+      unsigned int delay = DELAY_TICKS;
 
-      int mapWidth = getFullWidth();
-      int mapHeight = getFullHeight();
+      uint32_t mapWidth = getFullWidth();
+      uint32_t mapHeight = getFullHeight();
 
-      uint32_t white = 0xFFFFFF;
-      uint32_t caramelBrown = 0x613613;
+      struct Point head;
 
       while (flagWall == 0 && flagSnake == 0)
       {
             currentTick = ticks_elapsed();
 
-            // Chequeamos si se choca con la pared
-            if (snake.body[snake.length - 1].x >= mapWidth || snake.body[snake.length - 1].x < 0 ||
-                snake.body[snake.length - 1].y >= mapHeight || snake.body[snake.length - 1].y < 0)
+            head.x = snake.body[0].x;
+            head.y = snake.body[0].y;
+
+            switch (mov)
+            {
+            case DOWN:
+                  head.y += SQUARE_SIZE;
+                  break;
+            case UP:
+                  head.y -= SQUARE_SIZE;
+                  break;
+            case RIGHT:
+                  head.x += SQUARE_SIZE;
+                  break;
+            case LEFT:
+                  head.x -= SQUARE_SIZE;
+                  break;
+            default:
+                  break;
+            }
+
+            // Wall collision check
+            if (head.x >= mapWidth || head.x < 0 ||
+                head.y >= mapHeight || head.y < 0)
             {
                   flagWall = 1;
             }
 
-            // Chequeamos si se choca consigo misma
+            // Self-collision check
             for (int i = 1; i < snake.length && checkFlag; i++)
             {
-                  if (snake.body[0].x == snake.body[i].x && snake.body[0].y == snake.body[i].y)
+                  if (head.x == snake.body[i].x && head.y == snake.body[i].y)
                   {
                         flagSnake = 1;
                         checkFlag = 0;
                   }
             }
 
+            if ((head.x >= faceStartingX && head.x <= faceStartingX + SQUARE_SIZE) &&
+                (head.y >= faceStartingY && head.y <= faceStartingY + SQUARE_SIZE))
+            {
+                  eat();
+                  drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
+                  drawRandomFace();
+            } // Arreglar los casos limite de esto
+
             if (currentTick - lastTick >= delay)
             {
-                  // moveSnake(&snake)
+                  drawRectangle(CARAMEL_BROWN, snake.body[snake.length - 1].x, snake.body[snake.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
 
-                  // Este seria el codigo para el caso en el que se toque la tecla de abajo:
-
-                  uint32_t lastTailX = snake.body[0].x;
-                  uint32_t lastTailY = snake.body[0].y;
-
-                  for (int i = 0; i < snake.length - 1; i++)
+                  for (int i = snake.length - 1; i > 0; i--)
                   {
-                        snake.body[i] = snake.body[i + 1];
-                        drawRectangle(white, snake.body[i].x, snake.body[i].y, SQUARESIZE, SQUARESIZE);
+                        snake.body[i] = snake.body[i - 1];
                   }
 
-                  switch (mov)
+                  snake.body[0] = head;
+
+                  for (int i = 1; i < snake.length; i++)
                   {
-                  case DOWN:
-                        snake.body[snake.length - 1].y += SQUARESIZE;
-                        break;
-                  case UP:
-                        snake.body[snake.length - 1].y -= SQUARESIZE;
-                        break;
-                  case RIGHT:
-                        snake.body[snake.length - 1].x += SQUARESIZE;
-                        break;
-                  case LEFT:
-                        snake.body[snake.length - 1].x -= SQUARESIZE;
-                        break;
-                  }
+                        drawRectangle(WHITE, snake.body[i].x, snake.body[i].y, SQUARE_SIZE, SQUARE_SIZE);
+                  } // Si no hacemos esto se bugean las caras, ver si encontramos otra solucion
 
-                  drawRectangle(white, snake.body[snake.length - 1].x, snake.body[snake.length - 1].y, SQUARESIZE, SQUARESIZE); // Pintamos la "cabeza nueva"
-
-                  drawRectangle(caramelBrown, lastTailX, lastTailY, SQUARESIZE, SQUARESIZE);
+                  drawSnakeHead(head.x, head.y);
 
                   lastTick = currentTick;
             }
       }
-      if (checkFlag == 0)
-      {
-            drawLetterBuffered("A");
-      }
-      // aca lanzamos un mensajito en pantalla diciendo "perdiste. comiste x caras"
+      // Aca debieramos poner un mensajito tipo perdiste, la cantidad de caras comidas final fue...
 }
 
 void moveSnake(uint8_t value)
@@ -125,36 +140,62 @@ void moveSnake(uint8_t value)
       switch (value)
       {
       case 0:
-            mov = DOWN;
+            if (mov != UP)
+            {
+                  mov = DOWN;
+            }
             break;
       case 1:
-            mov = UP;
+            if (mov != DOWN)
+            {
+                  mov = UP;
+            }
             break;
       case 2:
-            mov = RIGHT;
+            if (mov != LEFT)
+            {
+                  mov = RIGHT;
+            }
             break;
       case 3:
-            mov = LEFT;
+            if (mov != RIGHT)
+            {
+                  mov = LEFT;
+            }
             break;
       }
+}
+
+void drawSnakeHead(uint32_t x, uint32_t y)
+{
+      drawRectangle(WHITE, x, y, SQUARE_SIZE, SQUARE_SIZE);
+
+      uint32_t eyeX = x + (3 * SQUARE_SIZE / 4);
+      uint32_t eyeY = y + (SQUARE_SIZE / 4);
+      uint32_t eyeRadius = SQUARE_SIZE / 8;
+      drawCircle(RED, eyeX, eyeY, eyeRadius);
 }
 
 void initializeSnake(struct Snake *snake)
 {
       snake->length = 6;
-      uint32_t white = 0xFFFFFF; // Hex code for white
-      uint32_t squareSize = 40;  // Size of each square for the snake
 
       for (int i = 0; i < snake->length; i++)
       {
-            snake->body[i].x = 50 + i * (squareSize); // inicializo el x, despues hay q modificarlo cada '..' tiempo y cada vez q se mueve
-            snake->body[i].y = 50;                    // lo mismo para y
+            snake->body[i].x = 50 + (snake->length - 1 - i) * SQUARE_SIZE;
+            snake->body[i].y = 50;
 
-            drawRectangle(white, snake->body[i].x, snake->body[i].y, squareSize, squareSize);
+            if (i == 0)
+            {
+                  drawSnakeHead(snake->body[i].x, snake->body[i].y);
+            }
+            else
+            {
+                  drawRectangle(0xFFFFFF, snake->body[i].x, snake->body[i].y, SQUARE_SIZE, SQUARE_SIZE);
+            }
       }
 }
-
-uint32_t seed; // Declare seed as a global variable
+uint32_t seed;
 
 uint32_t rand_()
 {
@@ -167,9 +208,22 @@ uint32_t getRandom(uint32_t min, uint32_t max)
       return (rand_() % (max - min + 1)) + min;
 }
 
+uint8_t checkCollision(uint32_t x, uint32_t y)
+{
+      for (int i = 0; i < snake.length; i++)
+      {
+            if (x <= snake.body[i].x + SQUARE_SIZE && x >= snake.body[i].x &&
+                y <= snake.body[i].y + SQUARE_SIZE && y >= snake.body[i].y)
+            {
+                  return 1; // Collision detected
+            }
+      }
+      return 0; // No collision
+}
+
 void drawRandomFace()
 {
-      static int initialized = 0;
+      static uint8_t initialized = 0;
 
       if (!initialized)
       {
@@ -177,45 +231,29 @@ void drawRandomFace()
             initialized = 1;
       }
 
-      int mapSize = 20;
-      int squareSize = 40;
-      int faceRadius = 35; // Radio de la cara
+      uint32_t minX = FACE_RADIUS;
+      uint32_t minY = FACE_RADIUS;
+      uint32_t maxX = getFullWidth() - FACE_RADIUS;
+      uint32_t maxY = getFullHeight() - FACE_RADIUS;
 
-      // Calcula el rango de valores posibles para el centro de la cara,
-      // considerando que no se debe superponer con los bordes del mapa.
-      int minX = faceRadius;
-      int minY = faceRadius;
-      int maxX = mapSize * squareSize - faceRadius;
-      int maxY = mapSize * squareSize - faceRadius;
-
-      int centerX = minX + getRandom(50, 500) % (maxX - minX + 1);
-      int centerY = minY + getRandom(50, 500) % (maxY - minY + 1);
-
-      // int centerX, centerY;
-
-      /*int overlap;
-
+      uint8_t collision;
       do
       {
-            overlap = 0;
+            faceStartingX = minX + getRandom(50, 500) % (maxX - minX + 1);
+            faceStartingY = minY + getRandom(50, 500) % (maxY - minY + 1);
 
-            centerX = minX + getRandom(50, 500) % (maxX - minX + 1);
-            centerY = minY + getRandom(50, 500) % (maxY - minY + 1);
+            collision = checkCollision(faceStartingX, faceStartingY);
+      } while (collision);
 
-            for (int i = 0; i < snake.length; i++)
-            {
-                  int snakeX = snake.body[i].x + squareSize / 2;
-                  int snakeY = snake.body[i].y + squareSize / 2;
-
-                  int distance = (centerX - snakeX) * (centerX - snakeX) + (centerY - snakeY) * (centerY - snakeY);
-
-                  // Aca el chequeo de si la cara se superpone con la snake
-            }
-      } while (overlap);*/
-
-      drawFace(centerX, centerY);
+      drawFace(faceStartingX, faceStartingY, SQUARE_SIZE);
 }
 
 void eat()
 {
-}
+      struct Point newTail;
+      newTail.x = snake.body[snake.length - 1].x;
+      newTail.y = snake.body[snake.length - 1].y;
+
+      snake.body[snake.length] = newTail;
+      snake.length++;
+};
