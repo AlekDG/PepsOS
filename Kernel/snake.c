@@ -71,7 +71,7 @@ void start_game()
             {
             case DOWN:
                   head.y += SQUARE_SIZE;
-                  checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y + SQUARE_SIZE);
+                  checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y);
                   break;
             case UP:
                   head.y -= SQUARE_SIZE;
@@ -79,7 +79,7 @@ void start_game()
                   break;
             case RIGHT:
                   head.x += SQUARE_SIZE;
-                  checkSnakeEatFace(0, SQUARE_SIZE, head.x + SQUARE_SIZE, head.y);
+                  checkSnakeEatFace(0, SQUARE_SIZE, head.x, head.y);
                   break;
             case LEFT:
                   head.x -= SQUARE_SIZE;
