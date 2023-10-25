@@ -5,7 +5,7 @@
 #include <video.h>
 
 #define SQUARE_SIZE 40
-#define DELAY_TICKS 2 // Ajustar esto segun la dificultad
+#define DELAY_TICKS 3 // Ajustar esto segun la dificultad
 #define FACE_RADIUS 15
 #define WHITE 0xFFFFFF
 #define CARAMEL_BROWN 0x613613
@@ -50,7 +50,6 @@ void start_game()
 
       uint8_t flagWall = 0;
       uint8_t flagSnake = 0;
-      uint8_t checkFlag = 1; // Para el loop en el que vemos si la serpiente se choco consigo misma o no
 
       uint32_t lastTick = ticks_elapsed();
       uint32_t currentTick;
@@ -72,15 +71,19 @@ void start_game()
             {
             case DOWN:
                   head.y += SQUARE_SIZE;
+                  checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y + SQUARE_SIZE);
                   break;
             case UP:
                   head.y -= SQUARE_SIZE;
+                  checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y);
                   break;
             case RIGHT:
                   head.x += SQUARE_SIZE;
+                  checkSnakeEatFace(0, SQUARE_SIZE, head.x + SQUARE_SIZE, head.y);
                   break;
             case LEFT:
                   head.x -= SQUARE_SIZE;
+                  checkSnakeEatFace(0, SQUARE_SIZE, head.x, head.y);
                   break;
             default:
                   break;
@@ -93,23 +96,21 @@ void start_game()
                   flagWall = 1;
             }
 
-            // Self-collision check
-            for (int i = 1; i < snake.length && checkFlag; i++)
+            for (int i = 1; i < snake.length && !flagSnake; i++)
             {
                   if (head.x == snake.body[i].x && head.y == snake.body[i].y)
                   {
                         flagSnake = 1;
-                        checkFlag = 0;
                   }
             }
-
-            if ((head.x >= faceStartingX && head.x <= faceStartingX + SQUARE_SIZE) &&
-                (head.y >= faceStartingY && head.y <= faceStartingY + SQUARE_SIZE))
-            {
-                  eat();
-                  drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
-                  drawRandomFace();
-            } // Arreglar los casos limite de esto
+            /*
+                        if ((head.x >= faceStartingX && head.x <= faceStartingX + SQUARE_SIZE) &&
+                            (head.y >= faceStartingY && head.y <= faceStartingY + SQUARE_SIZE))
+                        {
+                              eat();
+                              drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
+                              drawRandomFace();
+                        } // Arreglar los casos limite de esto */
 
             if (currentTick - lastTick >= delay)
             {
@@ -133,6 +134,25 @@ void start_game()
             }
       }
       // Aca debieramos poner un mensajito tipo perdiste, la cantidad de caras comidas final fue...
+}
+
+void checkSnakeEatFace(int offsetX, int offsetY, uint32_t headX, uint32_t headY)
+{
+      uint8_t eaten = 0;
+      for (int i = 0; i <= offsetX && !eaten; i++)
+      {
+            for (int j = 0; j <= offsetY && !eaten; j++)
+            {
+                  if ((headX + i >= faceStartingX && headX + i <= faceStartingX + SQUARE_SIZE) &&
+                      (headY + j >= faceStartingY && headY + j <= faceStartingY + SQUARE_SIZE))
+                  {
+                        eat();
+                        drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
+                        drawRandomFace();
+                        eaten = 1;
+                  }
+            }
+      }
 }
 
 void moveSnake(uint8_t value)
@@ -236,7 +256,7 @@ void drawRandomFace()
       uint32_t maxX = getFullWidth() - FACE_RADIUS;
       uint32_t maxY = getFullHeight() - FACE_RADIUS;
 
-      uint8_t collision;
+      uint8_t collision = 1;
       do
       {
             faceStartingX = minX + getRandom(50, 500) % (maxX - minX + 1);
