@@ -117,6 +117,7 @@ int main()
 {	
 
 	load_idt();
+	((EntryPoint)sampleCodeModuleAddress)();
 	initialState();
 
 	while (1)

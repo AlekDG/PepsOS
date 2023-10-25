@@ -280,8 +280,11 @@ void moveBuffer(){
 }
 
 void drawLetterBuffered(){
+	char letter =getKbChar();
+	if(letter==0)
+		return;
 	uint8_t buffer[13][8] = {0};
-	getLetter(getKbChar(), buffer);
+	getLetter(letter,buffer);
 	drawLetterResizable(buffer, globalXPos, globalYPos);
 	moveBuffer();
 }
