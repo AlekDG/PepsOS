@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <video.h>
-#include <snake.h>
+#include <kernel.h>
 
 const unsigned char kbArr[4][128] = {
     {0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
@@ -46,10 +46,11 @@ char hexToChar(uint8_t hex){
     return kbArr[shiftState][hex];
 }
 
-void writeKbInput(){
+void keyAct(void){
 	uint8_t keyHex = getKey();
     char keyChar;
-    if(keyHex<0x82){
+    if(keyHex<0x81){
+        keyPressed(true);
         switch(keyHex){
             case 0x2A: case 0x36:
                 shift=true;
@@ -63,10 +64,11 @@ void writeKbInput(){
             default:
                 keyChar = hexToChar(keyHex);
     		    if(keyChar!=0){
-			        drawLetterBuffered(keyChar);
+			        addToBuffer(keyChar);
 		        }
         }
     } else {
+        keyPressed(false);
         switch (keyHex)
         {
         case 0xAA: case 0xB6:
@@ -77,7 +79,7 @@ void writeKbInput(){
         }
     }
 }
-
+/*
 void gameInput(){
     switch(getKey()){
         case 0x11:
@@ -105,7 +107,7 @@ void gameInput(){
         case 0x26:
             moveP2(2);
             break;
-        */
     }
 
 }
+*/

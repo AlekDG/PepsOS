@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <kernel.h>
 #include <video.h> 
 #include <font.h>
 
@@ -278,9 +279,9 @@ void moveBuffer(){
 	}
 }
 
-void drawLetterBuffered(char letter){
+void drawLetterBuffered(){
 	uint8_t buffer[13][8] = {0};
-	getLetter(letter, buffer);
+	getLetter(getKbChar(), buffer);
 	drawLetterResizable(buffer, globalXPos, globalYPos);
 	moveBuffer();
 }

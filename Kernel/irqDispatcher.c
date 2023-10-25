@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <keyboard.h>
 #include <video.h>
+#include <kernel.h>
 
 static void int_20();
 
@@ -22,6 +23,7 @@ void int_20() {
 }
 
 void int_21(){
-		//gameInput();
-		writeKbInput();
+		keyAct();
+		if(keyIsPressed)
+			drawLetterBuffered();
 }

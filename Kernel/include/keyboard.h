@@ -1,7 +1,6 @@
 #ifndef KEYBOARD
 #define KEYBOARD
 
-void writeKbInput();
-void gameInput();
+void keyAct(void);
 
 #endif
