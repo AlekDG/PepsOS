@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "video.h"
-
+#include ""
 
 const unsigned char kbArr[2][128] = {
     {0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
@@ -56,4 +56,23 @@ void writeKbInput(){
             break;
         }
     }
+}
+
+void gameInput(){
+    switch(getKey()){
+        case 0x11:
+            moveSnake(1);
+            break;
+        case 0x1E:
+            moveSnake(3);
+            break;
+        case 0x1F:
+            moveSnake(0);
+            break;
+        case 0x20:
+            moveSnake(2);
+            break;
+        default:
+    }
+
 }
