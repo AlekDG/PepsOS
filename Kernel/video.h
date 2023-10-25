@@ -16,7 +16,7 @@ void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size);
 void drawLetterResizable(uint8_t letter[13][8], uint32_t x_offset, uint32_t y_offset);
 void write(char string[], uint32_t x_offset, uint32_t y_offset);
 void drawCircle(uint32_t hexColor, int centerX, int centerY, int radius);
-void drawFace(int centerX, int centerY);
+void drawFace(uint32_t startingX, uint32_t startingY, uint32_t size);
 void drawLetterBuffered(char letter);
 int getSize();
 uint32_t getFGColor();
