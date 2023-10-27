@@ -8,6 +8,7 @@
 #include <kernel.h>
 #include <video.h>
 #include <font.h>
+#include <time.h>
 
 #define BUFFER_SIZE 10
 
@@ -120,9 +121,8 @@ int main()
 	((EntryPoint)sampleCodeModuleAddress)();
 	initialState();
 
-	while (1)
-	{
-	}
+	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
+	drawMenu();
 	
 	return 0;
 }

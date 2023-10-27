@@ -1,7 +1,9 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <kernel.h>
 #include <video.h> 
 #include <font.h>
+#include <time.h>
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -51,8 +53,8 @@ uint16_t width;
 uint32_t globalFGColor; 
 uint32_t globalBGColor;
 uint32_t globalSize;
-uint32_t globalXPos;
-uint32_t globalYPos;
+int globalXPos;
+int globalYPos;
 
 void initialState(){
 	height = VBE_mode_info->height;
@@ -265,17 +267,17 @@ void write(char string[], uint32_t x_offset, uint32_t y_offset){
 
 
 void moveBuffer(){
-	if(globalXPos+globalSize*8 >= width){
-		if(globalYPos+globalSize*13 >= height){
-			globalYPos=0;
+	if(globalXPos+(globalSize*8) >= width){
+		if(globalYPos+(globalSize*13) >= height){
+			globalYPos = height;	//estoy al final, no hace nada
 		}
 		else{
-			globalYPos+=globalSize*13;
+			globalYPos+=(globalSize*13);
+			globalXPos=0;
 		}
-		globalXPos=0;
 	}
 	else{
-		globalXPos+=globalSize*8;
+		globalXPos+=(globalSize*8);
 	}
 }
 
@@ -289,16 +291,27 @@ void drawLetterBuffered(){
 	moveBuffer();
 }
 
+void drawLetterFromChar(char letter){
+	if(letter==0)
+		return;
+	uint8_t buffer[13][8] = {0};
+	getLetter(letter,buffer);
+	drawLetterResizable(buffer, globalXPos, globalYPos);
+	moveBuffer();
+}
+
 void backtrackBuffer(){
 	//tengo que hacer putpixel del color del bg
 	//mover el buffer para atras con 1*size
-
-	if(globalXPos<globalSize*8){	//estoy al ppio del buffer con x=0
+	if(globalXPos < globalSize*8 ){	
+		//estoy al ppio del buffer con x=0
+		//o borre el primer caracter y X vale mas que width xq es unsigned
 		if(globalYPos<globalSize*13){
 			return;			//nada que borrar
 		}
 		else{
 			globalYPos-=globalSize*13;
+			globalXPos = ((getFullWidth()*8)/8) - (globalSize*8);
 		}
 	}
 	else{
@@ -311,3 +324,158 @@ void deleteLetterBuffered(){
 	backtrackBuffer();
 	drawRectangle(globalBGColor, globalXPos, globalYPos, globalSize*8, globalSize*13);	//dibujo un rectangulo de color BGColor
 }
+
+
+void highlightBuffer(){
+	static int ishighlighted = 0;
+	if((*ticks_elapsed)() % 18==0 && !ishighlighted){
+		drawRectangle(CYAN, globalXPos, globalYPos, globalSize*8, globalSize*13);	//2 pixeles de ancho y el alto de una letra
+		ishighlighted=1;
+	}
+	else if((*ticks_elapsed)() % 18==0 && ishighlighted){
+		drawRectangle(globalBGColor, globalXPos, globalYPos, globalSize*8, globalSize*13);	//2 pixeles de ancho y el alto de una letra
+		ishighlighted=0;
+	}
+}
+
+
+
+
+void hoverOverOption(Option * option){option->isHovered=1;}
+void deactivateHover(Option * option){option->isHovered=0;}
+
+//USAR ESTA FUNCION PARA PASAR A LA SIGUIENTE FUNCION DEL MENU
+void hoverOverNextoption(OptionMenu * optionMenu){
+
+	//voy a iterar sobre el array de opciones para ver cual de todas esta ON
+	//solo habra una a la vez
+	for(int i=0; i<4; i++){
+		if(optionMenu->options[i].isHovered){
+			deactivateHover(&(optionMenu->options[i]));
+			if(i==3){   //estoy en la ultima, salto a la primera
+				hoverOverOption(&(optionMenu->options[0]));
+			}
+			else{
+				hoverOverOption(&(optionMenu->options[i+1]));  //resalto la primera
+			}
+			break;
+		}
+	}
+	
+	setXBuffer(50);
+	setYBuffer(50);
+	drawMenu();   //tengo que volver a renderizar todo el menu
+}
+
+void hoverOverPreviousOption(OptionMenu * optionMenu){
+	for(int i=0; i<4; i++){
+		if(optionMenu->options[i].isHovered){
+			deactivateHover(&(optionMenu->options[i]));
+			if(i==0){   //estoy en la primera, salto a la ultima
+				hoverOverOption(&(optionMenu->options[3]));
+			}
+			else{
+				hoverOverOption(&(optionMenu->options[i-1]));  //resalto la primera
+				
+			}
+			break;
+		}
+	}
+	setXBuffer(50);
+	setYBuffer(50);
+	drawMenu();   //tengo que volver a renderizar todo el menu
+	
+}
+
+
+
+//ESTO NO SE SI SE VA A USAR
+void clickOption(Option * option){option->isClicked = 1;}
+void unclickOption(Option * option){option->isClicked = 0;}
+
+//todo
+
+//drawTriangle(){funcion que dibuja la flechita de las opciones}
+
+void drawOption(Option option){
+
+	uint32_t currentFG = getFGColor();
+	int borderHeight = option.borde.height;
+	int borderLength = option.borde.length;
+	int borderThickness = option.borde.thickness;
+	
+	//si esta hovereada tengo que cambiar el color del borde
+	if(option.isHovered){
+		globalFGColor = RED;     //hacer un define de colores pls xD
+	}
+
+	//aca adentro asumo que tengo el buffer setedo correctamente, y voy a dibujar 
+	//exactamente donde el recuadro
+	drawRectangle(globalFGColor, globalXPos, globalYPos, 
+	borderLength*globalSize, borderHeight*globalSize);
+
+	//empiezo a dibujar con offset de +thickness
+	drawRectangle(globalBGColor, globalXPos + borderThickness, globalYPos + borderThickness, 
+	(borderLength -(2*borderThickness))*globalSize, (borderHeight-(2*borderThickness))*globalSize);
+	
+	//desplazo el buffer de la esquina sup. izq. 
+	//al centro del recuadro, para escribir la opcion
+	globalYPos += (borderThickness + borderHeight/2);
+	globalXPos += (borderThickness + (globalSize*8*3));	//dejo espacio de 3 letras
+	//vuelvo a cambiar el color porque el texto deberia ir normal
+	globalFGColor = currentFG;
+	
+	//buffer seteado
+	for(int i=0; option.texto[i]!=0; i++){
+		drawLetterFromChar(option.texto[i]);
+	}
+	
+	//dejo el buffer al ppio del primer recuadro, a la izquierda
+	globalXPos -= (borderLength + (globalSize*8*3));
+	globalYPos += (borderThickness+(borderHeight/2));
+}
+
+
+void drawMenu(){
+	//							->strlen			->bordes
+	Option registros = {1,0,{4, (18*globalSize*8) + (6*globalSize*2), 13 + 12}, "Imprimir Registros"};
+	//la primer opcion empieza hovereada
+	
+	Option hora = {0,0, {4, (13*globalSize*8) + (6*globalSize*2), 13 + 12}, "Imprimir Hora"};
+	Option snake = {0,0, {4, (11*globalSize*8) + (6*globalSize*2), 13 + 12}, "Jugar Snake"};
+	Option consola = {0,0, {4, (15*globalSize*8) + (6*globalSize*2), 13 + 12}, "Pedir Registros"};
+	
+	OptionMenu optionMenu ={{registros, hora, snake, consola}};
+	
+	setXBuffer(50);
+	setYBuffer(50);
+	
+	//dibujo todas las opciones
+	for(int i=0; i<4; i++){
+		drawOption(optionMenu.options[i]);
+		globalYPos+= 2*(registros.borde.height);
+	}
+
+
+	/*while(1){
+		hoverOverNextoption(&optionMenu);
+
+		hoverOverNextoption(&optionMenu);
+		hoverOverNextoption(&optionMenu);
+		hoverOverNextoption(&optionMenu);
+		hoverOverNextoption(&optionMenu);
+		hoverOverNextoption(&optionMenu);
+		hoverOverNextoption(&optionMenu);
+		hoverOverNextoption(&optionMenu);
+		hoverOverPreviousOption(&optionMenu);
+		hoverOverPreviousOption(&optionMenu);
+		hoverOverPreviousOption(&optionMenu);
+		hoverOverPreviousOption(&optionMenu);
+		hoverOverPreviousOption(&optionMenu);
+		hoverOverPreviousOption(&optionMenu);
+	}*/
+}
+
+
+
+
