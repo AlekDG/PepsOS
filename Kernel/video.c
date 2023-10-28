@@ -295,7 +295,7 @@ void moveBuffer(){
 	}
 }
 
-void drawLetterBuffered(){
+char drawLetterBuffered(){
 	char letter =getKbChar();
 	if(letter==0)
 		return;
@@ -305,6 +305,8 @@ void drawLetterBuffered(){
 	moveBuffer();
 }
 
+
+
 void drawLetterFromChar(char letter){
 	if(letter==0)
 		return;
@@ -312,6 +314,20 @@ void drawLetterFromChar(char letter){
 	getLetter(letter,buffer);
 	drawLetterResizable(buffer, globalXPos, globalYPos);
 	moveBuffer();
+}
+
+void printInteger(int number){
+	int mynum = number;
+	char string[10] = {0};
+	
+	for(int i=1; i<=10 ; i++){
+		int digit = mynum%10;
+		mynum/=10;
+		string[i-1] = digit + 48;	//ascii de '0'
+	}	
+	for(int j=9; j>=0; j--){
+		drawLetterFromChar(string[j]);
+	}
 }
 
 void backtrackBuffer(){
@@ -452,6 +468,63 @@ void drawOption(Option option){
 }
 
 
+void drawEmptyRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t width, uint32_t height, uint32_t thickness){
+	for(uint32_t x=xStart; x<width; x++){
+		for(uint32_t y=yStart; y<height; y++){
+			if(x<xStart+thickness || x>width-thickness || y<yStart+thickness || y>height-thickness){
+				putpixel(hexColor, x, y);
+			}
+		}
+	}
+}
+
+void drawConsole(){
+	drawRectangle(LIGHT_GRAY, 0, 2*(height/3), width, height/3);
+}
+void deleteConsole(){
+	drawRectangle(BLACK, 0, 2*(height/3), width, height/3);
+}
+void interpretCommand(char command[]){
+	char string[] = "the command is: ";
+	for(int i=0; string[i]!=0; i++){
+		drawLetterBuffered(string[i]);
+	}
+	for(int j=0; command[j]!=0; j++){
+		drawLetterBuffered(command[j]);
+	}
+}
+int compareStrings(char * s1, char * s2){
+	while(*s1 != 0 && *s2!=0){
+		char first = *s1;
+		char last = *s2;
+		if(first > last){
+			return 1;
+		}
+		else if(first < last){
+			return -1;
+		}
+		s1++;
+		s2++;	//sigo comparando
+	}
+	if(*s1 != 0 && *s2==0){return 1;}
+	if(*s1 == 0 && *s2!=0){return -1;}
+	return 0;	//ambos son iguales
+}
+void runConsole(){
+	char internalBuffer[50] ={0};	//tamaño maximo de 50 chars
+	drawConsole();
+	globalXPos = 0;
+	globalYPos = 2*(height/3) + 13*globalSize;	
+
+	
+	/*while(compareStrings(internalBuffer, "exit")){
+
+		drawLetterBuffered();
+
+	}*/
+}
+
+
 void drawMenu(){
 	//(18*globalSize*8) + (6*globalSize*2) ->strlen:size*letra*strlen+2*espacio 
 	Option registros = {0,1,{4,18*globalSize*8, 13}, "SARACATUNGAAAAAAAA"};
@@ -474,23 +547,46 @@ void drawMenu(){
 	}
 
 
-	/*while(1){
-		hoverOverNextoption(&optionMenu);
+	/*
+	modo de uso de consola de comandos:
+	-los comandos seran un solo string
+	-el espacio se utiliza para introducir el comando (SI LLEGAMOS A NECESITAR ARGUMENTOS HAY QUE HACER AJUSTE)
+	*/
 
-		hoverOverNextoption(&optionMenu);
-		hoverOverNextoption(&optionMenu);
-		hoverOverNextoption(&optionMenu);
-		hoverOverNextoption(&optionMenu);
-		hoverOverNextoption(&optionMenu);
-		hoverOverNextoption(&optionMenu);
-		hoverOverNextoption(&optionMenu);
-		hoverOverPreviousOption(&optionMenu);
-		hoverOverPreviousOption(&optionMenu);
-		hoverOverPreviousOption(&optionMenu);
-		hoverOverPreviousOption(&optionMenu);
-		hoverOverPreviousOption(&optionMenu);
-		hoverOverPreviousOption(&optionMenu);
-	}*/
+	//para cambiar de opcion en el menu se usa w,s
+	//para seleccionar una opcion se utiliza el espacio ' '
+	char internalBuffer[50] = {0};
+
+	while(1){
+		char letter = drawLetterBuffered();	
+
+		switch(letter){
+			case ' ':
+				if(consola.isHovered){
+					drawConsole();	
+					consola.isClicked=1;
+				}
+				break;
+			case 0:
+				if(consola.isClicked){
+					deleteConsole();
+					consola.isClicked=0;
+				}
+				break;
+			case 'w':
+				hoverOverPreviousOption(&optionMenu);
+				break;
+			case 's':
+				hoverOverNextoption(&optionMenu);
+				break;
+			default:
+				break;			
+		}
+
+	}
+
+
+
 }
 
 

@@ -122,6 +122,5 @@ int main()
 	initialState();
 	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
 	drawMenu();
-	
 	return 0;
 }
