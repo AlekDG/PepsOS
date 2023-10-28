@@ -120,7 +120,6 @@ int main()
 	load_idt();
 	((EntryPoint)sampleCodeModuleAddress)();
 	initialState();
-
 	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
 	drawMenu();
 	

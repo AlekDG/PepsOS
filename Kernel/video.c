@@ -153,6 +153,20 @@ void drawRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t
 	}
 }
 
+void drawRectangleCentered(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t mywidth, uint32_t myheight){
+	int semiWidth = mywidth/2;
+	int semiHeight = myheight/2;
+	for(uint32_t x=(xStart-semiWidth); x<(xStart+semiWidth); x++){
+		for(uint32_t y=(yStart-semiHeight); y<(yStart+semiHeight); y++){
+			if(x>=0 && x<width && y>=0 && y<height){
+				putpixel(hexColor, x, y);
+			}
+		}
+	}
+}
+
+
+
 void drawCircle(uint32_t hexColor, int centerX, int centerY, int radius)
 {
 	for (int y = -radius; y <= radius; y++)
@@ -411,17 +425,19 @@ void drawOption(Option option){
 
 	//aca adentro asumo que tengo el buffer setedo correctamente, y voy a dibujar 
 	//exactamente donde el recuadro
-	drawRectangle(globalFGColor, globalXPos, globalYPos, 
-	borderLength*globalSize, borderHeight*globalSize);
+	drawRectangle(globalFGColor, globalXPos, globalYPos,
+	borderLength + (globalSize*2*(borderThickness+3)), 
+	globalSize*(borderHeight + 2*(borderThickness+3)));
 
 	//empiezo a dibujar con offset de +thickness
-	drawRectangle(globalBGColor, globalXPos + borderThickness, globalYPos + borderThickness, 
-	(borderLength -(2*borderThickness))*globalSize, (borderHeight-(2*borderThickness))*globalSize);
+	drawRectangle(globalBGColor, globalXPos + globalSize*borderThickness, globalYPos + globalSize*borderThickness,
+	borderLength + (globalSize*2*3), 
+	globalSize * (borderHeight + 2*3));
 	
 	//desplazo el buffer de la esquina sup. izq. 
 	//al centro del recuadro, para escribir la opcion
-	globalYPos += (borderThickness + borderHeight/2);
-	globalXPos += (borderThickness + (globalSize*8*3));	//dejo espacio de 3 letras
+	globalYPos += (globalSize * (borderThickness + 3));
+	globalXPos += (globalSize * (borderThickness + 3));	//dejo espacio de 3 letras
 	//vuelvo a cambiar el color porque el texto deberia ir normal
 	globalFGColor = currentFG;
 	
@@ -431,19 +447,20 @@ void drawOption(Option option){
 	}
 	
 	//dejo el buffer al ppio del primer recuadro, a la izquierda
-	globalXPos -= (borderLength + (globalSize*8*3));
-	globalYPos += (borderThickness+(borderHeight/2));
+	globalXPos -= (borderLength + (globalSize * (borderThickness + 3)));
+	globalYPos += (globalSize * (3 + borderThickness));
 }
 
 
 void drawMenu(){
-	//							->strlen			->bordes
-	Option registros = {1,0,{4, (18*globalSize*8) + (6*globalSize*2), 13 + 12}, "Imprimir Registros"};
+	//(18*globalSize*8) + (6*globalSize*2) ->strlen:size*letra*strlen+2*espacio 
+	Option registros = {0,1,{4,18*globalSize*8, 13}, "SARACATUNGAAAAAAAA"};
 	//la primer opcion empieza hovereada
 	
-	Option hora = {0,0, {4, (13*globalSize*8) + (6*globalSize*2), 13 + 12}, "Imprimir Hora"};
-	Option snake = {0,0, {4, (11*globalSize*8) + (6*globalSize*2), 13 + 12}, "Jugar Snake"};
-	Option consola = {0,0, {4, (15*globalSize*8) + (6*globalSize*2), 13 + 12}, "Pedir Registros"};
+	//															13*globalSize +(6*globalSize*2)
+	Option hora = {0,0, {4, 13*globalSize*8, 13}, "Imprimir Hora"};
+	Option snake = {0,0, {4, 11*globalSize*8,13}, "Jugar Snake"};
+	Option consola = {0,0, {4, 15*globalSize*8, 13}, "Pedir Registros"};
 	
 	OptionMenu optionMenu ={{registros, hora, snake, consola}};
 	
@@ -453,7 +470,7 @@ void drawMenu(){
 	//dibujo todas las opciones
 	for(int i=0; i<4; i++){
 		drawOption(optionMenu.options[i]);
-		globalYPos+= 2*(registros.borde.height);
+		globalYPos+= 2*(globalSize * registros.borde.height);
 	}
 
 
