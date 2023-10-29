@@ -4,6 +4,7 @@
         "interrupts.h": "c",
         "video.h": "c",
         "idtloader.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "time.h": "c"
     }
 }

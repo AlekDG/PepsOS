@@ -13,3 +13,10 @@ int ticks_elapsed() {
 int seconds_elapsed() {
 	return ticks / 18;
 }
+
+void timer_wait(int ticks)
+{
+	int startTime=ticks_elapsed();
+	while(ticks_elapsed()-startTime<ticks){
+	}
+}
