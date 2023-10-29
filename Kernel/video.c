@@ -298,11 +298,12 @@ void moveBuffer(){
 char drawLetterBuffered(){
 	char letter =getKbChar();
 	if(letter==0)
-		return;
+		return 0;
 	uint8_t buffer[13][8] = {0};
 	getLetter(letter,buffer);
 	drawLetterResizable(buffer, globalXPos, globalYPos);
 	moveBuffer();
+	return letter;
 }
 
 
@@ -557,6 +558,8 @@ void drawMenu(){
 	//para seleccionar una opcion se utiliza el espacio ' '
 	char internalBuffer[50] = {0};
 
+	drawConsole();
+
 	while(1){
 		char letter = drawLetterBuffered();	
 
@@ -565,24 +568,26 @@ void drawMenu(){
 				if(consola.isHovered){
 					drawConsole();	
 					consola.isClicked=1;
+					drawLetterFromChar('a');
 				}
 				break;
-			case 0:
+			/*case 0:
 				if(consola.isClicked){
 					deleteConsole();
 					consola.isClicked=0;
 				}
-				break;
+				break;*/
 			case 'w':
 				hoverOverPreviousOption(&optionMenu);
+				drawLetterFromChar('b');
 				break;
 			case 's':
 				hoverOverNextoption(&optionMenu);
+				drawLetterFromChar('c');
 				break;
 			default:
 				break;			
 		}
-
 	}
 
 
