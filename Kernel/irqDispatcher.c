@@ -24,7 +24,7 @@ void int_20() {
 }
 
 void int_21(){
-	beep(1000,18);
+	
 	keyAct();
 	if(keyIsPressed)
 		drawLetterBuffered();
