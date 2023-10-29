@@ -3,6 +3,7 @@
 #include <keyboard.h>
 #include <video.h>
 #include <kernel.h>
+#include <sound.h>
 
 static void int_20();
 
@@ -23,7 +24,8 @@ void int_20() {
 }
 
 void int_21(){
-		keyAct();
-		if(keyIsPressed)
-			drawLetterBuffered();
+	beep(1000,18);
+	keyAct();
+	if(keyIsPressed)
+		drawLetterBuffered();
 }
