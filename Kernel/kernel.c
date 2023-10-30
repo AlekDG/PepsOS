@@ -121,7 +121,7 @@ int main()
 	((EntryPoint)sampleCodeModuleAddress)();
 	initialState();
 	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
-	beep(1000,18);
+	//beep(1000,18);
 	drawMenu();
 	return 0;
 }

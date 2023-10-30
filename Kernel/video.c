@@ -140,14 +140,14 @@ void paintScreen(uint32_t hexColor){
 	}*/
 }
 
-void drawRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t width, uint32_t height){
+void drawRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t mywidth, uint32_t myheight){
 	uint32_t totalWidth, totalHeight;
 	totalWidth = VBE_mode_info->width;
 	totalHeight = VBE_mode_info->height;
 
 
-	for(uint32_t x=xStart; x<xStart+width && x<totalWidth; x++){
-		for(uint32_t y=yStart; y<yStart+height && y<totalHeight; y++){
+	for(uint32_t x=xStart; x<xStart+mywidth && x<width; x++){
+		for(uint32_t y=yStart; y<yStart+myheight && y<height; y++){
 			putpixel(hexColor, x, y);
 		}
 	}
@@ -395,7 +395,7 @@ void hoverOverNextoption(OptionMenu * optionMenu){
 	
 	setXBuffer(50);
 	setYBuffer(50);
-	drawMenu();   //tengo que volver a renderizar todo el menu
+	drawOptionMenuArray(optionMenu);   //tengo que volver a renderizar todo el menu
 }
 
 void hoverOverPreviousOption(OptionMenu * optionMenu){
@@ -414,7 +414,7 @@ void hoverOverPreviousOption(OptionMenu * optionMenu){
 	}
 	setXBuffer(50);
 	setYBuffer(50);
-	drawMenu();   //tengo que volver a renderizar todo el menu
+	drawOptionMenuArray(optionMenu);   //tengo que volver a renderizar todo el menu
 	
 }
 
@@ -485,15 +485,8 @@ void drawConsole(){
 void deleteConsole(){
 	drawRectangle(BLACK, 0, 2*(height/3), width, height/3);
 }
-void interpretCommand(char command[]){
-	char string[] = "the command is: ";
-	for(int i=0; string[i]!=0; i++){
-		drawLetterBuffered(string[i]);
-	}
-	for(int j=0; command[j]!=0; j++){
-		drawLetterBuffered(command[j]);
-	}
-}
+
+
 int compareStrings(char * s1, char * s2){
 	while(*s1 != 0 && *s2!=0){
 		char first = *s1;
@@ -511,20 +504,96 @@ int compareStrings(char * s1, char * s2){
 	if(*s1 == 0 && *s2!=0){return -1;}
 	return 0;	//ambos son iguales
 }
+
+/*void printHelp(){}
+void printSaracatunga(){}
+void enlargeFontSize(){}
+void greedIsGood(){}*/
+
+void interpretCommand(char command[]){
+	/*char string[] = "the command is: ";
+	for(int i=0; string[i]!=0; i++){
+		drawLetterFromChar(string[i]);
+	}
+	for(int j=0; command[j]!=0; j++){
+		drawLetterFromChar(command[j]);
+	}*/
+
+	char enlargefontsize[] = "enlargefont";
+	char printsaracatunga[] = "printsaracatunga";
+	char greedisgood[] = "greedisgood";
+	char printhelp[] = "help";
+
+	if(compareStrings(command, enlargefontsize)==0){
+		drawLetterFromChar('a');
+	}
+	if(compareStrings(command, printsaracatunga)==0){
+		drawLetterFromChar('b');
+	}
+	if(compareStrings(command, greedisgood)==0){
+		drawLetterFromChar('c');
+	}
+	if(compareStrings(command, printhelp)==0){
+		drawLetterFromChar('d');
+	}
+
+}
 void runConsole(){
-	char internalBuffer[50] ={0};	//tamaño maximo de 50 chars
-	drawConsole();
 	globalXPos = 0;
 	globalYPos = 2*(height/3) + 13*globalSize;	
 
-	
-	/*while(compareStrings(internalBuffer, "exit")){
+	char internalBuffer[50] ={0};	//tamaño maximo de 50 chars
+	int bufferSize = 0;
+	int consoleRunning = 1;	//flag de corte de ejecucion
+	char currentLetter;
 
-		drawLetterBuffered();
+	while(consoleRunning){
+		currentLetter = drawLetterBuffered();
 
-	}*/
+		switch(currentLetter){
+			case '\n':
+				interpretCommand(internalBuffer);
+				break;
+			case 0:
+				break;					//omite teclas no asignadas
+			case '1':
+				consoleRunning = 0;		//cierra la terminal
+				for(int i=0; i<bufferSize;i++){
+					internalBuffer[i]=0;		//limpia buffer antes de terminar
+					deleteLetterBuffered();
+				}
+				bufferSize = 0;
+				break;
+			case '2':						//borrado de caracter
+				if(bufferSize<=0){
+					bufferSize=0;
+					break;
+				}
+				deleteLetterBuffered();
+				internalBuffer[bufferSize--] = 0;	//borra el ultimo caracter y reduce el tamaño del buffer
+				break;
+			default:
+				if(bufferSize>=50){
+					break;
+				}
+				internalBuffer[bufferSize++] = currentLetter;	//se guarda la letra escrita 
+				break;
+		}		
+	}
 }
 
+
+void drawOptionMenuArray(OptionMenu * optionMenu){
+	
+	setXBuffer(50);
+	setYBuffer(50);
+
+	//dibujo todas las opciones
+	for(int i=0; i<4; i++){
+		drawOption(optionMenu->options[i]);
+		globalYPos+= 2*(globalSize * optionMenu->options[0].borde.height);
+	}
+}
 
 void drawMenu(){
 	//(18*globalSize*8) + (6*globalSize*2) ->strlen:size*letra*strlen+2*espacio 
@@ -534,19 +603,9 @@ void drawMenu(){
 	//															13*globalSize +(6*globalSize*2)
 	Option hora = {0,0, {4, 13*globalSize*8, 13}, "Imprimir Hora"};
 	Option snake = {0,0, {4, 11*globalSize*8,13}, "Jugar Snake"};
-	Option consola = {0,0, {4, 15*globalSize*8, 13}, "Pedir Registros"};
+	Option consola = {0,0, {4, 14*globalSize*8, 13}, "Correr Consola"};
 	
 	OptionMenu optionMenu ={{registros, hora, snake, consola}};
-	
-	setXBuffer(50);
-	setYBuffer(50);
-	
-	//dibujo todas las opciones
-	for(int i=0; i<4; i++){
-		drawOption(optionMenu.options[i]);
-		globalYPos+= 2*(globalSize * registros.borde.height);
-	}
-
 
 	/*
 	modo de uso de consola de comandos:
@@ -558,25 +617,25 @@ void drawMenu(){
 	//para seleccionar una opcion se utiliza el espacio ' '
 	char internalBuffer[50] = {0};
 
-	drawConsole();
-
+	drawOptionMenuArray(&optionMenu);
 	while(1){
-		char letter = drawLetterBuffered();	
-
+		//char letter = drawLetterBuffered();	
+		char letter = getKbChar();
 		switch(letter){
 			case ' ':
-				if(consola.isHovered){
+				if(optionMenu.options[3].isHovered){	//consola.isHovered
 					drawConsole();	
-					consola.isClicked=1;
+					runConsole();
+					optionMenu.options[3].isClicked=1;
 					drawLetterFromChar('a');
 				}
 				break;
-			/*case 0:
-				if(consola.isClicked){
+			case 'f':
+				if(optionMenu.options[3].isClicked){	//consola.isClicked
 					deleteConsole();
-					consola.isClicked=0;
+					optionMenu.options[3].isClicked=0;
 				}
-				break;*/
+				break;
 			case 'w':
 				hoverOverPreviousOption(&optionMenu);
 				drawLetterFromChar('b');

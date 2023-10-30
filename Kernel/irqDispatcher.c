@@ -24,8 +24,9 @@ void int_20() {
 }
 
 void int_21(){
-	
 	keyAct();
+
+	/*
 	if(keyIsPressed)
-		drawLetterBuffered();
+		drawLetterBuffered();*/
 }
