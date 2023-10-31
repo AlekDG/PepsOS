@@ -381,13 +381,13 @@ void hoverOverNextoption(OptionMenu * optionMenu){
 	//voy a iterar sobre el array de opciones para ver cual de todas esta ON
 	//solo habra una a la vez
 	for(int i=0; i<5; i++){
-		if(optionMenu->options[i].isHovered){
-			deactivateHover(&(optionMenu->options[i]));
+		if(optionMenu->options[i]->isHovered){
+			deactivateHover(optionMenu->options[i]);
 			if(i==4){   //estoy en la ultima, salto a la primera
-				hoverOverOption(&(optionMenu->options[0]));
+				hoverOverOption(optionMenu->options[0]);
 			}
 			else{
-				hoverOverOption(&(optionMenu->options[i+1]));  //resalto la primera
+				hoverOverOption(optionMenu->options[i+1]);  //resalto la primera
 			}
 			break;
 		}
@@ -400,13 +400,13 @@ void hoverOverNextoption(OptionMenu * optionMenu){
 
 void hoverOverPreviousOption(OptionMenu * optionMenu){
 	for(int i=0; i<5; i++){
-		if(optionMenu->options[i].isHovered){
-			deactivateHover(&(optionMenu->options[i]));
+		if(optionMenu->options[i]->isHovered){
+			deactivateHover(optionMenu->options[i]);
 			if(i==0){   //estoy en la primera, salto a la ultima
-				hoverOverOption(&(optionMenu->options[4]));
+				hoverOverOption(optionMenu->options[4]);
 			}
 			else{
-				hoverOverOption(&(optionMenu->options[i-1]));  //resalto la primera
+				hoverOverOption(optionMenu->options[i-1]);  //resalto la primera
 				
 			}
 			break;
@@ -431,10 +431,13 @@ void unclickOption(Option * option){option->isClicked = 0;}
 void drawOption(Option option){
 
 	uint32_t currentFG = getFGColor();
-	int borderHeight = option.borde.height;
-	int borderLength = option.borde.length;
-	int borderThickness = option.borde.thickness;
+	int letterWidth = globalSize*8;
+	int gap = 3 * globalSize;
+	int borderHeight = option.borde.height * globalSize;
+	int borderLength = option.borde.length * letterWidth;
+	int borderThickness = option.borde.thickness * globalSize;
 	
+
 	//si esta hovereada tengo que cambiar el color del borde
 	if(option.isHovered){
 		globalFGColor = RED;     //hacer un define de colores pls xD
@@ -443,18 +446,18 @@ void drawOption(Option option){
 	//aca adentro asumo que tengo el buffer setedo correctamente, y voy a dibujar 
 	//exactamente donde el recuadro
 	drawRectangle(globalFGColor, globalXPos, globalYPos,
-	borderLength + (globalSize*2*(borderThickness+3)), 
-	globalSize*(borderHeight + 2*(borderThickness+3)));
+	borderLength + (2*(borderThickness + gap)), 
+	borderHeight + (2*(borderThickness + gap)));
 
 	//empiezo a dibujar con offset de +thickness
-	drawRectangle(globalBGColor, globalXPos + globalSize*borderThickness, globalYPos + globalSize*borderThickness,
-	borderLength + (globalSize*2*3), 
-	globalSize * (borderHeight + 2*3));
+	drawRectangle(globalBGColor, globalXPos + borderThickness, globalYPos + borderThickness,
+	borderLength + (2*gap), 
+	borderHeight + (2*gap));
 	
 	//desplazo el buffer de la esquina sup. izq. 
 	//al centro del recuadro, para escribir la opcion
-	globalYPos += (globalSize * (borderThickness + 3));
-	globalXPos += (globalSize * (borderThickness + 3));	//dejo espacio de 3 letras
+	globalYPos += (borderThickness + gap);
+	globalXPos += (borderThickness + gap);	//dejo espacio de 3 letras
 	//vuelvo a cambiar el color porque el texto deberia ir normal
 	globalFGColor = currentFG;
 	
@@ -464,8 +467,8 @@ void drawOption(Option option){
 	}
 	
 	//dejo el buffer al ppio del primer recuadro, a la izquierda
-	globalXPos -= (borderLength + (globalSize * (borderThickness + 3)));
-	globalYPos += (globalSize * (3 + borderThickness));
+	globalXPos -= (borderLength + borderThickness + gap);
+	globalYPos += (gap + borderThickness);
 }
 
 
@@ -610,7 +613,7 @@ void interpretCommand(char command[]){
 	}
 
 }
-void runConsole(){
+void runConsole(OptionMenu * optionMenu){
 	globalXPos = 0;
 	globalYPos = 2*(height/3) + 13*globalSize;	
 
@@ -636,6 +639,8 @@ void runConsole(){
 				}
 				bufferSize = 0;
 				deleteConsole();
+				drawRectangle(BLACK, 0, 0, width, height);
+				drawOptionMenuArray(optionMenu);
 				break;
 			case '2':						//borrado de caracter
 				if(bufferSize<=0){
@@ -663,23 +668,23 @@ void drawOptionMenuArray(OptionMenu * optionMenu){
 
 	//dibujo todas las opciones
 	for(int i=0; i<5; i++){
-		drawOption(optionMenu->options[i]);
-		globalYPos+= 2*(globalSize * optionMenu->options[0].borde.height);
+		drawOption(*(optionMenu->options[i]));
+		globalYPos+= 2*(globalSize * (optionMenu->options[0]->borde.height));
 	}
 }
 
 void drawMenu(){
 	//(18*globalSize*8) + (6*globalSize*2) ->strlen:size*letra*strlen+2*espacio 
-	Option registros = {0,1,{4,18*globalSize*8, 13}, "SARACATUNGAAAAAAAA"};
+	Option registros = {0,1,{4,18, 13}, "SARACATUNGAAAAAAAA"};
 	//la primer opcion empieza hovereada
 	
 	//															13*globalSize +(6*globalSize*2)
-	Option hora = {0,0, {4, 13*globalSize*8, 13}, "Imprimir Hora"};
-	Option snake = {0,0, {4, 11*globalSize*8,13}, "Jugar Snake"};
-	Option consola = {0,0, {4, 14*globalSize*8, 13}, "Correr Consola"};
-	Option restart = {0,0, {4, 14*globalSize*8, 13}, "Reiniciar Menu"};
+	Option hora = {0,0, {4, 13, 13}, "Imprimir Hora"};
+	Option snake = {0,0, {4, 11, 13}, "Jugar Snake"};
+	Option consola = {0,0, {4, 14, 13}, "Correr Consola"};
+	Option restart = {0,0, {4, 14, 13}, "Reiniciar Menu"};
 	
-	OptionMenu optionMenu ={{registros, hora, snake, consola, restart}};
+	OptionMenu optionMenu ={{&registros, &hora, &snake, &consola, &restart}};
 
 	/*
 	modo de uso de consola de comandos:
@@ -697,29 +702,27 @@ void drawMenu(){
 		char letter = getKbChar();
 		switch(letter){
 			case ' ':
-				if(optionMenu.options[3].isHovered){	//consola.isHovered
+				if(optionMenu.options[3]->isHovered){	//consola.isHovered
 					drawConsole();	
-					runConsole();
-					optionMenu.options[3].isClicked=1;
+					runConsole(&optionMenu);
+					optionMenu.options[3]->isClicked=1;
 				}
-				else if(optionMenu.options[4].isHovered){
+				else if(optionMenu.options[4]->isHovered){
 					drawRectangle(BLACK, 0, 0, width, height);
 					drawOptionMenuArray(&optionMenu);
 				}
 				break;
 			case 'f':
-				if(optionMenu.options[3].isClicked){	//consola.isClicked
+				if(optionMenu.options[3]->isClicked){	//consola.isClicked
 					deleteConsole();
-					optionMenu.options[3].isClicked=0;
+					optionMenu.options[3]->isClicked=0;
 				}
 				break;
 			case 'w':
-				drawRectangle(BLACK, 0, 0, width, height);
 				hoverOverPreviousOption(&optionMenu);
 				
 				break;
 			case 's':
-				drawRectangle(BLACK, 0, 0, width, height);
 				hoverOverNextoption(&optionMenu);
 				break;
 			default:

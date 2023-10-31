@@ -33,7 +33,7 @@ typedef struct Option {
 } Option;
 
 typedef struct OptionMenu{
-	Option options[4];
+	Option * options[5];
 }OptionMenu;
 
 
