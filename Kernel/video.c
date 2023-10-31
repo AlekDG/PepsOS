@@ -380,10 +380,10 @@ void hoverOverNextoption(OptionMenu * optionMenu){
 
 	//voy a iterar sobre el array de opciones para ver cual de todas esta ON
 	//solo habra una a la vez
-	for(int i=0; i<4; i++){
+	for(int i=0; i<5; i++){
 		if(optionMenu->options[i].isHovered){
 			deactivateHover(&(optionMenu->options[i]));
-			if(i==3){   //estoy en la ultima, salto a la primera
+			if(i==4){   //estoy en la ultima, salto a la primera
 				hoverOverOption(&(optionMenu->options[0]));
 			}
 			else{
@@ -399,11 +399,11 @@ void hoverOverNextoption(OptionMenu * optionMenu){
 }
 
 void hoverOverPreviousOption(OptionMenu * optionMenu){
-	for(int i=0; i<4; i++){
+	for(int i=0; i<5; i++){
 		if(optionMenu->options[i].isHovered){
 			deactivateHover(&(optionMenu->options[i]));
 			if(i==0){   //estoy en la primera, salto a la ultima
-				hoverOverOption(&(optionMenu->options[3]));
+				hoverOverOption(&(optionMenu->options[4]));
 			}
 			else{
 				hoverOverOption(&(optionMenu->options[i-1]));  //resalto la primera
@@ -505,10 +505,72 @@ int compareStrings(char * s1, char * s2){
 	return 0;	//ambos son iguales
 }
 
-/*void printHelp(){}
-void printSaracatunga(){}
-void enlargeFontSize(){}
-void greedIsGood(){}*/
+void printHelp(){
+	int currentXPos = getXBuffer();
+	int currentYPos = getYBuffer();
+	int currentFont = globalSize;
+	int currentFG = getFGColor();
+	globalXPos = width - 200;
+	globalYPos = 200;
+	globalSize = 3;
+	globalFGColor = YELLOW;
+	char text[] = "HELP!";
+	for(int i=0; text[i]!=0; i++){
+		drawLetterFromChar(text[i]);
+	}
+
+	//devuelvo al estado previo
+	globalXPos  = currentXPos;
+	globalYPos = currentYPos;
+	globalSize = currentFont;
+	globalFGColor = currentFG;
+}
+void printSaracatunga(){
+	int currentXPos = getXBuffer();
+	int currentYPos = getYBuffer();
+	int currentFont = globalSize;
+	int currentFG = getFGColor();
+	globalXPos = width - 200;
+	globalYPos = 200;
+	globalSize = 3;
+	globalFGColor = YELLOW;
+	char text[] = "SARACATUNGA";
+	for(int i=0; text[i]!=0; i++){
+		drawLetterFromChar(text[i]);
+	}
+
+	//devuelvo al estado previo
+	globalXPos  = currentXPos;
+	globalYPos = currentYPos;
+	globalSize = currentFont;
+	globalFGColor = currentFG;
+}
+void enlargeFontSize(){
+	globalSize++;
+}
+void decreaseFontSize(){
+	globalSize--;
+}
+void greedIsGood(){
+	int currentXPos = getXBuffer();
+	int currentYPos = getYBuffer();
+	int currentFont = globalSize;
+	int currentFG = getFGColor();
+	globalXPos = width - 200;
+	globalYPos = 200;
+	globalSize = 3;
+	globalFGColor = YELLOW;
+	char text[] = "+500g";
+	for(int i=0; text[i]!=0; i++){
+		drawLetterFromChar(text[i]);
+	}
+
+	//devuelvo al estado previo
+	globalXPos  = currentXPos;
+	globalYPos = currentYPos;
+	globalSize = currentFont;
+	globalFGColor = currentFG;
+}
 
 void interpretCommand(char command[]){
 	/*char string[] = "the command is: ";
@@ -520,12 +582,14 @@ void interpretCommand(char command[]){
 	}*/
 
 	char enlargefontsize[] = "enlargefont";
+	char reducefontsize[] = "reducefont";
 	char printsaracatunga[] = "printsaracatunga";
 	char greedisgood[] = "greedisgood";
 	char printhelp[] = "help";
 
 	if(compareStrings(command, enlargefontsize)==0){
-		drawLetterFromChar('a');
+		enlargeFontSize();
+		printInteger(globalSize);
 	}
 	if(compareStrings(command, printsaracatunga)==0){
 		drawLetterFromChar('b');
@@ -534,7 +598,15 @@ void interpretCommand(char command[]){
 		drawLetterFromChar('c');
 	}
 	if(compareStrings(command, printhelp)==0){
-		drawLetterFromChar('d');
+		printHelp();
+	}
+	if(compareStrings(command, reducefontsize)==0){
+		if(globalSize>1){
+			decreaseFontSize();
+		}
+		else{
+			globalSize=1;
+		}
 	}
 
 }
@@ -563,6 +635,7 @@ void runConsole(){
 					deleteLetterBuffered();
 				}
 				bufferSize = 0;
+				deleteConsole();
 				break;
 			case '2':						//borrado de caracter
 				if(bufferSize<=0){
@@ -589,7 +662,7 @@ void drawOptionMenuArray(OptionMenu * optionMenu){
 	setYBuffer(50);
 
 	//dibujo todas las opciones
-	for(int i=0; i<4; i++){
+	for(int i=0; i<5; i++){
 		drawOption(optionMenu->options[i]);
 		globalYPos+= 2*(globalSize * optionMenu->options[0].borde.height);
 	}
@@ -604,8 +677,9 @@ void drawMenu(){
 	Option hora = {0,0, {4, 13*globalSize*8, 13}, "Imprimir Hora"};
 	Option snake = {0,0, {4, 11*globalSize*8,13}, "Jugar Snake"};
 	Option consola = {0,0, {4, 14*globalSize*8, 13}, "Correr Consola"};
+	Option restart = {0,0, {4, 14*globalSize*8, 13}, "Reiniciar Menu"};
 	
-	OptionMenu optionMenu ={{registros, hora, snake, consola}};
+	OptionMenu optionMenu ={{registros, hora, snake, consola, restart}};
 
 	/*
 	modo de uso de consola de comandos:
@@ -627,7 +701,10 @@ void drawMenu(){
 					drawConsole();	
 					runConsole();
 					optionMenu.options[3].isClicked=1;
-					drawLetterFromChar('a');
+				}
+				else if(optionMenu.options[4].isHovered){
+					drawRectangle(BLACK, 0, 0, width, height);
+					drawOptionMenuArray(&optionMenu);
 				}
 				break;
 			case 'f':
@@ -637,12 +714,13 @@ void drawMenu(){
 				}
 				break;
 			case 'w':
+				drawRectangle(BLACK, 0, 0, width, height);
 				hoverOverPreviousOption(&optionMenu);
-				drawLetterFromChar('b');
+				
 				break;
 			case 's':
+				drawRectangle(BLACK, 0, 0, width, height);
 				hoverOverNextoption(&optionMenu);
-				drawLetterFromChar('c');
 				break;
 			default:
 				break;			
