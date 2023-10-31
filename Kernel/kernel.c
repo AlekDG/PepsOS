@@ -7,7 +7,7 @@
 #include <idtLoader.h>
 #include <kernel.h>
 #include <video.h>
-#include <font.h>
+#include <sound.h>
 #include <time.h>
 
 #define BUFFER_SIZE 10
@@ -120,6 +120,7 @@ int main()
 	load_idt();
 	((EntryPoint)sampleCodeModuleAddress)();
 	initialState();
+	beep(1000,10);
 	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
 	//beep(1000,18);
 	drawMenu();
