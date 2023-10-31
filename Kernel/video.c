@@ -718,11 +718,11 @@ void drawMenu(){
 					optionMenu.options[3]->isClicked=0;
 				}
 				break;
-			case 'w':
+			case 'w': case 17:
 				hoverOverPreviousOption(&optionMenu);
 				
 				break;
-			case 's':
+			case 's': case 20:
 				hoverOverNextoption(&optionMenu);
 				break;
 			default:
