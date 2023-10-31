@@ -9,6 +9,7 @@
 #include <video.h>
 #include <font.h>
 #include <time.h>
+#include <pepsiman.h>
 
 #define BUFFER_SIZE 10
 
@@ -122,6 +123,7 @@ int main()
 	initialState();
 	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
 	//beep(1000,18);
-	drawMenu();
+	//drawMenu();
+	drawPepsiman(500, 500, 3);
 	return 0;
 }
