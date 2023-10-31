@@ -117,14 +117,13 @@ void * initializeKernelBinary()
 
 int main()
 {	
-
 	load_idt();
 	((EntryPoint)sampleCodeModuleAddress)();
 	initialState();
-	beep(1000,10);
+	//beep(1000,10);
 	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
 	//beep(1000,18);
-	//drawMenu();
-	drawPepsiman(500, 500, 3);
+	drawMenu();
+	//drawPepsiman(500, 500, 3);
 	return 0;
 }

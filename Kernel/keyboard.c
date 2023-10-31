@@ -59,7 +59,7 @@ void keyAct(void){
                 blockMayus=!blockMayus;
                 break;
             case 0x0E: case 0xE0:
-                deleteLetterBuffered();
+                //deleteLetterBuffered();
                 break;
             default:
                 keyChar = hexToChar(keyHex);
