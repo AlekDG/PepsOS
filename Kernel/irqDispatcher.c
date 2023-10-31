@@ -7,6 +7,7 @@
 #include <clock.h>
 
 static void int_20();
+static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
 void irqDispatcher(uint64_t irq) {
 	switch (irq) {
