@@ -7,15 +7,31 @@ GLOBAL call_drawRectangle
 GLOBAL call_drawCenteredRectangle
 GLOBAL call_drawCircle
 GLOBAL call_drawFace
-GLOBAL call_bufferPosition
 GLOBAL call_getChar
 GLOBAL call_wait
 GLOBAL call_ticks
-GLOBAL call_setTextSize
+GLOBAL call_setSize
 GLOBAL call_drawBufferedChar
 GLOBAL call_beep
-GLOBAL 
+GLOBAL call_getWidth
 GLOBAL call_getHeight
+GLOBAL call_deleteLetterBuffered
+GLOBAL call_drawLetterFromChar
+GLOBAL call_getSize
+GLOBAL call_setXBuffer
+GLOBAL call_setYBuffer
+GLOBAL call_getXBuffer
+GLOBAL call_getYBuffer
+GLOBAL call_getBGColor
+GLOBAL call_getFGColor
+GLOBAL call_getFGColorPointer
+GLOBAL call_getXBufferPointer
+GLOBAL call_getYBufferPointer
+GLOBAL call_setFGColor
+GLOBAL call_setBGColor
+GLOBAL call_putpixelResizable
+GLOBAL call_seconds
+GLOBAL call_paintScreen
 
 %macro handler_call 1
     push rbp
@@ -56,7 +72,7 @@ call_wait:
     handler_call 11
 call_ticks:
     handler_call 12
-call_setTextSize:
+call_setSize:
     handler_call 13
 call_drawBufferedChar:
     handler_call 14
@@ -96,3 +112,7 @@ call_setBGColor:
     handler_call 31
 call_putpixelResizable:
     handler_call 32
+call_seconds:
+    handler_call 33
+call_paintScreen:
+    handler_call 34

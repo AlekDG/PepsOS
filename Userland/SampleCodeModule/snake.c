@@ -40,7 +40,7 @@ uint32_t faceStartingY;
 
 void start_game()
 {
-      paintScreen(CARAMEL_BROWN);
+      call_paintScreen(CARAMEL_BROWN);
       drawRandomFace();
       initializeSnake(&snake);
 
@@ -58,7 +58,7 @@ void start_game()
 
       while (flagWall == 0 && flagSnake == 0)
       {
-            currentTick = ticks_elapsed();
+            currentTick = call_ticks();
 
             head.x = snake.body[0].x;
             head.y = snake.body[0].y;
@@ -235,7 +235,7 @@ void drawRandomFace()
 
       if (!initialized)
       {
-            seed = seconds();
+            seed = call_seconds();
             initialized = 1;
       }
 
