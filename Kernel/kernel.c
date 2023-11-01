@@ -123,7 +123,8 @@ int main()
 	//beep(1000,10);
 	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
 	//beep(1000,18);
-	drawMenu();
-	//drawPepsiman(500, 500, 3);
+	//drawMenu();
+	drawMileidi(0,0,5);
+	
 	return 0;
 }

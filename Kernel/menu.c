@@ -4,6 +4,7 @@
 #include <video.h> 
 #include <font.h>
 #include <time.h>
+#include <pepsiman.h>
 
 
 void hoverOverOption(Option * option){option->isHovered=1;}
@@ -119,6 +120,7 @@ void drawOptionMenuArray(OptionMenu * optionMenu){
 }
 
 void drawMenu(){
+	drawPepsiman(500, 0, 5);
 	//(18*globalSize*8) + (6*globalSize*2) ->strlen:size*letra*strlen+2*espacio 
 	Option registros = {0,1,{4,18, 13}, "SARACATUNGAAAAAAAA"};
 	//la primer opcion empieza hovereada
@@ -149,7 +151,7 @@ void drawMenu(){
 				}
 				else if(optionMenu.options[4]->isHovered){
 					drawRectangle(BLACK, 0, 0, getFullWidth(), getFullHeight());
-					drawOptionMenuArray(&optionMenu);
+					drawMenu();
 				}
 				break;
 			case 'f':
