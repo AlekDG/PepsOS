@@ -1,4 +1,5 @@
 #include <UserSyscalls.h>
+#include <consola.h>
 #include <menu.h>
 
 void drawConsole()
