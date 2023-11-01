@@ -128,6 +128,15 @@ void sysIntDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, ui
 	case 29:
 		getYBufferPointer();
 		break;
+	case 30:
+		setFGColor(rsi);
+		break;
+	case 31:
+		setBGColor(rsi);
+		break;
+	case 32:
+		putpixelResizable(rsi, rdx, rcx, r8);
+		break;
 	default:
 		return 0;
 	}

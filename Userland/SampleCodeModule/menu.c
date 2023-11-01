@@ -1,9 +1,6 @@
 #include <stdint.h>
-#include <stdlib.h>
-#include <kernel.h>
-#include <video.h> 
-#include <font.h>
-#include <time.h>
+#include <menu.h>
+#include <consola.h>
 #include <pepsiman.h>
 
 
@@ -28,8 +25,8 @@ void hoverOverNextoption(OptionMenu * optionMenu){
 		}
 	}
 	
-	setXBuffer(50);
-	setYBuffer(50);
+	call_setXBuffer(50);
+	call_setYBuffer(50);
 	drawOptionMenuArray(optionMenu);   //tengo que volver a renderizar todo el menu
 }
 
@@ -47,8 +44,8 @@ void hoverOverPreviousOption(OptionMenu * optionMenu){
 			break;
 		}
 	}
-	setXBuffer(50);
-	setYBuffer(50);
+	call_setXBuffer(50);
+	call_setYBuffer(50);
 	drawOptionMenuArray(optionMenu);   //tengo que volver a renderizar todo el menu
 	
 }
@@ -64,11 +61,11 @@ void unclickOption(Option * option){option->isClicked = 0;}
 //drawTriangle(){funcion que dibuja la flechita de las opciones}
 
 void drawOption(Option option, uint32_t * globalFGColor, int * globalXPos, int * globalYPos){
-	setBGColor(WHITE);
-	setFGColor(PEPSIBLUE);	//por seguridad
-    int globalSize = getSize();
-    uint32_t globalBGColor = getBGColor();
-	uint32_t currentFG = getFGColor();
+	call_setBGColor(WHITE);
+	call_setFGColor(PEPSIBLUE);	//por seguridad
+    int globalSize = call_getSize();
+    uint32_t globalBGColor = call_getBGColor();
+	uint32_t currentFG = call_getFGColor();
 	int letterWidth = globalSize*8;
 	int gap = 3 * globalSize;
 	int borderHeight = option.borde.height * globalSize;
@@ -83,12 +80,12 @@ void drawOption(Option option, uint32_t * globalFGColor, int * globalXPos, int *
 
 	//aca adentro asumo que tengo el buffer setedo correctamente, y voy a dibujar 
 	//exactamente donde el recuadro
-	drawRectangle(*globalFGColor, *globalXPos, *globalYPos,
+	call_drawRectangle(*globalFGColor, *globalXPos, *globalYPos,
 	borderLength + (2*(borderThickness + gap)), 
 	borderHeight + (2*(borderThickness + gap)));
 
 	//empiezo a dibujar con offset de +thickness
-	drawRectangle(globalBGColor, *globalXPos + borderThickness, *globalYPos + borderThickness,
+	call_drawRectangle(globalBGColor, *globalXPos + borderThickness, *globalYPos + borderThickness,
 	borderLength + (2*gap), 
 	borderHeight + (2*gap));
 	
@@ -101,7 +98,7 @@ void drawOption(Option option, uint32_t * globalFGColor, int * globalXPos, int *
 	
 	//buffer seteado
 	for(int i=0; option.texto[i]!=0; i++){
-		drawLetterFromChar(option.texto[i]);
+		call_drawLetterFromChar(option.texto[i]);
 	}
 	
 	//dejo el buffer al ppio del primer recuadro, a la izquierda
@@ -111,13 +108,13 @@ void drawOption(Option option, uint32_t * globalFGColor, int * globalXPos, int *
 
 void drawOptionMenuArray(OptionMenu * optionMenu){
 	
-	setXBuffer(50);
-	setYBuffer(50);
+	call_setXBuffer(50);
+	call_setYBuffer(50);
 
 	//dibujo todas las opciones
 	for(int i=0; i<5; i++){
-		drawOption(*(optionMenu->options[i]), getFGColorPointer(), getXBufferPointer(), getYBufferPointer());
-        setYBuffer(getYBuffer() + (2*(getSize() * (optionMenu->options[0]->borde.height)))); // globalYPos+= 2*(globalSize * (optionMenu->options[0]->borde.height));
+		drawOption(*(optionMenu->options[i]), call_getFGColorPointer(), call_getXBufferPointer(), call_getYBufferPointer());
+        call_setYBuffer(call_getYBuffer() + (2*(call_getSize() * (optionMenu->options[0]->borde.height)))); // globalYPos+= 2*(globalSize * (optionMenu->options[0]->borde.height));
 	}
 }
 
@@ -143,7 +140,7 @@ void drawMenu(){
 
 	drawOptionMenuArray(&optionMenu);
 	while(1){
-		char letter = getKbChar();
+		char letter = call_getChar();
 		switch(letter){
 			case '\n':
 				if(optionMenu.options[3]->isHovered){	//consola.isHovered
@@ -151,7 +148,7 @@ void drawMenu(){
 					optionMenu.options[3]->isClicked=1;
 				}
 				else if(optionMenu.options[4]->isHovered){
-					drawRectangle(BLACK, 0, 0, getFullWidth(), getFullHeight());
+					call_drawRectangle(BLACK, 0, 0, call_getWidth(), call_getHeight());
 					drawMenu();
 				}
 				break;
