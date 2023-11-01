@@ -61,7 +61,7 @@ void initialState(){
 	width = VBE_mode_info->width;
 	globalFGColor = 0x0000FF;
 	globalBGColor = 0xFFFFFF;
-	globalSize = 1;
+	globalSize = 2;
 	globalXPos = 0;
 	globalYPos = 0;
 }
@@ -304,10 +304,22 @@ void moveBuffer(){
 	}
 }
 
+//posiciona el buffer en la nueva linea-->vertical tab+carriage return
+void newLine(){
+	if(globalYPos+13*globalSize<height){	
+		globalXPos=0;
+		globalYPos+=13*globalSize;
+	}
+}
+
 char drawLetterBuffered(){
 	char letter =getKbChar();
 	if(letter==0)
 		return 0;
+	else if(letter=='\n'){
+		newLine();
+		return;
+	}
 	uint8_t buffer[13][8] = {0};
 	getLetter(letter,buffer);
 	drawLetterResizable(buffer, globalXPos, globalYPos);
@@ -316,10 +328,13 @@ char drawLetterBuffered(){
 }
 
 
-
 void drawLetterFromChar(char letter){
 	if(letter==0)
 		return;
+	else if(letter=='\n'){
+		newLine();
+		return;
+	}
 	uint8_t buffer[13][8] = {0};
 	getLetter(letter,buffer);
 	drawLetterResizable(buffer, globalXPos, globalYPos);

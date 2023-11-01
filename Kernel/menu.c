@@ -64,6 +64,8 @@ void unclickOption(Option * option){option->isClicked = 0;}
 //drawTriangle(){funcion que dibuja la flechita de las opciones}
 
 void drawOption(Option option, uint32_t * globalFGColor, int * globalXPos, int * globalYPos){
+	setBGColor(WHITE);
+	setFGColor(PEPSIBLUE);	//por seguridad
     int globalSize = getSize();
     uint32_t globalBGColor = getBGColor();
 	uint32_t currentFG = getFGColor();
@@ -145,7 +147,6 @@ void drawMenu(){
 		switch(letter){
 			case '\n':
 				if(optionMenu.options[3]->isHovered){	//consola.isHovered
-					drawConsole();	
 					runConsole(&optionMenu);
 					optionMenu.options[3]->isClicked=1;
 				}
@@ -154,17 +155,11 @@ void drawMenu(){
 					drawMenu();
 				}
 				break;
-			case 'f':
-				if(optionMenu.options[3]->isClicked){	//consola.isClicked
-					deleteConsole();
-					optionMenu.options[3]->isClicked=0;
-				}
-				break;
-			case 17:
+			case 17: case 'w':
 				hoverOverPreviousOption(&optionMenu);
 				
 				break;
-			case 20:
+			case 20: case 's':
 				hoverOverNextoption(&optionMenu);
 				break;
 			default:

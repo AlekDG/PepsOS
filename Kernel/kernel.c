@@ -120,11 +120,11 @@ int main()
 	load_idt();
 	((EntryPoint)sampleCodeModuleAddress)();
 	initialState();
-	//beep(1000,10);
+	beep(300,10);
 	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
 	//beep(1000,18);
-	//drawMenu();
-	drawMileidi(0,0,5);
+	drawMenu();
+	
 	
 	return 0;
 }

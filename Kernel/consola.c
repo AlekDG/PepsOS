@@ -1,7 +1,16 @@
 #include <video.h>
+#include <kernel.h>
 
 void drawConsole(){
 	drawRectangle(LIGHT_GRAY, 0, 2*(getFullHeight()/3), getFullWidth(), getFullHeight()/3);
+	setFGColor(DARK_GRAY);
+	setBGColor(LIGHT_GRAY);	
+	setXBuffer(getFullWidth()-40*getSize()*8);
+	setYBuffer(getFullHeight()-13*getSize());
+	char texto[] = "Consola PepsOS ltd. all rights reserved.";
+	for(int i=0; texto[i]!=0; i++){
+		drawLetterFromChar(texto[i]);
+	}
 }
 void deleteConsole(){
 	drawRectangle(BLACK, 0, 2*(getFullHeight()/3), getFullWidth(), getFullHeight()/3);
@@ -25,23 +34,35 @@ int compareStrings(char * s1, char * s2){
 	return 0;	//ambos son iguales
 }
 
+void restartConsole(){
+	deleteConsole();
+	runConsole();
+}
+
 void printHelp(){
-	char text[] = "HELP!";
+	deleteConsole();
+	drawConsole();
+	//char text[] = "->Imprimir saracatunga: printsaracatunga\n->Aumentar tamaño de fuente: increasefont\n->Reducir tamaño de fuente: reducefont\n->Obtener oro: greedisgood\n->PRESIONE CUALQUIER TECLA PARA CONTINUAR";
+	char text[] = "help";
+	setXBuffer(0);
+	setYBuffer(2*(getFullHeight()/3) + 13*getSize());
 	for(int i=0; text[i]!=0; i++){
 		drawLetterFromChar(text[i]);
 	}
 }
 void printSaracatunga(){
-	char text[] = "SARACATUNGA";
+	char text[] = "\nSARACATUNGA\n";
 	for(int i=0; text[i]!=0; i++){
 		drawLetterFromChar(text[i]);
 	}
 }
 void enlargeFontSize(){
     setSize(getSize()+1);
+	restartConsole();
 }
-void decreaseFontSize(){
-    setSize(getSize()+1);
+void decreaseFontSize(){	//no actualiza el tamño del menu mientras este en la consola
+    setSize(getSize()-1);	//es comportamiento esperado
+	restartConsole();
 }
 void greedIsGood(){
 	char text[] = "+500g";
@@ -59,7 +80,6 @@ void interpretCommand(char command[]){
 
 	if(compareStrings(command, enlargefontsize)==0){
 		enlargeFontSize();
-		printInteger(getSize());
 	}
 	if(compareStrings(command, printsaracatunga)==0){
 		printSaracatunga();
@@ -69,6 +89,15 @@ void interpretCommand(char command[]){
 	}
 	if(compareStrings(command, printhelp)==0){
 		printHelp();
+		char c;
+		int keyCaptured = 0;
+		/*while(!keyCaptured){
+			c=getKbChar();
+			if(c){
+				keyCaptured=1;
+			}
+		}
+		restartConsole();*/
 	}
 	if(compareStrings(command, reducefontsize)==0){
 		if(getSize()>1){
@@ -80,6 +109,7 @@ void interpretCommand(char command[]){
 	}
 }
 void runConsole(OptionMenu * optionMenu){
+	drawConsole();
 	setXBuffer(0);
 	setYBuffer(2*(getFullHeight()/3) + 13*getSize());
 
@@ -89,15 +119,15 @@ void runConsole(OptionMenu * optionMenu){
 	char currentLetter;
 
 	while(consoleRunning){
-		currentLetter = drawLetterBuffered();
-
+		currentLetter = getKbChar();
+//drawLetterBuffered()
 		switch(currentLetter){
 			case '\n':
 				interpretCommand(internalBuffer);
 				break;
 			case 0:
 				break;					//omite teclas no asignadas
-			case '1':
+			case 27:
 				consoleRunning = 0;		//cierra la terminal
 				for(int i=0; i<bufferSize;i++){
 					internalBuffer[i]=0;		//limpia buffer antes de terminar
@@ -106,10 +136,10 @@ void runConsole(OptionMenu * optionMenu){
 				bufferSize = 0;
 				deleteConsole();
 				drawRectangle(BLACK, 0, 0, getFullWidth(), getFullHeight());
-				drawOptionMenuArray(optionMenu);
+				drawMenu();
 				break;
 			case '\b':						//borrado de caracter
-				if(bufferSize<=0 || getXBuffer()==0){
+				if(bufferSize<=0){
 					bufferSize=0;
 					break;
 				}
@@ -120,8 +150,9 @@ void runConsole(OptionMenu * optionMenu){
 				if(bufferSize>=50){
 					break;
 				}
+				drawLetterFromChar(currentLetter);
 				internalBuffer[bufferSize++] = currentLetter;	//se guarda la letra escrita 
 				break;
-		}		
+		}
 	}
 }

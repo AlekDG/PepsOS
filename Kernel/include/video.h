@@ -2,6 +2,7 @@
 #define VIDEO_H
 #include <stdint.h>
 
+#define PEPSIBLUE 0x0000FF
 #define BLACK 0x000000
 #define BLUE 0x0000AA
 #define GREEN 0x00AA00
@@ -71,7 +72,7 @@ void deleteLetterBuffered();
 void highlightBuffer();
 void drawMenu();
 void drawRectangleCentered(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t mywidth, uint32_t myheight);
-
+void drawLetterFromChar(char letter);
 
 
 #endif
