@@ -7,7 +7,7 @@
 #include <clock.h>
 
 static void int_20();
-static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static void sysIntDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
 void irqDispatcher(uint64_t irq)
 {
@@ -19,8 +19,8 @@ void irqDispatcher(uint64_t irq)
 	case 1:
 		int_21();
 		break;
-	}
 	return;
+	}
 }
 
 void int_20()
@@ -37,7 +37,7 @@ void int_21()
 		drawLetterBuffered();*/
 }
 
-int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
+void sysIntDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
 {
 	switch (rdi)
 	{
@@ -69,7 +69,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		drawFace(rsi, rdx, rcx);
 		break;
 	case 10:
-		// getChar
+		getKbChar();
 		break;
 	case 11:
 		timer_wait(rsi);

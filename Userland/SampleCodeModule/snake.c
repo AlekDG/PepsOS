@@ -266,3 +266,35 @@ void eat()
       snake.length++;
 };
 
+/*
+void gameInput(){
+    switch(call_getChar()){
+        case 'W': case'w':
+            moveSnake(1);
+            break;
+        case 'S': case's':
+            moveSnake(3);
+            break;
+        case 'D': case 'd':
+            moveSnake(0);
+            break;
+        case 'A': case 'a':
+            moveSnake(2);
+            break;
+        /*TODO: Decomment when multiplayer is implemented
+        case 17:
+            moveP2(1);
+            break;
+        case 18:
+            moveP2(3);
+            break;
+        case 19:
+            moveP2(0);
+            break;
+        case 20:
+            moveP2(2);
+            break;
+    }
+
+}
+*/

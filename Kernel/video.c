@@ -369,7 +369,7 @@ void deleteLetterBuffered(){
 
 void highlightBuffer(){
 	static int ishighlighted = 0;
-	if((*ticks_elapsed)() % 18==0 && !ishighlighted){
+	if(ticks_elapsed() % 18==0 && !ishighlighted){
 		drawRectangle(CYAN, globalXPos, globalYPos, globalSize*8, globalSize*13);	//2 pixeles de ancho y el alto de una letra
 		ishighlighted=1;
 	}

@@ -118,13 +118,9 @@ void * initializeKernelBinary()
 int main()
 {	
 	load_idt();
-	((EntryPoint)sampleCodeModuleAddress)();
-	initialState();
 	beep(300,10);
-	//drawRectangle(RED, 0,0, getFullWidth, getFullHeight);
-	//beep(1000,18);
-	drawMenu();
-	
-	
+	initialState();
+	((EntryPoint)sampleCodeModuleAddress)();
+	while(1);
 	return 0;
 }
