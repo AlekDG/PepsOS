@@ -82,6 +82,12 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 	case 15:
 		beep(rsi, rdx);
 		break;
+	case 16:
+		getFullWidth();
+		break;
+	case 17:
+		getFullHeight();
+		break;
 	default:
 		return 0;
 	}
