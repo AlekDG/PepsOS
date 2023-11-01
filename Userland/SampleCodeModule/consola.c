@@ -1,5 +1,7 @@
-#include <video.h>
-#include <kernel.h>
+#include <UserSyscalls.h>
+#include <menu.h>
+#include <consola.h>
+
 
 void drawConsole(){
 	call_drawRectangle(LIGHT_GRAY, 0, 2*(call_getHeight()/3), call_getWidth(), call_getHeight()/3);
