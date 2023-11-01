@@ -1,16 +1,13 @@
-#include <snake.h>
-#include <stdint.h>
-#include <clock.h>
-#include <time.h>
-#include <video.h>
+#include <UserSyscalls.h>
 
 #define SQUARE_SIZE 40
-#define DELAY_TICKS 3 // Ajustar esto segun la dificultad
 #define FACE_RADIUS 15
 #define WHITE 0xFFFFFF
 #define CARAMEL_BROWN 0x613613
 #define RED 0xFF0000
 #define MAX_LENGTH 70
+
+uint8_t delayTicks = 3; // Ajustar esto segun la dificultad(Crear una opcion en el menu inicial del juego en el que te pida seleccionar la dificultad).
 
 enum Movement
 {
@@ -28,8 +25,7 @@ struct Point
 
 struct Snake
 {
-      struct Point body[MAX_LENGTH]; // Habria q ver cual seria la mayor cantidad de partecitas para la vibora
-      // body[0] seria la "cabeza", que es lo que marca el recorrido
+      struct Point body[MAX_LENGTH];
       uint32_t length;
 };
 
@@ -40,23 +36,23 @@ enum Movement mov = DOWN;
 uint32_t faceStartingX;
 uint32_t faceStartingY;
 
-// Habria que hacer un menu inicial para que cuando el jugador pierda pueda volver a jugar apretando ahi
+// Habria que hacer un menu inicial para que cuando el jugador pierda pueda volver a jugar apretando ah
 
 void start_game()
 {
-      buildMap();
+      paintScreen(CARAMEL_BROWN);
       drawRandomFace();
       initializeSnake(&snake);
 
       uint8_t flagWall = 0;
       uint8_t flagSnake = 0;
 
-      uint32_t lastTick = ticks_elapsed();
+      uint32_t lastTick = call_ticks();
       uint32_t currentTick;
-      unsigned int delay = DELAY_TICKS;
+      unsigned int delay = delayTicks;
 
-      uint32_t mapWidth = getFullWidth();
-      uint32_t mapHeight = getFullHeight();
+      uint32_t mapWidth = call_getWidth();
+      uint32_t mapHeight = call_getHeight();
 
       struct Point head;
 
@@ -89,7 +85,7 @@ void start_game()
                   break;
             }
 
-            // Wall collision check
+            // Chequea si se choco con la pared
             if (head.x >= mapWidth || head.x < 0 ||
                 head.y >= mapHeight || head.y < 0)
             {
@@ -103,18 +99,10 @@ void start_game()
                         flagSnake = 1;
                   }
             }
-            /*
-                        if ((head.x >= faceStartingX && head.x <= faceStartingX + SQUARE_SIZE) &&
-                            (head.y >= faceStartingY && head.y <= faceStartingY + SQUARE_SIZE))
-                        {
-                              eat();
-                              drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
-                              drawRandomFace();
-                        } // Arreglar los casos limite de esto */
 
             if (currentTick - lastTick >= delay)
             {
-                  drawRectangle(CARAMEL_BROWN, snake.body[snake.length - 1].x, snake.body[snake.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
+                  call_drawRectangle(CARAMEL_BROWN, snake.body[snake.length - 1].x, snake.body[snake.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
 
                   for (int i = snake.length - 1; i > 0; i--)
                   {
@@ -125,7 +113,7 @@ void start_game()
 
                   for (int i = 1; i < snake.length; i++)
                   {
-                        drawRectangle(WHITE, snake.body[i].x, snake.body[i].y, SQUARE_SIZE, SQUARE_SIZE);
+                        call_drawRectangle(WHITE, snake.body[i].x, snake.body[i].y, SQUARE_SIZE, SQUARE_SIZE);
                   } // Si no hacemos esto se bugean las caras, ver si encontramos otra solucion
 
                   drawSnakeHead(head.x, head.y);
@@ -147,7 +135,7 @@ void checkSnakeEatFace(int offsetX, int offsetY, uint32_t headX, uint32_t headY)
                       (headY + j >= faceStartingY && headY + j <= faceStartingY + SQUARE_SIZE))
                   {
                         eat();
-                        drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
+                        call_drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
                         drawRandomFace();
                         eaten = 1;
                   }
@@ -188,12 +176,12 @@ void moveSnake(uint8_t value)
 
 void drawSnakeHead(uint32_t x, uint32_t y)
 {
-      drawRectangle(WHITE, x, y, SQUARE_SIZE, SQUARE_SIZE);
+      call_drawRectangle(WHITE, x, y, SQUARE_SIZE, SQUARE_SIZE);
 
       uint32_t eyeX = x + (3 * SQUARE_SIZE / 4);
       uint32_t eyeY = y + (SQUARE_SIZE / 4);
       uint32_t eyeRadius = SQUARE_SIZE / 8;
-      drawCircle(RED, eyeX, eyeY, eyeRadius);
+      call_drawCircle(RED, eyeX, eyeY, eyeRadius);
 }
 
 void initializeSnake(struct Snake *snake)
@@ -211,7 +199,7 @@ void initializeSnake(struct Snake *snake)
             }
             else
             {
-                  drawRectangle(0xFFFFFF, snake->body[i].x, snake->body[i].y, SQUARE_SIZE, SQUARE_SIZE);
+                  call_drawRectangle(0xFFFFFF, snake->body[i].x, snake->body[i].y, SQUARE_SIZE, SQUARE_SIZE);
             }
       }
 }
@@ -228,17 +216,17 @@ uint32_t getRandom(uint32_t min, uint32_t max)
       return (rand_() % (max - min + 1)) + min;
 }
 
-uint8_t checkCollision(uint32_t x, uint32_t y)
+uint8_t checkSelfCollision(uint32_t x, uint32_t y)
 {
       for (int i = 0; i < snake.length; i++)
       {
             if (x <= snake.body[i].x + SQUARE_SIZE && x >= snake.body[i].x &&
                 y <= snake.body[i].y + SQUARE_SIZE && y >= snake.body[i].y)
             {
-                  return 1; // Collision detected
+                  return 1;
             }
       }
-      return 0; // No collision
+      return 0;
 }
 
 void drawRandomFace()
@@ -253,8 +241,8 @@ void drawRandomFace()
 
       uint32_t minX = FACE_RADIUS;
       uint32_t minY = FACE_RADIUS;
-      uint32_t maxX = getFullWidth() - FACE_RADIUS;
-      uint32_t maxY = getFullHeight() - FACE_RADIUS;
+      uint32_t maxX = call_getWidth() - FACE_RADIUS;
+      uint32_t maxY = call_getHeight() - FACE_RADIUS;
 
       uint8_t collision = 1;
       do
@@ -262,10 +250,10 @@ void drawRandomFace()
             faceStartingX = minX + getRandom(50, 500) % (maxX - minX + 1);
             faceStartingY = minY + getRandom(50, 500) % (maxY - minY + 1);
 
-            collision = checkCollision(faceStartingX, faceStartingY);
+            collision = checkSelfCollision(faceStartingX, faceStartingY);
       } while (collision);
 
-      drawFace(faceStartingX, faceStartingY, SQUARE_SIZE);
+      call_drawFace(faceStartingX, faceStartingY, SQUARE_SIZE);
 }
 
 void eat()
@@ -277,3 +265,4 @@ void eat()
       snake.body[snake.length] = newTail;
       snake.length++;
 };
+

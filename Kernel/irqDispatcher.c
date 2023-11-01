@@ -38,10 +38,10 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 	switch (rdi)
 	{
 	case 1:
-		//sys_write((char *)rsi, rdx, rcx);
+		//sys_read
 		break;
 	case 2:
-		//sys_read((char *)rsi, rdx, rcx);
+		//sys_write
 		break;
 	case 3:
 		hours();
@@ -81,6 +81,12 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		break;
 	case 15:
 		beep(rsi, rdx);
+		break;
+	case 16:
+		getFullWidth();
+		break;
+	case 17:
+		getFullHeight();
 		break;
 	default:
 		return 0;
