@@ -1,9 +1,6 @@
 #include <stdint.h>
-#include <stdlib.h>
-#include <kernel.h>
-#include <video.h> 
-#include <font.h>
-#include <time.h>
+#include <menu.h>
+#include <consola.c>
 #include <pepsiman.h>
 
 
