@@ -159,7 +159,7 @@ void runConsole(OptionMenu *optionMenu)
                         call_deleteLetterBuffered();
                   }
                   bufferSize = 0;
-                  call_deleteConsole();
+                  deleteConsole();
                   call_drawRectangle(BLACK, 0, 0, call_getWidth(), call_getHeight());
                   call_drawOptionMenuArray(optionMenu);
                   break;
