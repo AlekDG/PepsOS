@@ -9,7 +9,6 @@
 #include <video.h>
 #include <sound.h>
 #include <time.h>
-#include <pepsiman.h>
 
 #define BUFFER_SIZE 10
 
