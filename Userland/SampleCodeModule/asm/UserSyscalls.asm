@@ -14,6 +14,8 @@ GLOBAL call_ticks
 GLOBAL call_setTextSize
 GLOBAL call_drawBufferedChar
 GLOBAL call_beep
+GLOBAL 
+GLOBAL call_getHeight
 
 %macro handler_call 1
     push rbp
@@ -48,17 +50,49 @@ call_drawCircle:
     handler_call 8
 call_drawFace:
     handler_call 9
-call_bufferPosition:
-    handler_call 10
 call_getChar:
-    handler_call 11
+    handler_call 10
 call_wait:
-    handler_call 12
+    handler_call 11
 call_ticks:
-    handler_call 13
+    handler_call 12
 call_setTextSize:
-    handler_call 14
+    handler_call 13
 call_drawBufferedChar:
-    handler_call 15
+    handler_call 14
 call_beep:
+    handler_call 15
+call_getWidth:
     handler_call 16
+call_getHeight:
+    handler_call 17
+call_deleteLetterBuffered:
+    handler_call 18
+call_drawLetterFromChar:
+    handler_call 19
+call_getSize:
+    handler_call 20
+call_setXBuffer:
+    handler_call 21
+call_setYBuffer:
+    handler_call 22
+call_getXBuffer:
+    handler_call 23
+call_getYBuffer:
+    handler_call 24
+call_getBGColor:
+    handler_call 25
+call_getFGColor:
+    handler_call 26
+call_getFGColorPointer:
+    handler_call 27
+call_getXBufferPointer:
+    handler_call 28
+call_getYBufferPointer:
+    handler_call 29
+call_setFGColor:
+    handler_call 30
+call_setBGColor:
+    handler_call 31
+call_putpixelResizable:
+    handler_call 32
