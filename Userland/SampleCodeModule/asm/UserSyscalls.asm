@@ -96,3 +96,5 @@ call_setBGColor:
     handler_call 31
 call_putpixelResizable:
     handler_call 32
+call_seconds:
+    handler_call 33
