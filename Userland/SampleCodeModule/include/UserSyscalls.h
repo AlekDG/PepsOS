@@ -23,7 +23,7 @@ int call_ticks(void);
 void call_setTextSize(int size);
 char call_drawBufferedChar(void);
 void call_beep(uint32_t freq,uint8_t tix);
-void call_getWidth();
-void call_getHeight();
+uint32_t call_getWidth();
+uint32_t call_getHeight();
 
 #endif
