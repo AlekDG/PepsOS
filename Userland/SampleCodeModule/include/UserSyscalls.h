@@ -40,4 +40,5 @@ uint32_t *call_getYBufferPointer();
 void call_setFGColor(uint32_t hexcolor);
 void call_setBGColor(uint32_t hexcolor);
 void call_putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size);
+unsigned int call_seconds();
 #endif
