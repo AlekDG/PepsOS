@@ -12,10 +12,12 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
+GLOBAL _irq80Handler
 
 GLOBAL _exception0Handler
 
 EXTERN irqDispatcher
+EXTERN sysIntDispatcher
 EXTERN exceptionDispatcher
 
 SECTION .text
@@ -139,6 +141,23 @@ _irq05Handler:
 	irqHandlerMaster 5
 
 
+_irq80Handler:
+	push rbx
+	push r12
+	push r13
+	push r14
+	push r15
+	push rbp
+	mov rbp,rsp
+	call sysIntDispatcher
+    mov rsp, rbp
+	pop rbp
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop rbx
+	iretq
 ;Zero Division Exception
 _exception0Handler:
 	exceptionHandler 0

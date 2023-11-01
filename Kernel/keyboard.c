@@ -76,35 +76,3 @@ void keyAct(void){
         }
     }
 }
-/*
-void gameInput(){
-    switch(getKey()){
-        case 0x11:
-            moveSnake(1);
-            break;
-        case 0x1E:
-            moveSnake(3);
-            break;
-        case 0x1F:
-            moveSnake(0);
-            break;
-        case 0x20:
-            moveSnake(2);
-            break;
-        /*TODO: Decomment when multiplayer is implemented
-        case 0x17:
-            moveP2(1);
-            break;
-        case 0x24:
-            moveP2(3);
-            break;
-        case 0x25:
-            moveP2(0);
-            break;
-        case 0x26:
-            moveP2(2);
-            break;
-    }
-
-}
-*/

@@ -17,7 +17,7 @@ void call_drawCenteredRectangle(uint32_t color, uint32_t offset_x, uint32_t offs
 void call_drawCircle(uint32_t color, uint32_t offset_x, uint32_t offset_y, uint32_t radius);
 void call_drawFace(uint32_t offset_x, uint32_t offset_y, uint32_t size);
 int call_bufferPosition();
-uint8_t call_getChar(uint32_t position);
+uint8_t call_getChar();
 void call_wait(int ticks);
 int call_ticks(void);
 void call_setTextSize(unsigned int size);
