@@ -78,14 +78,6 @@ void interpretCommand(char command[]){
 	char greedisgood[] = "greedisgood";
 	char printhelp[] = "help";
 
-}
-void interpretCommand(char command[]){
-	char enlargefontsize[] = "increasefont";
-	char reducefontsize[] = "reducefont";
-	char printsaracatunga[] = "printsaracatunga";
-	char greedisgood[] = "greedisgood";
-	char printhelp[] = "help";
-
 	if(compareStrings(command, enlargefontsize)==0){
 		enlargeFontSize();
 	}
