@@ -235,7 +235,7 @@ void drawRandomFace()
 
       if (!initialized)
       {
-            seed = seconds();
+            seed = call_seconds();
             initialized = 1;
       }
 
