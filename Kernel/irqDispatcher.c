@@ -137,6 +137,9 @@ void sysIntDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, ui
 	case 32:
 		putpixelResizable(rsi, rdx, rcx, r8);
 		break;
+	case 33:
+		seconds();
+		break;
 	default:
 		return 0;
 	}
