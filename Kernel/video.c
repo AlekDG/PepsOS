@@ -341,20 +341,6 @@ void drawLetterFromChar(char letter){
 	moveBuffer();
 }
 
-void printInteger(int number){
-	int mynum = number;
-	char string[10] = {0};
-	
-	for(int i=1; i<=10 ; i++){
-		int digit = mynum%10;
-		mynum/=10;
-		string[i-1] = digit + 48;	//ascii de '0'
-	}	
-	for(int j=9; j>=0; j--){
-		drawLetterFromChar(string[j]);
-	}
-}
-
 void backtrackBuffer(){
 	//tengo que hacer putpixel del color del bg
 	//mover el buffer para atras con 1*size

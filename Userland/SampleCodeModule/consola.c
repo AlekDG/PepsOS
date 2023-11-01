@@ -1,6 +1,5 @@
-#include <UserSyscalls.h>
-#include <consola.h>
-#include <menu.h>
+#include <video.h>
+#include <kernel.h>
 
 void drawConsole(){
 	call_drawRectangle(LIGHT_GRAY, 0, 2*(call_getHeight()/3), call_getWidth(), call_getHeight()/3);
@@ -17,6 +16,27 @@ void deleteConsole(){
 	call_drawRectangle(BLACK, 0, 2*(call_getHeight()/3), call_getWidth(), call_getHeight()/3);
 }
 
+int compareStrings(char * s1, char * s2){
+	while(*s1 != 0 && *s2!=0){
+		char first = *s1;
+		char last = *s2;
+		if(first > last){
+			return 1;
+		}
+		else if(first < last){
+			return -1;
+		}
+		s1++;
+		s2++;	//sigo comparando
+	}
+	if(*s1 != 0 && *s2==0){return 1;}
+	if(*s1 == 0 && *s2!=0){return -1;}
+	return 0;	//ambos son iguales
+}
+
+void restartConsole(){
+	deleteConsole();
+	runConsole();
 int compareStrings(char * s1, char * s2){
 	while(*s1 != 0 && *s2!=0){
 		char first = *s1;
@@ -72,6 +92,12 @@ void greedIsGood(){
 	}
 }
 
+void interpretCommand(char command[]){
+	char enlargefontsize[] = "increasefont";
+	char reducefontsize[] = "reducefont";
+	char printsaracatunga[] = "printsaracatunga";
+	char greedisgood[] = "greedisgood";
+	char printhelp[] = "help";
 void interpretCommand(char command[]){
 	char enlargefontsize[] = "increasefont";
 	char reducefontsize[] = "reducefont";
