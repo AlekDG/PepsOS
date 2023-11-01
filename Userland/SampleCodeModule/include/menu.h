@@ -3,6 +3,7 @@
 
 #define LIGHT_GRAY 0xAAAAAA
 #define BLACK 0x000000
+#define RED 0xAA0000
 
 typedef struct Border
 {
