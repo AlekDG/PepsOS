@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <menu.h>
-#include <consola.c>
+#include <consola.h>
 #include <pepsiman.h>
 
 
