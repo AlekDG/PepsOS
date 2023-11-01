@@ -17,7 +17,7 @@ void call_drawCenteredRectangle(uint32_t color, uint32_t offset_x, uint32_t offs
 void call_drawCircle(uint32_t color, uint32_t offset_x, uint32_t offset_y, uint32_t radius);
 void call_drawFace(uint32_t offset_x, uint32_t offset_y, uint32_t size);
 int call_bufferPosition();
-uint8_t call_getChar(uint32_t position);
+uint8_t call_getChar();
 void call_wait(int ticks);
 int call_ticks(void);
 void call_setSize(unsigned int size);
@@ -28,8 +28,8 @@ uint32_t call_getHeight();
 void call_deleteLetterBuffered();
 void call_drawLetterFromChar(char letter);
 unsigned int call_getSize();
-void call_setXBuffer();
-void call_setYBuffer();
+void call_setXBuffer(uint16_t xPos);
+void call_setYBuffer(uint16_t yPos);
 uint32_t call_getXBuffer();
 uint32_t call_getYBuffer();
 uint32_t call_getBGColor();
@@ -39,5 +39,5 @@ uint32_t *call_getXBufferPointer();
 uint32_t *call_getYBufferPointer();
 void call_setFGColor(uint32_t hexcolor);
 void call_setBGColor(uint32_t hexcolor);
-
+void call_putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size);
 #endif
