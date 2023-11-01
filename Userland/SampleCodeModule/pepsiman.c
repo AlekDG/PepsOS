@@ -1,6 +1,4 @@
 #include <stdint.h>
-#include <stdint.h>
-#include <video.h>
 
 
 
