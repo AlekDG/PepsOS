@@ -20,7 +20,7 @@ int call_bufferPosition();
 uint8_t call_getChar(uint32_t position);
 void call_wait(int ticks);
 int call_ticks(void);
-void call_setTextSize(unsigned int size);
+void call_setSize(unsigned int size);
 char call_drawBufferedChar(void);
 void call_beep(uint32_t freq, uint8_t tix);
 uint32_t call_getWidth();
@@ -37,5 +37,7 @@ uint32_t call_getFGColor();
 uint32_t *call_getFGColorPointer();
 uint32_t *call_getXBufferPointer();
 uint32_t *call_getYBufferPointer();
+void call_setFGColor(uint32_t hexcolor);
+void call_setBGColor(uint32_t hexcolor);
 
 #endif

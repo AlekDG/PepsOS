@@ -26,6 +26,6 @@ typedef struct OptionMenu
 } OptionMenu;
 
 void drawOptionMenuArray(OptionMenu *optionMenu);
-
+void drawMenu();
 
 #endif

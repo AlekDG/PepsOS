@@ -5,6 +5,7 @@
         "video.h": "c",
         "idtloader.h": "c",
         "stdint.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "usersyscalls.h": "c"
     }
 }
