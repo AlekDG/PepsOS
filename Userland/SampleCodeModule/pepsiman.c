@@ -727,7 +727,7 @@ uint32_t colormap[] = {0x2902FE, 0x9A0779, 0xFB0002, 0x2902C2, 0xCB101F, 0x97151
 void drawPepsiman(int x_start, int y_start, int size){
     for(int x=x_start, i=0; x<x_start+100*size;  i++){
         for(int y=y_start, j=0; y<y_start+100*size; j++){
-            putpixelResizable(colormap[pepsiman[j][i]], x, y, size);
+            call_putpixelResizable(colormap[pepsiman[j][i]], x, y, size);
             y+=size;
         }
         x+=size;
@@ -739,7 +739,7 @@ uint32_t mirthacolors[] = {0xe4dfe3,0x1253b1,0x1c3870,0x7f6c70,0xa5887f,0x4772c0
 void drawMirtha(int x_start, int y_start, int size){
         for(int x=x_start, i=0; x<x_start+100*size;  i++){
         for(int y=y_start, j=0; y<y_start+100*size; j++){
-            putpixelResizable(mirthacolors[mirtha[j][i]], x, y, size);
+            call_putpixelResizable(mirthacolors[mirtha[j][i]], x, y, size);
             y+=size;
         }
         x+=size;
@@ -750,7 +750,7 @@ uint32_t sajcolors[] ={0xff5eb9a4,0xff71dcc1,0xff9aa762,0xff7d7c29,0xffebed6a,0x
 void drawSaj(int x_start, int y_start, int size){
         for(int x=x_start, i=0; x<x_start+100*size;  i++){
         for(int y=y_start, j=0; y<y_start+100*size; j++){
-            putpixelResizable(sajcolors[saj[j][i]], x, y, size);
+            call_putpixelResizable(sajcolors[saj[j][i]], x, y, size);
             y+=size;
         }
         x+=size;
@@ -762,7 +762,7 @@ uint32_t mileicolors[] ={0xff201811,0xff3a3027,0xff63564a,0xffbe8c74,0xffdcc5b2,
 void drawMileidi(int x_start, int y_start, int size){
     for(int x=x_start, i=0; x<x_start+200*size;  i++){
         for(int y=y_start, j=0; y<y_start+100*size; j++){
-            putpixelResizable(mileicolors[milei[j][i]], x, y, size);
+            call_putpixelResizable(mileicolors[milei[j][i]], x, y, size);
             y+=size;
         }
         x+=size;
@@ -773,7 +773,7 @@ uint32_t ryancolors[] ={0xff517477,0xff080b05,0xff363026,0xffed927b,0xffbe5a4b,0
 void drawRyanHeimer(int x_start, int y_start, int size){
     for(int x=x_start, i=0; x<x_start+100*size;  i++){
         for(int y=y_start, j=0; y<y_start+100*size; j++){
-            putpixelResizable(ryancolors[ryanheimer[j][i]], x, y, size);
+            call_putpixelResizable(ryancolors[ryanheimer[j][i]], x, y, size);
             y+=size;
         }
         x+=size;
@@ -785,7 +785,7 @@ uint32_t peepocolors[] ={0xfff6f9f3,0xffced8c8,0xff9ba993,0xff638843,0xff344b21,
 void drawPeepo(int x_start, int y_start, int size){
     for(int x=x_start, i=0; x<x_start+100*size;  i++){
         for(int y=y_start, j=0; y<y_start+100*size; j++){
-            putpixelResizable(peepocolors[peepo[j][i]], x, y, size);
+            call_putpixelResizable(peepocolors[peepo[j][i]], x, y, size);
             y+=size;
         }
         x+=size;
@@ -796,7 +796,7 @@ uint32_t pineascolors[] ={0xff76c4ec,0xff5cb0de,0xff47596c,0xff7f2724,0xffd80201
 void drawPineas(int x_start, int y_start, int size){
     for(int x=x_start, i=0; x<x_start+100*size;  i++){
         for(int y=y_start, j=0; y<y_start+100*size; j++){
-            putpixelResizable(pineascolors[pineas[j][i]], x, y, size);
+            call_putpixelResizable(pineascolors[pineas[j][i]], x, y, size);
             y+=size;
         }
         x+=size;
