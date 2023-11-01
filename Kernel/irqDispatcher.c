@@ -9,23 +9,27 @@
 static void int_20();
 static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
-void irqDispatcher(uint64_t irq) {
-	switch (irq) {
-		case 0:
-			int_20();
-			break;
-		case 1:
-			int_21();
-			break;
+void irqDispatcher(uint64_t irq)
+{
+	switch (irq)
+	{
+	case 0:
+		int_20();
+		break;
+	case 1:
+		int_21();
+		break;
 	}
 	return;
 }
 
-void int_20() {
+void int_20()
+{
 	timer_handler();
 }
 
-void int_21(){
+void int_21()
+{
 	keyAct();
 
 	/*
@@ -38,10 +42,10 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 	switch (rdi)
 	{
 	case 1:
-		//sys_read
+		// sys_read
 		break;
 	case 2:
-		//sys_write
+		// sys_write
 		break;
 	case 3:
 		hours();
@@ -88,8 +92,45 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 	case 17:
 		getFullHeight();
 		break;
+	case 18:
+		deleteLetterBuffered();
+		break;
+	case 19:
+		drawLetterFromChar(rsi);
+		break;
+	case 20:
+		getSize();
+		break;
+	case 21:
+		setXBuffer(rsi);
+		break;
+	case 22:
+		setYBuffer(rsi);
+		break;
+	case 23:
+		getXBuffer();
+		break;
+	case 24:
+		getYBuffer();
+		break;
+	case 25:
+		getBGColor();
+		break;
+	case 26:
+		getFGColor();
+		break;
+	case 27:
+		getFGColorPointer();
+		break;
+	case 28:
+		getXBufferPointer();
+		break;
+	case 29:
+		getYBufferPointer();
+		break;
 	default:
 		return 0;
 	}
 	return 0;
 }
+
