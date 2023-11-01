@@ -20,27 +20,6 @@
 #define YELLOW 0xFFFF55
 #define WHITE 0xFFFFFF
 
-typedef struct Border {
-    int thickness;
-    int length;
-    int height;
-} Border;
-
-typedef struct Option {
-    int isClicked;
-    int isHovered;
-    Border borde; 
-    char texto[50]; 
-} Option;
-
-typedef struct OptionMenu{
-	Option * options[5];
-}OptionMenu;
-
-
-
-
-
 /*
 *----->DIBUJA UN PIXEL EN PANTALLA<------
 *return: void
