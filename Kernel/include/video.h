@@ -20,11 +20,6 @@
 #define YELLOW 0xFFFF55
 #define WHITE 0xFFFFFF
 
-/*
-*----->DIBUJA UN PIXEL EN PANTALLA<------
-*return: void
-*
-*/
 void initialState();
 void putpixel(uint32_t hexColor, uint32_t x, uint32_t y);
 void paintScreen(uint32_t hexColor);
