@@ -33,86 +33,86 @@ GLOBAL call_putpixelResizable
 GLOBAL call_seconds
 GLOBAL call_paintScreen
 
-%macro handler_call 1
+%macro call_to_handler 1
     push rbp
-    mov rsp,rbp
-    mov r9, r8  ;shift every arg to the next register
-    mov r8, rcx
-    mov rcx, rdx
-    mov rdx, rsi
-    mov rsi, rdi
-    mov rdi, %1 ;add the desired call number as the first arg
-    int 80h
-    mov rbp,rsp
-    pop rbp
+    mov rbp, rsp
+    mov r9, r8      ;arg 5
+    mov r8, rcx     ;arg 4
+    mov rcx, rdx    ;arg 3
+    mov rdx, rsi    ;arg 2
+    mov rsi, rdi    ;arg 1
+    mov rdi, %1     ;syscall deseada
+    int 80h         ;interrupcion 80
+    mov rsp, rbp
+	pop rbp
     ret
 %endmacro
 
 call_read:
-    handler_call 1
+    call_to_handler 1
 call_write:
-    handler_call 2
+    call_to_handler 2
 call_time:
-    handler_call 3
+    call_to_handler 3
 call_regRead:
-    handler_call 4
+    call_to_handler 4
 call_clearScrean:
-    handler_call 5
+    call_to_handler 5
 call_drawRectangle:
-    handler_call 6
+    call_to_handler 6
 call_drawCenteredRectangle:
-    handler_call 7
+    call_to_handler 7
 call_drawCircle:
-    handler_call 8
+    call_to_handler 8
 call_drawFace:
-    handler_call 9
+    call_to_handler 9
 call_getChar:
-    handler_call 10
+    call_to_handler 10
 call_wait:
-    handler_call 11
+    call_to_handler 11
 call_ticks:
-    handler_call 12
+    call_to_handler 12
 call_setSize:
-    handler_call 13
+    call_to_handler 13
 call_drawBufferedChar:
-    handler_call 14
+    call_to_handler 14
 call_beep:
-    handler_call 15
+    call_to_handler 15
 call_getWidth:
-    handler_call 16
+    call_to_handler 16
 call_getHeight:
-    handler_call 17
+    call_to_handler 17
 call_deleteLetterBuffered:
-    handler_call 18
+    call_to_handler 18
 call_drawLetterFromChar:
-    handler_call 19
+    call_to_handler 19
 call_getSize:
-    handler_call 20
+    call_to_handler 20
 call_setXBuffer:
-    handler_call 21
+    call_to_handler 21
 call_setYBuffer:
-    handler_call 22
+    call_to_handler 22
 call_getXBuffer:
-    handler_call 23
+    call_to_handler 23
 call_getYBuffer:
-    handler_call 24
+    call_to_handler 24
 call_getBGColor:
-    handler_call 25
+    call_to_handler 25
 call_getFGColor:
-    handler_call 26
+    call_to_handler 26
 call_getFGColorPointer:
-    handler_call 27
+    call_to_handler 27
 call_getXBufferPointer:
-    handler_call 28
+    call_to_handler 28
 call_getYBufferPointer:
-    handler_call 29
+    call_to_handler 29
 call_setFGColor:
-    handler_call 30
+    call_to_handler 30
 call_setBGColor:
-    handler_call 31
+    call_to_handler 31
 call_putpixelResizable:
-    handler_call 32
+    call_to_handler 32
 call_seconds:
-    handler_call 33
+    call_to_handler 33
 call_paintScreen:
-    handler_call 34
+    call_to_handler 34

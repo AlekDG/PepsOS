@@ -7,18 +7,22 @@
 #include <clock.h>
 
 static void int_20();
-void sysIntDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+static void int_21();
+static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
 
-void irqDispatcher(uint64_t irq)
+typedef void (*InterruptHandler)(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9);
+
+void irqDispatcher(uint64_t irq, uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
 {
-	switch (irq)
+	InterruptHandler interruption[256] = {0};
+	interruption[0] = &int_20;
+	interruption[1] = &int_21;
+	interruption[96] = (InterruptHandler)int_80;
+
+	if (irq >= 0 && irq < 256 && interruption[irq] != 0)
 	{
-	case 0:
-		int_20();
-		break;
-	case 1:
-		int_21();
-		break;
+		InterruptHandler handler = interruption[irq];
+		handler(rdi, rsi, rdx, rcx, r8, r9);
 		return;
 	}
 }
@@ -37,7 +41,7 @@ void int_21()
 		drawLetterBuffered();*/
 }
 
-void sysIntDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
+int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, uint64_t r9)
 {
 	switch (rdi)
 	{

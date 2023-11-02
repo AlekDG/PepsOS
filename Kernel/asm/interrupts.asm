@@ -12,7 +12,7 @@ GLOBAL _irq02Handler
 GLOBAL _irq03Handler
 GLOBAL _irq04Handler
 GLOBAL _irq05Handler
-GLOBAL _irq80Handler
+GLOBAL _irq60Handler
 
 GLOBAL _exception0Handler
 
@@ -141,15 +141,26 @@ _irq05Handler:
 	irqHandlerMaster 5
 
 
-_irq80Handler:
+_irq60Handler:
 	push rbx
 	push r12
 	push r13
 	push r14
 	push r15
 	push rbp
-	mov rbp,rsp
-	call sysIntDispatcher
+
+	mov rbp, rsp
+	push r9
+	mov r9, r8
+	mov r8, rcx
+	mov rcx, rdx
+	mov rdx, rsi
+	mov rsi, rdi
+	mov rdi, 60h
+	call irqDispatcher
+
+
+	pop r9
     mov rsp, rbp
 	pop rbp
 	pop r15
