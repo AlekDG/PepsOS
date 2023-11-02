@@ -113,7 +113,7 @@ void runConsole(OptionMenu * optionMenu){
 	char currentLetter;
 
 	while(consoleRunning){
-		currentLetter = getKbChar();
+		currentLetter = call_getChar();
 //drawLetterBuffered()
 		switch(currentLetter){
 			case '\n':

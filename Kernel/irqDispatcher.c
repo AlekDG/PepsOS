@@ -19,7 +19,7 @@ void irqDispatcher(uint64_t irq)
 	case 1:
 		int_21();
 		break;
-	return;
+		return;
 	}
 }
 
@@ -140,9 +140,11 @@ void sysIntDispatcher(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, ui
 	case 33:
 		seconds();
 		break;
+	case 34:
+		paintScreen(rsi);
+		break;
 	default:
 		return 0;
 	}
 	return 0;
 }
-

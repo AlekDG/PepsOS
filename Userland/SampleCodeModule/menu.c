@@ -2,7 +2,7 @@
 #include <menu.h>
 #include <consola.h>
 #include <pepsiman.h>
-
+#include <UserSyscalls.h>
 
 void hoverOverOption(Option * option){option->isHovered=1;}
 void deactivateHover(Option * option){option->isHovered=0;}
