@@ -187,7 +187,6 @@ void drawSnakeHead(uint32_t x, uint32_t y)
 void initializeSnake(struct Snake *snake)
 {
       snake->length = 6;
-
       for (int i = 0; i < snake->length; i++)
       {
             snake->body[i].x = 50 + (snake->length - 1 - i) * SQUARE_SIZE;

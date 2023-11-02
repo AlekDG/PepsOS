@@ -13,7 +13,7 @@ int main()
 	v = 'X';
 	*(v + 1) = 0x74;
 
-	drawMenu();
+	call_drawRectangle(0xFFFF00, 200, 200, 50, 50);
 	// Test if BSS is properly set up
 	if (var1 == 0 && var2 == 0)
 		return 0xDEADC0DE;

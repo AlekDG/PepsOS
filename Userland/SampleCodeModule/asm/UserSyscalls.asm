@@ -58,9 +58,9 @@ call_regRead:
     call_to_handler 4
 call_clearScrean:
     call_to_handler 5
-call_drawRectangle:
-    call_to_handler 6
 call_drawCenteredRectangle:
+    call_to_handler 6
+call_drawRectangle:
     call_to_handler 7
 call_drawCircle:
     call_to_handler 8
