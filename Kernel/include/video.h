@@ -47,6 +47,7 @@ void highlightBuffer();
 void drawMenu();
 void drawRectangleCentered(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t mywidth, uint32_t myheight);
 void drawLetterFromChar(char letter);
+void printInteger(int num);
 
 
 #endif

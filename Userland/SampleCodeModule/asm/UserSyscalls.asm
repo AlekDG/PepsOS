@@ -32,6 +32,7 @@ GLOBAL call_setBGColor
 GLOBAL call_putpixelResizable
 GLOBAL call_seconds
 GLOBAL call_paintScreen
+GLOBAL call_printInteger
 
 %macro call_to_handler 1
     push rbp
@@ -116,3 +117,5 @@ call_seconds:
     call_to_handler 33
 call_paintScreen:
     call_to_handler 34
+call_printInteger:
+    call_to_handler 37

@@ -147,6 +147,12 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 	case 34:
 		paintScreen(rsi);
 		break;
+	case 35:
+		//scanf
+	case 36:
+		//printf
+	case 37:
+		printInteger(rsi);
 	default:
 		return 0;
 	}

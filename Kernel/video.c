@@ -380,8 +380,21 @@ void highlightBuffer(){
 }
 
 
+void printInteger(int num){
+	char buffer[5];
+	int index = 0;
 
+	while(index<5) {
+		int temp = num % 10;
+		buffer[index] = temp +'0';
+		num = num / 10;
+		index++;
+	}
 
+	// Reverse the hexadecimal array
+	for(int i=index-1; i>=0; i--)
+		drawLetterFromChar(buffer[i]);
+}
 
 
 

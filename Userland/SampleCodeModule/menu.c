@@ -166,3 +166,33 @@ void drawMenu(){
 	}
 }
 
+
+/*===========================
+Menu para el snake
+=============================*/
+
+void drawSnakeEndingScreen(unsigned int puntos){
+	int half_width = call_getWidth()/2;
+	int half_height = call_getHeight()/2;
+	int size=25;
+
+	drawFancyMenu(half_width-size*45/2, half_height-size*25/2, size);
+
+	call_drawRectangle(LIGHT_GRAY, half_width-125, half_height-90, 300, 75);
+	call_drawRectangle(LIGHT_GRAY, half_width-290, half_height+15, 300, 75);
+	call_drawRectangle(LIGHT_GRAY, half_width+50, half_height+15, 300, 75);
+
+	call_setXBuffer(half_width-110);
+	call_setYBuffer(half_height-65);
+	call_setFGColor(DARK_GRAY);
+	call_setBGColor(LIGHT_GRAY);
+	char puntosText[]="Puntuacion: ";
+	for(int i=0; puntosText[i]!=0; i++){
+		call_drawLetterFromChar(puntosText[i]);
+	}
+	call_printInteger(puntos);
+
+
+}
+
+

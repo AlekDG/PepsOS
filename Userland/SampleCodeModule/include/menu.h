@@ -41,5 +41,6 @@ typedef struct OptionMenu
 
 void drawOptionMenuArray(OptionMenu *optionMenu);
 void drawMenu();
+void drawSnakeEndingScreen(unsigned int puntos);
 
 #endif
