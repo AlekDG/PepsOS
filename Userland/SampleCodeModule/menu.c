@@ -119,12 +119,13 @@ void drawOptionMenuArray(OptionMenu * optionMenu){
 }
 
 void drawMenu(){
-	drawPepsiman(500, 0, 5);
-	//(18*globalSize*8) + (6*globalSize*2) ->strlen:size*letra*strlen+2*espacio 
-	Option registros = {0,1,{4,18, 13}, "SARACATUNGAAAAAAAA"};
+	drawPepsiman(call_getWidth()-500, 0, 5);	
+	drawPepsos(call_getWidth()-460,500, 3);
+
 	//la primer opcion empieza hovereada
+	Option registros = {0,1,{4,18, 13}, "SARACATUNGAAAAAAAA"};
 	
-	//															13*globalSize +(6*globalSize*2)
+
 	Option hora = {0,0, {4, 13, 13}, "Imprimir Hora"};
 	Option snake = {0,0, {4, 11, 13}, "Jugar Snake"};
 	Option consola = {0,0, {4, 14, 13}, "Correr Consola"};

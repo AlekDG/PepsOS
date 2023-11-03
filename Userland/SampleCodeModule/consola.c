@@ -4,7 +4,7 @@
 
 
 void drawConsole(){
-	call_drawRectangle(LIGHT_GRAY, 0, 2*(call_getHeight()/3), call_getWidth(), call_getHeight()/3);
+	call_drawRectangle(LIGHT_GRAY, 0, 500, call_getWidth(), call_getHeight()-500);	//justo al final de pepsiman
 	call_setFGColor(DARK_GRAY);
 	call_setBGColor(LIGHT_GRAY);	
 	call_setXBuffer(call_getWidth()-40*call_getSize()*8);
@@ -15,7 +15,7 @@ void drawConsole(){
 	}
 }
 void deleteConsole(){
-	call_drawRectangle(BLACK, 0, 2*(call_getHeight()/3), call_getWidth(), call_getHeight()/3);
+	call_drawRectangle(BLACK, 0, 500, call_getWidth(), call_getHeight()-500);
 }
 
 
