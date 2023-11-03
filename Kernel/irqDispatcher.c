@@ -52,7 +52,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		// sys_write
 		break;
 	case 3:
-		hours();
+		return hours();
 		break;
 	case 4:
 		// regRead
@@ -73,13 +73,13 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		drawFace(rsi, rdx, rcx);
 		break;
 	case 10:
-		getKbChar();
+		return getKbChar();
 		break;
 	case 11:
 		timer_wait(rsi);
 		break;
 	case 12:
-		ticks_elapsed();
+		return ticks_elapsed();
 		break;
 	case 13:
 		setSize(rsi);
@@ -91,10 +91,10 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		beep(rsi, rdx);
 		break;
 	case 16:
-		getFullWidth();
+		return getFullWidth();
 		break;
 	case 17:
-		getFullHeight();
+		return getFullHeight();
 		break;
 	case 18:
 		deleteLetterBuffered();
@@ -103,7 +103,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		drawLetterFromChar(rsi);
 		break;
 	case 20:
-		getSize();
+		return getSize();
 		break;
 	case 21:
 		setXBuffer(rsi);
@@ -112,25 +112,25 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		setYBuffer(rsi);
 		break;
 	case 23:
-		getXBuffer();
+		return getXBuffer();
 		break;
 	case 24:
-		getYBuffer();
+		return getYBuffer();
 		break;
 	case 25:
-		getBGColor();
+		return getBGColor();
 		break;
 	case 26:
-		getFGColor();
+		return getFGColor();
 		break;
 	case 27:
-		getFGColorPointer();
+		return getFGColorPointer();
 		break;
 	case 28:
-		getXBufferPointer();
+		return getXBufferPointer();
 		break;
 	case 29:
-		getYBufferPointer();
+		return getYBufferPointer();
 		break;
 	case 30:
 		setFGColor(rsi);
@@ -142,7 +142,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		putpixelResizable(rsi, rdx, rcx, r8);
 		break;
 	case 33:
-		seconds();
+		return seconds();
 		break;
 	case 34:
 		paintScreen(rsi);
