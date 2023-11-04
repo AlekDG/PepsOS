@@ -1,13 +1,13 @@
 /* sampleCodeModule.c */
 #include <menu.h>
 #include <pepsiman.h>
-
-
+#include <snake.h>
+#include <snake2.h>
 
 int main()
 {
-	drawMenu();
-	//drawSnakeEndingScreen(80085);
+	start_gameTwo();
+	// drawSnakeEndingScreen(80085);
 
 	return 0;
 }
