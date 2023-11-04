@@ -15,8 +15,8 @@ uint8_t delayTicksTwo = 3; // Ajustar esto segun la dificultad(Crear una opcion 
 void start_gameTwo()
 {
     call_paintScreen(CARAMEL_BROWN);
-    initializeSnake(&snakeP1, 50, 50, PURPLE);
-    initializeSnake(&snakeP2, 300, 80, WHITE);
+    initializeSnake(&snakeP1, 50, 120, PURPLE);
+    initializeSnake(&snakeP2, 300, 120, WHITE);
     drawRandomFaceTwo();
 
     uint8_t flagWallP1 = 0;
@@ -64,10 +64,6 @@ void start_gameTwo()
     }
 }
 
-void eatTwo(struct Snake *snake){
-    // Mostrar menu que muestre que termino el juego
-};
-
 uint32_t seedTwo;
 
 uint32_t randTwo_()
@@ -92,7 +88,8 @@ void drawRandomFaceTwo()
     }
 
     uint32_t minX = FACE_RADIUS;
-    uint32_t minY = FACE_RADIUS;
+    uint32_t minY = FACE_RADIUS + INTERFACE_LENGTH;
+    ;
     uint32_t maxX = call_getWidth() - FACE_RADIUS;
     uint32_t maxY = call_getHeight() - FACE_RADIUS;
 

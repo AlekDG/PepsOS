@@ -45,4 +45,9 @@ void call_printInteger(int num);
 void call_printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size);
 void call_drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size);
 void call_drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size);
+unsigned int minutes();
+unsigned int hours();
+unsigned int day();
+unsigned int month();
+unsigned int year();
 #endif

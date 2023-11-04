@@ -14,7 +14,7 @@ void start_game()
 {
       call_paintScreen(CARAMEL_BROWN);
       drawRandomFace();
-      initializeSnake(&snake, 50, 50, WHITE);
+      initializeSnake(&snake, 50, 120, WHITE);
 
       uint8_t flagWall = 0;
       uint8_t flagSnake = 0;
@@ -70,7 +70,7 @@ int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint
             break;
       }
 
-      if (head.x >= mapWidth || head.x < 0 || head.y >= mapHeight || head.y < 0)
+      if (head.x >= mapWidth || head.x < 0 || head.y >= mapHeight || head.y < INTERFACE_LENGTH)
       {
             *flagWall = 1;
             return eaten;
@@ -230,9 +230,10 @@ void drawRandomFace()
       }
 
       uint32_t minX = FACE_RADIUS;
-      uint32_t minY = FACE_RADIUS;
+      uint32_t minY = FACE_RADIUS + INTERFACE_LENGTH;
       uint32_t maxX = call_getWidth() - FACE_RADIUS;
       uint32_t maxY = call_getHeight() - FACE_RADIUS;
+      ;
 
       uint8_t collision = 1;
       do

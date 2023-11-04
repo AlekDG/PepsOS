@@ -36,6 +36,11 @@ GLOBAL call_printInteger
 GLOBAL call_drawLetterFormatted
 GLOBAL call_drawStringFormatted
 GLOBAL call_printIntFormatted
+GLOBAL call_minutes
+GLOBAL call_hours
+GLOBAL call_day
+GLOBAL call_month
+GLOBAL call_year
 
 %macro call_to_handler 1
     push rbp
@@ -122,9 +127,19 @@ call_paintScreen:
     call_to_handler 34
 call_printInteger:
     call_to_handler 37
-call_drawLetterFormatted
+call_drawLetterFormatted:
     call_to_handler 38
-call_drawStringFormatted
+call_drawStringFormatted:
     call_to_handler 39
-call_printIntFormatted
+call_printIntFormatted:
     call_to_handler 40
+call_minutes:
+    call_to_handler 41
+call_hours:
+    call_to_handler 42
+call_day:
+    call_to_handler 43
+call_month:
+    call_to_handler 44
+call_year:
+    call_to_handler 45

@@ -7,7 +7,6 @@
 #define DAY 0x07
 #define MONTH 0x08
 #define YEAR 0x09
-#define TIME_ZONE -3
 
 unsigned char clock(unsigned char mode); // esta en clock.asm
 
@@ -44,43 +43,4 @@ unsigned int month()
 unsigned int year()
 {
       return decode(clock(YEAR));
-}
-
-void timeToStr(char *dest)
-{
-      uint8_t s = seconds();
-      uint8_t m = minutes();
-      uint8_t h = hours() - 3;
-
-      dest[0] = (h / 10) % 10 + '0';
-      dest[1] = h % 10 + '0';
-      dest[2] = ':';
-      dest[3] = (m / 10) % 10 + '0';
-      dest[4] = m % 10 + '0';
-      dest[5] = ':';
-      dest[6] = (s / 10) % 10 + '0';
-      dest[7] = s % 10 + '0';
-}
-
-void dateToStr(char *dest)
-{
-      uint8_t d = day();
-      uint8_t m = month();
-      uint8_t y = year();
-
-      dest[0] = (d / 10) % 10 + '0';
-      dest[1] = d % 10 + '0';
-      dest[2] = '/';
-      dest[3] = (m / 10) % 10 + '0';
-      dest[4] = m % 10 + '0';
-      dest[5] = '/';
-      dest[6] = (y / 10) % 10 + '0';
-      dest[7] = y % 10 + '0';
-}
-
-void getDate(char *dest)
-{
-      timeToStr(dest);
-      dest[8] = ' ';
-      dateToStr(dest + 9);
 }

@@ -148,9 +148,9 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		paintScreen(rsi);
 		break;
 	case 35:
-		//scanf
+		// scanf
 	case 36:
-		//printf
+		// printf
 	case 37:
 		printInteger(rsi);
 		break;
@@ -162,6 +162,21 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		break;
 	case 40:
 		printIntFormatted(rsi, rdx, rcx, r8);
+		break;
+	case 41:
+		return minutes();
+		break;
+	case 42:
+		return hours();
+		break;
+	case 43:
+		return day();
+		break;
+	case 44:
+		return month();
+		break;
+	case 45:
+		return year();
 		break;
 	default:
 		return 0;
