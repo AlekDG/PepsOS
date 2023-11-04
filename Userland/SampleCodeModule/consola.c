@@ -38,12 +38,23 @@ int compareStrings(char * s1, char * s2){
 	return 0;	//ambos son iguales
 }
 
+void askForAnyletter(){
+	int key_captured=0;				//presiona cualquier tecla para terminar
+		while(!key_captured){
+			int letter = call_getChar();
+			if(letter!=0){
+				key_captured=1;
+				deleteConsole();
+				runConsole();
+			}
+		}
+}
+
 
 void printHelp(){
 	deleteConsole();
-	drawConsole();
-	//char text[] = "->Imprimir saracatunga: printsaracatunga\n->Aumentar tamaño de fuente: increasefont\n->Reducir tamaño de fuente: reducefont\n->Obtener oro: greedisgood\n->PRESIONE CUALQUIER TECLA PARA CONTINUAR";
-	char text[] = "help";
+	call_drawRectangle(LIGHT_GRAY, 0, 500, call_getWidth(), call_getHeight()-500);
+	char text[] = "->Imprimir saracatunga: printsaracatunga\n->Aumentar tamanio de fuente: increasefont\n->Reducir tamanio de fuente: reducefont\n->Obtener oro: greedisgood\n\n->PRESIONE CUALQUIER TECLA PARA CONTINUAR";
 	call_setXBuffer(0);
 	call_setYBuffer(2*(call_getHeight()/3) + 13*call_getSize());
 	for(int i=0; text[i]!=0; i++){
@@ -62,7 +73,6 @@ void enlargeFontSize(){
 }
 void decreaseFontSize(){	//no actualiza el tamño del menu mientras este en la consola
     call_setSize(call_getSize()-1);	//es comportamiento esperado
-
 }
 void greedIsGood(){
 	char text[] = "+500g";
@@ -77,7 +87,8 @@ void interpretCommand(char command[]){
 	char printsaracatunga[] = "printsaracatunga";
 	char greedisgood[] = "greedisgood";
 	char printhelp[] = "help";
-
+	//char presionecualquierletra[] = "Presione cualquier letra para continuar";
+	char letter;
 	if(compareStrings(command, enlargefontsize)==0){
 		enlargeFontSize();
 	}
@@ -87,11 +98,9 @@ void interpretCommand(char command[]){
 	if(compareStrings(command, greedisgood)==0){
 		greedIsGood();
 	}
-	if(compareStrings(command, printhelp)==0){
+	if(compareStrings(command, printhelp)==0){	//imprime comandos de ayuda
 		printHelp();
-		char c;
-		int keyCaptured = 0;
-
+		askForAnyletter();
 	}
 	if(compareStrings(command, reducefontsize)==0){
 		if(call_getSize()>1){
@@ -102,7 +111,7 @@ void interpretCommand(char command[]){
 		}
 	}
 }
-void runConsole(OptionMenu * optionMenu){
+void runConsole(){
 	drawConsole();
 	call_setXBuffer(0);
 	call_setYBuffer(2*(call_getHeight()/3) + 13*call_getSize());
@@ -114,14 +123,13 @@ void runConsole(OptionMenu * optionMenu){
 
 	while(consoleRunning){
 		currentLetter = call_getChar();
-//drawLetterBuffered()
 		switch(currentLetter){
 			case '\n':
 				interpretCommand(internalBuffer);
 				break;
-			case 0:
-				break;					//omite teclas no asignadas
-			case 27:
+			case 0:						//omite teclas no asignadas
+				break;					
+			case 27:					//current letter=esc
 				consoleRunning = 0;		//cierra la terminal
 				for(int i=0; i<bufferSize;i++){
 					internalBuffer[i]=0;		//limpia buffer antes de terminar

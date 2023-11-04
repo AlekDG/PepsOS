@@ -2,7 +2,7 @@
 #define CONSOLE_H
 
 void drawConsole();
-void runConsole(OptionMenu *optionMenu);
+void runConsole();
 void deleteConsole();
 
 #endif

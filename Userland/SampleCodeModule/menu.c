@@ -123,15 +123,13 @@ void drawMenu(){
 	drawPepsos(call_getWidth()-460,500, 3);
 
 	//la primer opcion empieza hovereada
-	Option registros = {0,1,{4,18, 13}, "SARACATUNGAAAAAAAA"};
-	
-
-	Option hora = {0,0, {4, 13, 13}, "Imprimir Hora"};
-	Option snake = {0,0, {4, 11, 13}, "Jugar Snake"};
+	Option snake1p = {0,1,{4,14, 13}, "Jugar Snake 1p"};
+	Option snake2p = {0,0, {4, 14, 13}, "Jugar Snake 2p"};
+	Option hora = {0,0, {4, 13, 13}, "Imprimir Hora"};	
 	Option consola = {0,0, {4, 14, 13}, "Correr Consola"};
 	Option restart = {0,0, {4, 14, 13}, "Reiniciar Menu"};
 	
-	OptionMenu optionMenu ={{&registros, &hora, &snake, &consola, &restart}};
+	OptionMenu optionMenu ={{&snake1p, &snake2p, &hora, &consola, &restart}};
 
 	/*
 	modo de uso de consola de comandos:
