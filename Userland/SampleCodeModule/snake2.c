@@ -64,10 +64,6 @@ void start_gameTwo()
     }
 }
 
-void eatTwo(struct Snake *snake){
-    // Mostrar menu que muestre que termino el juego
-};
-
 uint32_t seedTwo;
 
 uint32_t randTwo_()
