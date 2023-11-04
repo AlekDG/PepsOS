@@ -42,5 +42,9 @@ typedef struct OptionMenu
 void drawOptionMenuArray(OptionMenu *optionMenu);
 void drawMenu();
 void drawSnakeEndingScreen(unsigned int puntos);
+void drawSnakeInterface(unsigned int bg);
+void setPoints(int points, unsigned int bg);
+void draw2pSnake(unsigned int bg);
+void draw2pEnding(int player);
 
 #endif

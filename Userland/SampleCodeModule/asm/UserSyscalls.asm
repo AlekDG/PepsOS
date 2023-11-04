@@ -124,7 +124,7 @@ call_printInteger:
     call_to_handler 37
 call_drawLetterFormatted
     call_to_handler 38
-GLOBAL call_drawStringFormatted
+call_drawStringFormatted
     call_to_handler 39
-GLOBAL call_printIntFormatted
+call_printIntFormatted
     call_to_handler 40

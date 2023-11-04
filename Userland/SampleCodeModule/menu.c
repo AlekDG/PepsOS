@@ -177,29 +177,18 @@ void drawMenu(){
 Menu para el snake
 =============================*/
 
-void drawSnakeEndingScreen(unsigned int puntos){
+void drawEndingContext(){
 	int half_width = call_getWidth()/2;
 	int half_height = call_getHeight()/2;
 	int size=25;
 
 	drawFancyMenu(half_width-size*45/2, half_height-size*25/2, size);
-
+	call_setFGColor(DARK_GRAY);
+	call_setBGColor(LIGHT_GRAY);
 	call_drawRectangle(LIGHT_GRAY, half_width-125, half_height-90, 300, 75);
 	call_drawRectangle(LIGHT_GRAY, half_width-290, half_height+15, 300, 75);
 	call_drawRectangle(LIGHT_GRAY, half_width+50, half_height+15, 300, 75);
-
-	call_setXBuffer(half_width-110);
-	call_setYBuffer(half_height-65);
-	call_setFGColor(DARK_GRAY);
-	call_setBGColor(LIGHT_GRAY);
-	char puntosText[]="Puntuacion: ";
-
-	call_setSize(2);
-	for(int i=0; puntosText[i]!=0; i++){
-		call_drawLetterFromChar(puntosText[i]);
-	}
-	call_printInteger(puntos);
-
+	
 	call_setXBuffer(half_width-275);
 	call_setYBuffer(half_height+35);
 	char menuText[] = "ESC => Menu";
@@ -213,9 +202,77 @@ void drawSnakeEndingScreen(unsigned int puntos){
 	for(int k=0; replayText[k]!=0; k++){
 		call_drawLetterFromChar(replayText[k]);
 	}
+}
 
+void drawSnakeEndingScreen(unsigned int puntos){
+	drawEndingContext();
+	int half_width = call_getWidth()/2;
+	int half_height = call_getHeight()/2;
+	call_setXBuffer(half_width-100);
+	call_setYBuffer(half_height-65);
+	call_setFGColor(DARK_GRAY);
+	call_setBGColor(LIGHT_GRAY);
+	char puntosText[]="Puntuacion: ";
+
+	call_setSize(2);
+	for(int i=0; puntosText[i]!=0; i++){
+		call_drawLetterFromChar(puntosText[i]);
+	}
+	call_printInteger(puntos);
+}
+
+void draw2pEnding(int player){
+	drawEndingContext();
+	int half_width = call_getWidth()/2;
+	int half_height = call_getHeight()/2;
+	call_setXBuffer(half_width-90);
+	call_setYBuffer(half_height-65);
+	call_setFGColor(DARK_GRAY);
+	call_setBGColor(LIGHT_GRAY);
+	char player1wins[]="Player 1 wins!";
+	char player2wins[]="Player 2 wins!";
+	call_setSize(2);
+	if(player==1){
+		for(int i=0; player1wins[i]!=0; i++){
+		call_drawLetterFromChar(player1wins[i]);
+		}
+	}
+	else if(player==2){
+		for(int i=0; player2wins[i]!=0; i++){
+		call_drawLetterFromChar(player2wins[i]);
+		}
+	}	
+}
+
+void drawSnakeInterface(unsigned int bg){
+	int fullwidth = call_getWidth();
+	int interfaceheight = 100;
+	call_drawRectangle(WHITE, 0, 0, fullwidth, interfaceheight);
+	call_drawRectangle(bg, 13, 13, fullwidth-26, interfaceheight-13*2);
+
+
+	call_setXBuffer(39);
+	call_setYBuffer(35);
+	call_drawStringFormatted("Puntuacion: ", WHITE, bg, 2);
+	
+	call_printIntFormatted(0, WHITE, bg, 2);
+}
+
+void setPoints(int points, unsigned int bg){
+	call_drawRectangle(bg, 231, 35, 80, 26);
+	call_setXBuffer(231);
+	call_printIntFormatted(points, WHITE, bg, 2);
 }
 
 
+void draw2pSnake(unsigned int bg){
+	int fullwidth = call_getWidth();
+	int interfaceheight = 100;
+	call_drawRectangle(WHITE, 0, 0, fullwidth, interfaceheight);
+	call_drawRectangle(bg, 13, 13, fullwidth-26, interfaceheight-13*2);
 
+	call_setXBuffer(39);
+	call_setYBuffer(35);
+	call_drawStringFormatted("Playing 2p snake ", WHITE, bg, 2);
+}
 
