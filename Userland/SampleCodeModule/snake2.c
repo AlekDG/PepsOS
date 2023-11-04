@@ -105,35 +105,37 @@ void drawRandomFaceTwo()
     call_drawFace(faceStartingX2, faceStartingY2, SQUARE_SIZE);
 }
 
-/*
-void gameInput(){
-    switch(call_getChar()){
-        case 'W': case'w':
-            moveSnake(1);
-            break;
-        case 'S': case's':
-            moveSnake(3);
-            break;
-        case 'D': case 'd':
-            moveSnake(0);
-            break;
-        case 'A': case 'a':
-            moveSnake(2);
-            break;
-        /*TODO: Decomment when multiplayer is implemented
-        case 17:
-            moveP2(1);
-            break;
-        case 18:
-            moveP2(3);
-            break;
-        case 19:
-            moveP2(0);
-            break;
-        case 20:
-            moveP2(2);
-            break;
+void gameInput()
+{
+    switch (call_getChar())
+    {
+    case 'W':
+    case 'w':
+        moveSnake(1, &snakeP1);
+        break;
+    case 'S':
+    case 's':
+        moveSnake(3, &snakeP1);
+        break;
+    case 'D':
+    case 'd':
+        moveSnake(0, &snakeP1);
+        break;
+    case 'A':
+    case 'a':
+        moveSnake(2, &snakeP1);
+        break;
+    case 17:
+        moveP2(1, &snakeP2);
+        break;
+    case 18:
+        moveP2(3, &snakeP2);
+        break;
+    case 19:
+        moveP2(0, &snakeP2);
+        break;
+    case 20:
+        moveP2(2, &snakeP2);
+        break;
     }
-
 }
-*/
