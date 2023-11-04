@@ -7,7 +7,7 @@
 int main()
 {
 	// drawMenu();
-	start_game();
+	start_gameTwo();
 	//  drawSnakeEndingScreen(80085);
 
 	return 0;

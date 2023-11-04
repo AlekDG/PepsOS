@@ -1,6 +1,7 @@
 #include <UserSyscalls.h>
 #include <snake.h>
 #include <snake2.h>
+#include <menu.h>
 
 struct Snake snakeP1;
 struct Snake snakeP2;
@@ -15,8 +16,9 @@ uint8_t delayTicksTwo = 3; // Ajustar esto segun la dificultad(Crear una opcion 
 void start_gameTwo()
 {
     call_paintScreen(CARAMEL_BROWN);
-    initializeSnake(&snakeP1, 50, 120, PURPLE);
-    initializeSnake(&snakeP2, 300, 120, WHITE);
+    draw2pSnake(CARAMEL_BROWN);
+    initializeSnake(&snakeP1, 50, 120, WHITE);
+    initializeSnake(&snakeP2, 300, 120, PURPLE);
     drawRandomFaceTwo();
 
     uint8_t flagWallP1 = 0;
@@ -54,13 +56,13 @@ void start_gameTwo()
         }
     }
 
-    if (eaten1 || !flagSnakeP1 || !flagWallP1)
+    if (eaten1 || (!flagSnakeP1 && !flagWallP1))
     {
-        // gano P1
+        draw2pEnding(1);
     }
     else
     {
-        // gano P2
+        draw2pEnding(2);
     }
 }
 
