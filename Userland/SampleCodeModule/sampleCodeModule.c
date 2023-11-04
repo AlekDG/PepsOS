@@ -6,9 +6,9 @@
 
 int main()
 {
-	// drawMenu();
-	start_game();
-	//  drawSnakeEndingScreen(80085);
+	while(1){
+		drawMenu();
+	}
 
 	return 0;
 }

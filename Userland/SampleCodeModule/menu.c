@@ -130,9 +130,12 @@ void drawOptionMenuArray(OptionMenu *optionMenu)
 }
 
 void drawMenu()
-{
-	drawPepsiman(call_getWidth() - 500, 0, 5);
-	drawPepsos(call_getWidth() - 460, 500, 3);
+{	
+	int width = call_getWidth();
+	int height = call_getHeight();
+	call_drawRectangle(BLACK, 0,0,width, height);
+	drawPepsiman(width - 500, 0, 5);
+	drawPepsos(width - 460, 500, 3);
 
 	// la primer opcion empieza hovereada
 	Option snake1p = {0, 1, {4, 14, 13}, "Jugar Snake 1p"};
@@ -159,26 +162,38 @@ void drawMenu()
 			if (optionMenu.options[0]->isHovered)
 			{ // jugar snake 1p
 				start_game();
+				return;
 			}
 			else if (optionMenu.options[1]->isHovered)
 			{
 				start_gameTwo();
+				return;
 			}
 			else if (optionMenu.options[2]->isHovered)
 			{
 				char aux[8];
 				timeToStr(aux);
 				call_drawStringFormatted(aux, WHITE, BLACK, 5);
+				//PEDIR TECLA
+				call_setYBuffer(call_getYBuffer()+130);
+				call_setXBuffer(50);
+				call_drawStringFormatted("->PRESIONE CUALQUIER TECLA PARA CONTINUAR",
+				WHITE, BLACK, 1);
+				while(1){
+					int letter = call_getChar();
+					if(letter!=0){
+						return;
+					}
+				}
 			}
 			else if (optionMenu.options[3]->isHovered)
 			{ // consola.isHovered
 				runConsole(&optionMenu);
 				optionMenu.options[3]->isClicked = 1;
 			}
-			else if (optionMenu.options[4]->isHovered)
-			{
-				call_drawRectangle(BLACK, 0, 0, call_getWidth(), call_getHeight());
-				drawMenu();
+			else if (optionMenu.options[4]->isHovered)	//restart menu
+			{	
+				return;
 			}
 			break;
 		case 17:
