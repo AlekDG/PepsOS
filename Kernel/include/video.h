@@ -48,7 +48,9 @@ void drawMenu();
 void drawRectangleCentered(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t mywidth, uint32_t myheight);
 void drawLetterFromChar(char letter);
 void printInteger(int num);
-
+void printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y);
+void drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y);
+void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y);
 
 #endif
 

@@ -216,5 +216,10 @@ void drawSnakeEndingScreen(unsigned int puntos){
 
 }
 
+void drawSnakeInterface(uint32_t bg){	//pasarle el color del bg
+	
+	call_drawStringFormatted()
+}
+
 
 

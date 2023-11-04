@@ -33,6 +33,9 @@ GLOBAL call_putpixelResizable
 GLOBAL call_seconds
 GLOBAL call_paintScreen
 GLOBAL call_printInteger
+GLOBAL call_drawLetterFormatted
+GLOBAL call_drawStringFormatted
+GLOBAL call_printIntFormatted
 
 %macro call_to_handler 1
     push rbp
@@ -119,3 +122,9 @@ call_paintScreen:
     call_to_handler 34
 call_printInteger:
     call_to_handler 37
+call_drawLetterFormatted
+    call_to_handler 38
+GLOBAL call_drawStringFormatted
+    call_to_handler 39
+GLOBAL call_printIntFormatted
+    call_to_handler 40
