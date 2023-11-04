@@ -155,13 +155,13 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		printInteger(rsi);
 		break;
 	case 38:
-		drawLetterFormatted();
+		drawLetterFormatted(rsi, rdx, rcx, r8);
 		break;
 	case 39:
-		drawStringFormatted();
+		drawStringFormatted(rsi, rdx, rcx, r8);
 		break;
 	case 40:
-		printIntFormatted();
+		printIntFormatted(rsi, rdx, rcx, r8);
 		break;
 	default:
 		return 0;

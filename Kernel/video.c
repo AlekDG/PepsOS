@@ -396,37 +396,27 @@ void printInteger(int num){
 		drawLetterFromChar(buffer[i]);
 }
 
-void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y){
+void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size){
 	uint32_t currentfg = globalFGColor;
 	uint32_t currentbg = globalBGColor;
 	uint32_t currentsize = globalSize;
-	uint32_t currentx = globalXPos;
-	uint32_t currenty = globalYPos;
 	globalFGColor = fg;
 	globalBGColor = bg;
-	globalXPos = x;
-	globalYPos = y;
 	globalSize = size;
 	drawLetterFromChar(letter);
 
 	//dejo los valores como estaban
 	globalFGColor = currentfg;
 	globalBGColor = currentbg;
-	globalXPos = currentx;
-	globalYPos = currenty;
 	globalSize = currentsize;
 }
 
-void drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y){
+void drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size){
 	uint32_t currentfg = globalFGColor;
 	uint32_t currentbg = globalBGColor;
 	uint32_t currentsize = globalSize;
-	uint32_t currentx = globalXPos;
-	uint32_t currenty = globalYPos;
 	globalFGColor = fg;
 	globalBGColor = bg;
-	globalXPos = x;
-	globalYPos = y;
 	globalSize = size;
 	for(int i=0; str[i]!=0; i++){
 		drawLetterFromChar(str[i]);
@@ -435,28 +425,20 @@ void drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size, ui
 	//dejo los valores como estaban
 	globalFGColor = currentfg;
 	globalBGColor = currentbg;
-	globalXPos = currentx;
-	globalYPos = currenty;
 	globalSize = currentsize;
 }
 
-void printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y){
+void printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size){
 	uint32_t currentfg = globalFGColor;
 	uint32_t currentbg = globalBGColor;
 	uint32_t currentsize = globalSize;
-	uint32_t currentx = globalXPos;
-	uint32_t currenty = globalYPos;
 	globalFGColor = fg;
 	globalBGColor = bg;
-	globalXPos = x;
-	globalYPos = y;
 	globalSize = size;
 	printInteger(num);
 
 	//dejo los valores como estaban
 	globalFGColor = currentfg;
 	globalBGColor = currentbg;
-	globalXPos = currentx;
-	globalYPos = currenty;
 	globalSize = currentsize;
 }
