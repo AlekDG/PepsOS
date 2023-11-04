@@ -51,7 +51,8 @@ void printInteger(int num);
 void printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size);
 void drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size);
 void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size);
-
+void clear(void);
+void drawStringDef(char str[]);
 #endif
 
 

@@ -15,12 +15,55 @@ GLOBAL _irq05Handler
 GLOBAL _irq60Handler
 
 GLOBAL _exception0Handler
-
+EXTERN printRegs
 EXTERN irqDispatcher
 EXTERN sysIntDispatcher
 EXTERN exceptionDispatcher
 
 SECTION .text
+
+%macro regToStack 0
+	mov [regs.drbp], rbp
+	mov rbp, [rsp]
+	mov [regs.dr15], rbp
+	mov rbp, [rsp+8]
+	mov [regs.dr14], rbp
+	mov rbp, [rsp+16]
+	mov [regs.dr13], rbp
+	mov rbp, [rsp+24]
+	mov [regs.dr12], rbp
+	mov rbp, [rsp+32]
+	mov [regs.dr11], rbp
+	mov rbp, [rsp+40]
+	mov [regs.dr10], rbp
+	mov rbp, [rsp+48]
+	mov [regs.dr9], rbp
+	mov rbp, [rsp+56]
+	mov [regs.dr8], rbp
+	mov rbp, [rsp+64]
+	mov [regs.drsi], rbp
+	mov rbp, [rsp+72]
+	mov [regs.drdi], rbp
+	mov rbp, [rsp+88]
+	mov [regs.drdx], rbp
+	mov rbp, [rsp+96]
+	mov [regs.drcx], rbp
+	mov rbp, [rsp+104]
+	mov [regs.drbx], rbp
+	mov rbp, [rsp+112]
+	mov [regs.drax], rbp
+	mov rbp, [rsp+120]
+	mov [regs.drip], rbp
+	mov rbp, [rsp+128]
+	mov [regs.dcs], rbp
+	mov rbp, [rsp+136]
+	mov [regs.drfl], rbp
+	mov rbp, [rsp+144]
+	mov [regs.drsp], rbp
+	mov rbp, [rsp+152]
+	mov [regs.dss], rbp
+	mov rbp, [regs.drbp]
+%endmacro
 
 %macro pushState 0
 	push rax
@@ -76,10 +119,11 @@ SECTION .text
 
 %macro exceptionHandler 1
 	pushState
-
+	regToStack
+	mov qword rdi,0x0000FF
+	mov rsi,regs
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
-
 	popState
 	iretq
 %endmacro
@@ -122,7 +166,18 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
+	pushState
+	mov rcx,0x11
+	xor rax,rax
+	in al,0x40
+	cmp rax,rcx
+	jne skip
+	regToStack
+	mov rsi, regs
+	call printRegs
+	skip:
 	irqHandlerMaster 1
+	popState
 
 ;Cascade pic never called
 _irq02Handler:
@@ -170,15 +225,43 @@ _irq60Handler:
 	pop rbx
 	iretq
 ;Zero Division Exception
-_exception0Handler:
+_exception00Handler:
 	exceptionHandler 0
-
+_exception06Handler:
+	exceptionHandler 6
 haltcpu:
 	cli
 	hlt
 	ret
 
-
+saveRegs:
+	pushState
+	regToStack
+	popState
+	ret
 
 SECTION .bss
-	aux resq 1
+	reserve resq 4
+
+	GLOBAL regs
+	regs:
+	.drax resq 1
+	.drbx resq 1
+	.drcx resq 1
+	.drdx resq 1
+	.drsi resq 1
+	.drdi resq 1
+	.drsp resq 1
+	.drbp resq 1
+	.dr8  resq 1
+	.dr9  resq 1
+	.dr10 resq 1
+	.dr11 resq 1
+	.dr12 resq 1
+	.dr13 resq 1
+	.dr14 resq 1
+	.dr15 resq 1
+	.dss  resq 1
+	.dcs  resq 1
+	.drfl resq 1
+	.drip resq 1
