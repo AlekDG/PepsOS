@@ -5,16 +5,10 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idtLoader.h>
-#include <kernel.h>
+#include <kernelLib.h>
 #include <video.h>
 #include <sound.h>
 #include <time.h>
-
-#define BUFFER_SIZE 10
-
-char kbBuffer[BUFFER_SIZE] = {0};
-uint8_t bufferIndx = 0;
-uint8_t keysPressed = 0;
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -28,30 +22,6 @@ static void * const sampleCodeModuleAddress = (void*)0x400000;
 static void * const sampleDataModuleAddress = (void*)0x500000;
 
 typedef int (*EntryPoint)();
-
-void addToBuffer(char c){
-	if(bufferIndx>=BUFFER_SIZE)
-		bufferIndx=0;
-	kbBuffer[bufferIndx++]=c;
-}
-
-void keyPressed(bool state){
-	if(state)
-		keysPressed++;
-	else
-		keysPressed--;
-}
-
-bool keyIsPressed(void){
-	return keysPressed>=0;
-}
-
-char getKbChar(void){
-	if(bufferIndx<=0)
-		return 0;
-	return kbBuffer[--bufferIndx];
-}
-
 
 void clearBSS(void * bssAddress, uint64_t bssSize)
 {

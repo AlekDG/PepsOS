@@ -37,3 +37,16 @@ cd root/
 ./compilacion.sh 
 ./compilacion.sh 
 exit
+cd root/
+./compilacion.sh 
+cd ..
+exit
+cd root/
+./compilacion.sh 
+exit
+cd root/
+./compilacion.sh 
+exit
+cd root/
+./compilacion.sh 
+exit 

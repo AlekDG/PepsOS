@@ -1,9 +1,9 @@
 #include <stdint.h>
-#include <stdlib.h>
-#include <kernel.h>
+#include <lib.h>
 #include <video.h> 
 #include <font.h>
 #include <time.h>
+#include <naiveConsole.h>
 
 struct vbe_mode_info_structure {
 	uint16_t attributes;		// deprecated, only bit 7 should be of interest to you, and it indicates the mode supports a linear frame buffer.
@@ -147,6 +147,11 @@ void paintScreen(uint32_t hexColor){
 				putpixel(hexColor, x, y);
 		}
 	}*/
+}
+
+void clear(void){
+	paintScreen(BLACK);
+	initialState();
 }
 
 void drawRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t mywidth, uint32_t myheight){
@@ -410,7 +415,9 @@ void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size){
 	globalBGColor = currentbg;
 	globalSize = currentsize;
 }
-
+void drawStringDef(char str[]){
+	drawStringFormatted(str,globalFGColor,globalBGColor,globalSize);
+}
 void drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size){
 	uint32_t currentfg = globalFGColor;
 	uint32_t currentbg = globalBGColor;

@@ -1,4 +1,5 @@
-#include <stdint.h>
+#include <lib.h>
+#include <video.h>
 
 void * memset(void * destination, int32_t c, uint64_t length)
 {
@@ -47,4 +48,70 @@ void * memcpy(void * destination, const void * source, uint64_t length)
 	}
 
 	return destination;
+}
+
+#define BUFFER_SIZE 10
+
+char kbBuffer[BUFFER_SIZE] = {0};
+uint8_t bufferIndx = 0;
+uint8_t keysPressed = 0;
+
+void addToBuffer(char c){
+	if(bufferIndx>=BUFFER_SIZE)
+		bufferIndx=0;
+	kbBuffer[bufferIndx++]=c;
+}
+
+void keyPressed(bool state){
+	if(state)
+		keysPressed++;
+	else
+		keysPressed--;
+}
+
+bool keyIsPressed(void){
+	return keysPressed>=0;
+}
+
+char getKbChar(void){
+	if(bufferIndx<=0)
+		return 0;
+	return kbBuffer[--bufferIndx];
+}
+
+void printRegs(regStruct*toPrint){
+	drawStringDef("RIP = 0x");
+	printInteger(toPrint->rip);
+	drawStringDef("RAX = 0x");
+	printInteger(toPrint->rax);
+	drawStringDef("RBX = 0x");
+	printInteger(toPrint->rbx);
+	drawStringDef("RCX = 0x");
+	printInteger(toPrint->rcx);
+	drawStringDef("RDX = 0x");
+	printInteger(toPrint->rdx);
+	drawStringDef("RSP = 0x");
+	printInteger(toPrint->rsp);
+	drawStringDef("RBP = 0x");
+	printInteger(toPrint->rbp);
+	drawStringDef("RSI = 0x");
+	printInteger(toPrint->rsi);
+	drawStringDef("RDI = 0x");
+	printInteger(toPrint->rdi);
+	drawStringDef("R8 = 0x");
+	printInteger(toPrint->r8);
+	drawStringDef("R9 = 0x");
+	printInteger(toPrint->r9);
+	drawStringDef("R10 = 0x");
+	printInteger(toPrint->r10);
+	drawStringDef("R11 = 0x");
+	printInteger(toPrint->r11);
+	drawStringDef("R12 = 0x");
+	printInteger(toPrint->r12);
+	drawStringDef("R13 = 0x");
+	printInteger(toPrint->r13);
+	drawStringDef("R14 = 0x");
+	printInteger(toPrint->r14);
+	drawStringDef("R15 = 0x");
+	printInteger(toPrint->r15);
 }

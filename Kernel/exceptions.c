@@ -1,13 +1,26 @@
-
+#include <video.h>
+#include <lib.h>
 #define ZERO_EXCEPTION_ID 0
+#define INVALID_OPCODE 6
 
 static void zero_division();
-
-void exceptionDispatcher(int exception) {
+static void invalid_opcode();
+void exceptionDispatcher(int exception,regStruct* regs) {
+	clear();
 	if (exception == ZERO_EXCEPTION_ID)
 		zero_division();
+	else if (exception == INVALID_OPCODE)
+		invalid_opcode();
+	printRegs(regs);
+	drawStringFormatted("Press any key to continue\n",WHITE,BLACK,2);
+	char c = getKbChar();
+	while(c==getKbChar());
 }
 
 static void zero_division() {
-	// Handler para manejar excepcíon
+	drawStringFormatted("FATAL ERROR: Could not divide by 0\n",WHITE,BLACK,3);
+}
+
+static void invalid_opcode() {
+	drawStringFormatted("FATAL ERROR: Unrecognised opcode\n",WHITE,BLACK,3);
 }

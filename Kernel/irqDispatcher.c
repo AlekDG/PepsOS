@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <keyboard.h>
 #include <video.h>
-#include <kernel.h>
+#include <lib.h>
 #include <sound.h>
 #include <clock.h>
 
