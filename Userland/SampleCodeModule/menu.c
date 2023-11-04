@@ -141,10 +141,11 @@ void drawMenu()
 	Option snake1p = {0, 1, {4, 14, 13}, "Jugar Snake 1p"};
 	Option snake2p = {0, 0, {4, 14, 13}, "Jugar Snake 2p"};
 	Option hora = {0, 0, {4, 13, 13}, "Imprimir Hora"};
+	Option registros = {0, 0, {4, 18, 13}, "Imprimir Registros"};
 	Option consola = {0, 0, {4, 14, 13}, "Correr Consola"};
 	Option restart = {0, 0, {4, 14, 13}, "Reiniciar Menu"};
 
-	OptionMenu optionMenu = {{&snake1p, &snake2p, &hora, &consola, &restart}};
+	OptionMenu optionMenu = {{&snake1p, &snake2p, &hora, &registros, &consola, &restart}};
 
 	/*
 	modo de uso de consola de comandos:
@@ -188,10 +189,21 @@ void drawMenu()
 			}
 			else if (optionMenu.options[3]->isHovered)
 			{ // consola.isHovered
-				runConsole(&optionMenu);
-				optionMenu.options[3]->isClicked = 1;
+				call_regRead();
+				while(1){
+					int letter = call_getChar();
+					if(letter!=0){
+						return;
+					}
+				}
+				return;
 			}
-			else if (optionMenu.options[4]->isHovered)	//restart menu
+			else if (optionMenu.options[4]->isHovered)
+			{ // consola.isHovered
+				runConsole(&optionMenu);
+				return;
+			}
+			else if (optionMenu.options[5]->isHovered)	//restart menu
 			{	
 				return;
 			}

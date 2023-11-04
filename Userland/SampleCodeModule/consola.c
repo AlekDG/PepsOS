@@ -49,15 +49,6 @@ void askForAnyletter(){
 		call_drawLetterFromChar(text[i]);
 	}
 	call_setSize(currentsize);
-	int key_captured=0;				//presiona cualquier tecla para terminar
-	while(!key_captured){
-		int letter = call_getChar();
-		if(letter!=0){
-			key_captured=1;
-			deleteConsole();
-			runConsole();
-		}
-	}
 }
 
 
@@ -88,7 +79,6 @@ void interpretCommand(char command[]){
 	char testinvalidopcode[] = "testinvalidopcode";
 	char calculadora[] = "calculadora";
 	char printhelp[] = "help";
-	//char presionecualquierletra[] = "Presione cualquier letra para continuar";
 	char letter;
 	if(compareStrings(command, enlargefontsize)==0){
 		if(call_getSize()<4){
@@ -98,6 +88,12 @@ void interpretCommand(char command[]){
 			call_setSize(4);
 		}
 		askForAnyletter();
+		while(1){
+			int letter = call_getChar();
+			if(letter!=0){
+				return;
+			}
+		}
 	}
 	else if(compareStrings(command, reducefontsize)==0){
 		if(call_getSize()>1){
@@ -107,16 +103,31 @@ void interpretCommand(char command[]){
 			call_setSize(1);
 		}
 		askForAnyletter();
+		while(1){
+			int letter = call_getChar();
+			if(letter!=0){
+				return;
+			}
+		}
+		return;
 	}
 	else if(compareStrings(command, testdivzero)==0){
 		//TEST DIVISION POR 0
+		return;
 	}
 	else if(compareStrings(command, testinvalidopcode)==0){
 		//TEST INVALID OP CODE
+		return;
 	}
 	else if(compareStrings(command, printhelp)==0){	//imprime comandos de ayuda
 		printHelp();
 		askForAnyletter();
+		while(1){
+			int letter = call_getChar();
+			if(letter!=0){
+				return;
+			}
+		}
 	}
 
 }
@@ -125,7 +136,7 @@ void runConsole(){
 	call_setXBuffer(0);
 	call_setYBuffer(2*(call_getHeight()/3) + 13);
 
-	char internalBuffer[50] ={0};	//tamaño maximo de 50 chars
+	char internalBuffer[50] = {0};	//tamaño maximo de 50 chars
 	int bufferSize = 0;
 	int consoleRunning = 1;	//flag de corte de ejecucion
 	char currentLetter;
@@ -135,20 +146,18 @@ void runConsole(){
 		switch(currentLetter){
 			case '\n':
 				interpretCommand(internalBuffer);
+				drawConsole();
+				while(bufferSize>0){
+					internalBuffer[bufferSize-1] = 0;
+					bufferSize--;
+				}
+				call_setXBuffer(0);
+				call_setYBuffer(2*(call_getHeight()/3) + 13);
 				break;
 			case 0:						//omite teclas no asignadas
 				break;					
 			case 27:					//current letter=esc
-				consoleRunning = 0;		//cierra la terminal
-				for(int i=0; i<bufferSize;i++){
-					internalBuffer[i]=0;		//limpia buffer antes de terminar
-					call_deleteLetterBuffered();
-				}
-				bufferSize = 0;
-				deleteConsole();
-				call_drawRectangle(BLACK, 0, 0, call_getWidth(), call_getHeight());
-				drawMenu();
-				break;
+				return;
 			case '\b':						//borrado de caracter
 				if(bufferSize<=0){
 					bufferSize=0;

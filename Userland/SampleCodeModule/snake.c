@@ -42,6 +42,14 @@ void start_game()
             }
       }
       drawSnakeEndingScreen(snake.length - INITIAL_LENGTH);
+      while(1){
+            int letter = call_getChar();
+            switch(letter){
+                  case '\n':
+                  
+            }
+      }
+      return;
 }
 
 int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint8_t *flagWall, uint8_t *flagSnake, int gameMode, uint32_t faceX, uint32_t faceY)
