@@ -15,7 +15,7 @@ GLOBAL _irq05Handler
 GLOBAL _irq60Handler
 
 GLOBAL _exception0Handler
-
+EXTERN printRegs
 EXTERN irqDispatcher
 EXTERN sysIntDispatcher
 EXTERN exceptionDispatcher
@@ -166,7 +166,18 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
+	pushState
+	mov rcx,0x11
+	xor rax,rax
+	in al,0x40
+	cmp rax,rcx
+	jne skip
+	regToStack
+	mov rsi, regs
+	call printRegs
+	skip:
 	irqHandlerMaster 1
+	popState
 
 ;Cascade pic never called
 _irq02Handler:
