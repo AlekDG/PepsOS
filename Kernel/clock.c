@@ -7,7 +7,6 @@
 #define DAY 0x07
 #define MONTH 0x08
 #define YEAR 0x09
-#define TIME_ZONE -3
 
 unsigned char clock(unsigned char mode); // esta en clock.asm
 

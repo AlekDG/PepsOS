@@ -1,11 +1,18 @@
 #include <stdint.h>
 #include <time.h>
 
+#define TIME_ZONE -3
+
 void timeToStr(char *dest)
 {
       uint8_t s = call_seconds();
       uint8_t m = call_minutes();
-      uint8_t h = call_hours() - 3;
+      int h = call_hours() + TIME_ZONE;
+
+      if (h < 0)
+      {
+            h += 24;
+      }
 
       dest[0] = (h / 10) % 10 + '0';
       dest[1] = h % 10 + '0';
@@ -15,6 +22,7 @@ void timeToStr(char *dest)
       dest[5] = ':';
       dest[6] = (s / 10) % 10 + '0';
       dest[7] = s % 10 + '0';
+      dest[8] = '\0';
 }
 
 void dateToStr(char *dest)
