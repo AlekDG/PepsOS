@@ -14,12 +14,12 @@ void hoverOverNextoption(OptionMenu *optionMenu)
 
 	// voy a iterar sobre el array de opciones para ver cual de todas esta ON
 	// solo habra una a la vez
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		if (optionMenu->options[i]->isHovered)
 		{
 			deactivateHover(optionMenu->options[i]);
-			if (i == 4)
+			if (i == 5)
 			{ // estoy en la ultima, salto a la primera
 				hoverOverOption(optionMenu->options[0]);
 			}
@@ -38,14 +38,14 @@ void hoverOverNextoption(OptionMenu *optionMenu)
 
 void hoverOverPreviousOption(OptionMenu *optionMenu)
 {
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		if (optionMenu->options[i]->isHovered)
 		{
 			deactivateHover(optionMenu->options[i]);
 			if (i == 0)
 			{ // estoy en la primera, salto a la ultima
-				hoverOverOption(optionMenu->options[4]);
+				hoverOverOption(optionMenu->options[5]);
 			}
 			else
 			{
@@ -122,7 +122,7 @@ void drawOptionMenuArray(OptionMenu *optionMenu)
 	call_setYBuffer(50);
 
 	// dibujo todas las opciones
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		drawOption(*(optionMenu->options[i]), call_getFGColorPointer(), call_getXBufferPointer(), call_getYBufferPointer());
 		call_setYBuffer(call_getYBuffer() + (2 * (call_getSize() * (optionMenu->options[0]->borde.height)))); // globalYPos+= 2*(globalSize * (optionMenu->options[0]->borde.height));

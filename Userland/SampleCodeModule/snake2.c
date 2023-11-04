@@ -59,10 +59,36 @@ void start_gameTwo()
     if (eaten1 || (!flagSnakeP1 && !flagWallP1 && !eaten2))
     {
         draw2pEnding(1);
+        while(1){
+            int letter = call_getChar();
+            switch(letter){
+                  case '\n':
+                        start_gameTwo();
+                        return;
+                  case 27:
+                        return;
+                  default:
+                        break;
+            }
+      }
+      return;
     }
     else
     {
         draw2pEnding(2);
+        while(1){
+            int letter = call_getChar();
+            switch(letter){
+                  case '\n':
+                        start_gameTwo();
+                        return;
+                  case 27:
+                        return;
+                  default:
+                        break;
+            }
+      }
+      return;
     }
 }
 

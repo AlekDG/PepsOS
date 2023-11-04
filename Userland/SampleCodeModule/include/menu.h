@@ -36,7 +36,7 @@ typedef struct Option
 
 typedef struct OptionMenu
 {
-      Option *options[5];
+      Option *options[6];
 } OptionMenu;
 
 void drawOptionMenuArray(OptionMenu *optionMenu);

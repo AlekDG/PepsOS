@@ -167,18 +167,18 @@ _irq00Handler:
 
 ;Keyboard
 _irq01Handler:
-	pushState
-	mov rcx,0x11
-	xor rax,rax
-	in al,0x40
-	cmp rax,rcx
-	jne skip
-	regToStack
-	mov rsi, regs
-	call printRegs
-	skip:
+	;pushState
+	;mov rcx,0x11
+	;xor rax,rax
+	;in al,0x40
+	;cmp rax,rcx
+	;jne skip
+	;regToStack
+	;mov rsi, regs
+	;call printRegs
+	;skip:
 	irqHandlerMaster 1
-	popState
+	;popState
 
 ;Cascade pic never called
 _irq02Handler:
