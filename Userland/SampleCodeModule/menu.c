@@ -187,12 +187,28 @@ void drawSnakeEndingScreen(unsigned int puntos){
 	call_setFGColor(DARK_GRAY);
 	call_setBGColor(LIGHT_GRAY);
 	char puntosText[]="Puntuacion: ";
+
+	call_setSize(2);
 	for(int i=0; puntosText[i]!=0; i++){
 		call_drawLetterFromChar(puntosText[i]);
 	}
 	call_printInteger(puntos);
 
+	call_setXBuffer(half_width-275);
+	call_setYBuffer(half_height+35);
+	char menuText[] = "ESC => Menu";
+	for(int j=0; menuText[j]!=0; j++){
+		call_drawLetterFromChar(menuText[j]);
+	}
+
+	call_setXBuffer(half_width+65);
+	call_setYBuffer(half_height+35);
+	char replayText[] = "ENTER => Replay";
+	for(int k=0; replayText[k]!=0; k++){
+		call_drawLetterFromChar(replayText[k]);
+	}
 
 }
+
 
 

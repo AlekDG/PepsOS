@@ -6,8 +6,8 @@
 
 int main()
 {
-	//drawMenu();
-	drawSnakeEndingScreen(80085);
+	drawMenu();
+	//drawSnakeEndingScreen(80085);
 
 	return 0;
 }
