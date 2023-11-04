@@ -56,7 +56,7 @@ void start_gameTwo()
         }
     }
 
-    if (eaten1 || (!flagSnakeP1 && !flagWallP1))
+    if (eaten1 || (!flagSnakeP1 && !flagWallP1 && !eaten2))
     {
         draw2pEnding(1);
     }
