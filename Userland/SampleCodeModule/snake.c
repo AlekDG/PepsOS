@@ -1,5 +1,6 @@
 #include <UserSyscalls.h>
 #include <snake.h>
+#include <menu.h>
 
 struct Snake snake;
 
@@ -13,6 +14,7 @@ uint32_t faceStartingY;
 void start_game()
 {
       call_paintScreen(CARAMEL_BROWN);
+      drawSnakeInterface(CARAMEL_BROWN);
       drawRandomFace();
       initializeSnake(&snake, 50, 120, WHITE);
 
@@ -39,7 +41,7 @@ void start_game()
                   lastTick = currentTick;
             }
       }
-      // Hacer el display de lo q hizo juli
+      drawSnakeEndingScreen(snake.length - INITIAL_LENGTH);
 }
 
 int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint8_t *flagWall, uint8_t *flagSnake, int gameMode, uint32_t faceX, uint32_t faceY)
@@ -255,6 +257,8 @@ void eat()
 
       snake.body[snake.length] = newTail;
       snake.length++;
+
+      setPoints(snake.length - INITIAL_LENGTH, CARAMEL_BROWN);
 };
 
 void gameInput()
