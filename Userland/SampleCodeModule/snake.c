@@ -24,7 +24,7 @@ void start_game()
       unsigned int delay = delayTicks;
 
       uint32_t mapWidth = call_getWidth();
-      uint32_t mapHeight = call_getHeight();
+      uint32_t mapHeight = call_getHeight() - INTERFACE_LENGTH;
 
       while (flagWall == 0 && flagSnake == 0)
       {
@@ -232,7 +232,8 @@ void drawRandomFace()
       uint32_t minX = FACE_RADIUS;
       uint32_t minY = FACE_RADIUS;
       uint32_t maxX = call_getWidth() - FACE_RADIUS;
-      uint32_t maxY = call_getHeight() - FACE_RADIUS;
+      uint32_t maxY = call_getHeight() - FACE_RADIUS - INTERFACE_LENGTH;
+      ;
 
       uint8_t collision = 1;
       do

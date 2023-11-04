@@ -11,6 +11,7 @@
 #define RED 0xFF0000
 #define MAX_LENGTH 70
 #define PURPLE 0x8F00FF
+#define INTERFACE_LENGTH 100
 
 enum Movement
 {
