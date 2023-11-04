@@ -15,8 +15,8 @@ uint8_t delayTicksTwo = 3; // Ajustar esto segun la dificultad(Crear una opcion 
 void start_gameTwo()
 {
     call_paintScreen(CARAMEL_BROWN);
-    initializeSnake(&snakeP1, 50, 50, PURPLE);
-    initializeSnake(&snakeP2, 300, 80, WHITE);
+    initializeSnake(&snakeP1, 50, 120, PURPLE);
+    initializeSnake(&snakeP2, 300, 120, WHITE);
     drawRandomFaceTwo();
 
     uint8_t flagWallP1 = 0;
@@ -29,7 +29,7 @@ void start_gameTwo()
     unsigned int delay = delayTicksTwo;
 
     uint32_t mapWidth = call_getWidth();
-    uint32_t mapHeight = call_getHeight() - INTERFACE_LENGTH;
+    uint32_t mapHeight = call_getHeight();
 
     uint8_t eaten1 = 0;
     uint8_t eaten2 = 0;
@@ -88,9 +88,10 @@ void drawRandomFaceTwo()
     }
 
     uint32_t minX = FACE_RADIUS;
-    uint32_t minY = FACE_RADIUS;
+    uint32_t minY = FACE_RADIUS + INTERFACE_LENGTH;
+    ;
     uint32_t maxX = call_getWidth() - FACE_RADIUS;
-    uint32_t maxY = call_getHeight() - FACE_RADIUS - INTERFACE_LENGTH;
+    uint32_t maxY = call_getHeight() - FACE_RADIUS;
 
     uint8_t collision = 1;
     uint8_t collision2 = 1;
