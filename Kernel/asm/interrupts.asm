@@ -14,7 +14,8 @@ GLOBAL _irq04Handler
 GLOBAL _irq05Handler
 GLOBAL _irq60Handler
 
-GLOBAL _exception0Handler
+GLOBAL _exception00Handler
+GLOBAL _exception06Handler
 EXTERN printRegs
 EXTERN irqDispatcher
 EXTERN sysIntDispatcher

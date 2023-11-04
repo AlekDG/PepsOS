@@ -5,7 +5,6 @@
 #include <moduleLoader.h>
 #include <naiveConsole.h>
 #include <idtLoader.h>
-#include <kernelLib.h>
 #include <video.h>
 #include <sound.h>
 #include <time.h>

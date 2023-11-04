@@ -42,13 +42,7 @@ void start_game()
             }
       }
       drawSnakeEndingScreen(snake.length - INITIAL_LENGTH);
-      while(1){
-            int letter = call_getChar();
-            switch(letter){
-                  case '\n':
-                  
-            }
-      }
+      
       return;
 }
 
