@@ -37,7 +37,7 @@ void start_gameTwo()
     while (!flagWallP1 && !flagSnakeP1 && !flagWallP2 && !flagSnakeP2 && !eaten1 && !eaten2)
     {
         currentTick = call_ticks();
-
+        gameInputTwo();
         if (currentTick - lastTick >= delay)
         {
             call_drawRectangle(CARAMEL_BROWN, snakeP1.body[snakeP1.length - 1].x, snakeP1.body[snakeP1.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
@@ -105,7 +105,7 @@ void drawRandomFaceTwo()
     call_drawFace(faceStartingX2, faceStartingY2, SQUARE_SIZE);
 }
 
-void gameInput()
+void gameInputTwo()
 {
     switch (call_getChar())
     {
@@ -115,27 +115,27 @@ void gameInput()
         break;
     case 'S':
     case 's':
-        moveSnake(3, &snakeP1);
+        moveSnake(0, &snakeP1);
         break;
     case 'D':
     case 'd':
-        moveSnake(0, &snakeP1);
+        moveSnake(2, &snakeP1);
         break;
     case 'A':
     case 'a':
-        moveSnake(2, &snakeP1);
+        moveSnake(3, &snakeP1);
         break;
     case 17:
-        moveP2(1, &snakeP2);
+        moveSnake(1, &snakeP2);
         break;
     case 18:
-        moveP2(3, &snakeP2);
+        moveSnake(3, &snakeP2);
         break;
     case 19:
-        moveP2(0, &snakeP2);
+        moveSnake(2, &snakeP2);
         break;
     case 20:
-        moveP2(2, &snakeP2);
+        moveSnake(0, &snakeP2);
         break;
     }
 }

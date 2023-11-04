@@ -29,7 +29,7 @@ void start_game()
       while (flagWall == 0 && flagSnake == 0)
       {
             currentTick = call_ticks();
-
+            gameInput();
             if (currentTick - lastTick >= delay)
             {
                   call_drawRectangle(CARAMEL_BROWN, snake.body[snake.length - 1].x, snake.body[snake.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
@@ -38,7 +38,6 @@ void start_game()
 
                   lastTick = currentTick;
             }
-            // Agregar manejo de las teclas
       }
       // Hacer el display de lo q hizo juli
 }
@@ -257,35 +256,25 @@ void eat()
       snake.length++;
 };
 
-/*
-void gameInput(){
-    switch(call_getChar()){
-        case 'W': case'w':
+void gameInput()
+{
+      switch (call_getChar())
+      {
+      case 'W':
+      case 'w':
             moveSnake(1, &snake);
             break;
-        case 'S': case's':
-            moveSnake(3, &snake);
-            break;
-        case 'D': case 'd':
+      case 'S':
+      case 's':
             moveSnake(0, &snake);
             break;
-        case 'A': case 'a':
+      case 'D':
+      case 'd':
             moveSnake(2, &snake);
             break;
-        /*TODO: Decomment when multiplayer is implemented
-        case 17:
-            moveP2(1, &snake);
+      case 'A':
+      case 'a':
+            moveSnake(3, &snake);
             break;
-        case 18:
-            moveP2(3, &snake);
-            break;
-        case 19:
-            moveP2(0, &snake);
-            break;
-        case 20:
-            moveP2(2, &snake);
-            break;
-    }
-
+      }
 }
-*/
