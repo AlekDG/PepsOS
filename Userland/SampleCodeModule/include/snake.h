@@ -1,5 +1,4 @@
 #include <stdint.h>
-
 #include <stdint.h>
 
 #ifndef SNAKE_H

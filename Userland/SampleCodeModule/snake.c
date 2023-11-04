@@ -5,7 +5,7 @@ struct Snake snake;
 
 // Habria que hacer un menu inicial para que cuando el jugador pierda pueda volver a jugar apretando ah
 
-uint8_t delayTicks = 4; // Ajustar esto segun la dificultad(Crear una opcion en el menu inicial del juego en el que te pida seleccionar la dificultad).
+uint8_t delayTicks = 2; // Ajustar esto segun la dificultad(Crear una opcion en el menu inicial del juego en el que te pida seleccionar la dificultad).
 
 uint32_t faceStartingX;
 uint32_t faceStartingY;
@@ -62,11 +62,11 @@ int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint
             break;
       case RIGHT:
             head.x += SQUARE_SIZE;
-            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode, faceX, faceY);
+            eaten = checkSnakeEatFace(0, SQUARE_SIZE, head.x, head.y, gameMode, faceX, faceY);
             break;
       case LEFT:
             head.x -= SQUARE_SIZE;
-            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode, faceX, faceY);
+            eaten = checkSnakeEatFace(0, SQUARE_SIZE, head.x, head.y, gameMode, faceX, faceY);
             break;
       }
 
