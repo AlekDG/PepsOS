@@ -42,4 +42,7 @@ void call_setBGColor(uint32_t hexcolor);
 void call_putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size);
 unsigned int call_seconds(void);
 void call_printInteger(int num);
+void call_printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y);
+void call_drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y);
+void call_drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size, uint32_t x, uint32_t y);
 #endif
