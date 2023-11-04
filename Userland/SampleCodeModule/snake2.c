@@ -16,7 +16,7 @@ void start_gameTwo()
 {
     call_paintScreen(CARAMEL_BROWN);
     initializeSnake(&snakeP1, 50, 50, PURPLE);
-    initializeSnake(&snakeP2, 300, 300, WHITE);
+    initializeSnake(&snakeP2, 300, 80, WHITE);
     drawRandomFaceTwo();
 
     uint8_t flagWallP1 = 0;
@@ -42,11 +42,11 @@ void start_gameTwo()
         {
             call_drawRectangle(CARAMEL_BROWN, snakeP1.body[snakeP1.length - 1].x, snakeP1.body[snakeP1.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
             call_drawRectangle(CARAMEL_BROWN, snakeP2.body[snakeP2.length - 1].x, snakeP2.body[snakeP2.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
-            eaten1 = updateSnake(&snakeP1, mapWidth, mapHeight, &flagWallP1, &flagSnakeP1, 1);
+            eaten1 = updateSnake(&snakeP1, mapWidth, mapHeight, &flagWallP1, &flagSnakeP1, 1, faceStartingX2, faceStartingY2);
             redrawSnake(&snakeP1);
-            if (eaten1 != 1)
+            if (!eaten1)
             {
-                eaten2 = updateSnake(&snakeP2, mapWidth, mapHeight, &flagWallP2, &flagSnakeP2, 1);
+                eaten2 = updateSnake(&snakeP2, mapWidth, mapHeight, &flagWallP2, &flagSnakeP2, 1, faceStartingX2, faceStartingY2);
                 redrawSnake(&snakeP2);
             }
 
@@ -68,13 +68,26 @@ void eatTwo(struct Snake *snake){
     // Mostrar menu que muestre que termino el juego
 };
 
+uint32_t seedTwo;
+
+uint32_t randTwo_()
+{
+    seedTwo = (seedTwo * 1664525 + 1013904223) & 0xFFFFFFFF; // Linear Congruential Generator
+    return seedTwo;
+}
+
+uint32_t getRandomTwo(uint32_t min, uint32_t max)
+{
+    return (randTwo_() % (max - min + 1)) + min;
+}
+
 void drawRandomFaceTwo()
 {
     static uint8_t initialized = 0;
 
     if (!initialized)
     {
-        uint16_t seed = call_seconds();
+        seedTwo = call_seconds();
         initialized = 1;
     }
 
@@ -86,8 +99,8 @@ void drawRandomFaceTwo()
     uint8_t collision = 1;
     uint8_t collision2 = 1;
 
-    faceStartingX2 = minX + getRandom(50, 500) % (maxX - minX + 1);
-    faceStartingY2 = minY + getRandom(50, 500) % (maxY - minY + 1);
+    faceStartingX2 = getRandomTwo(minX, maxX - FACE_RADIUS);
+    faceStartingY2 = getRandomTwo(minY, maxY - FACE_RADIUS);
 
     call_drawFace(faceStartingX2, faceStartingY2, SQUARE_SIZE);
 }

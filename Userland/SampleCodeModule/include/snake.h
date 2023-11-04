@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+#include <stdint.h>
+
 #ifndef SNAKE_H
 #define SNAKE_H
 
@@ -33,7 +35,7 @@ struct Snake
       enum Movement mov;
 };
 
-int checkSnakeEatFace(int offsetX, int offsetY, uint32_t headX, uint32_t headY, int gameMode); // gameMode = 1 para 2 jugadores, cualquier otro para 1 jugador
+int checkSnakeEatFace(int offsetX, int offsetY, uint32_t headX, uint32_t headY, int gameMode, uint32_t faceX, uint32_t faceY); // gameMode = 1 para 2 jugadores, cualquier otro para 1 jugador
 void drawRandomFace();
 void start_game();
 void eat();
@@ -42,6 +44,6 @@ void moveSnake(uint8_t value, struct Snake *snake);
 uint8_t checkSelfCollision(uint32_t x, uint32_t y, struct Snake *snake);
 void initializeSnake(struct Snake *snake, uint16_t startingX, uint16_t startingY, uint32_t snakeColor);
 void redrawSnake(struct Snake *snake);
-int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint8_t *flagWall, uint8_t *flagSnake, int gameMode);
+int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint8_t *flagWall, uint8_t *flagSnake, int gameMode, uint32_t faceX, uint32_t faceY);
 
 #endif

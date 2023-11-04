@@ -7,12 +7,15 @@ void drawConsole(){
 	call_drawRectangle(LIGHT_GRAY, 0, 500, call_getWidth(), call_getHeight()-500);	//justo al final de pepsiman
 	call_setFGColor(DARK_GRAY);
 	call_setBGColor(LIGHT_GRAY);	
-	call_setXBuffer(call_getWidth()-40*call_getSize()*8);
-	call_setYBuffer(call_getHeight()-13*call_getSize());
+	int currentsize = call_getSize();
+	call_setSize(1);
+	call_setXBuffer(call_getWidth()-(40*call_getSize()*8));
+	call_setYBuffer(call_getHeight()-(13*call_getSize()));
 	char texto[] = "Consola PepsOS ltd. all rights reserved.";
 	for(int i=0; texto[i]!=0; i++){
 		call_drawLetterFromChar(texto[i]);
 	}
+	call_setSize(currentsize);
 }
 void deleteConsole(){
 	call_drawRectangle(BLACK, 0, 500, call_getWidth(), call_getHeight()-500);
@@ -39,33 +42,38 @@ int compareStrings(char * s1, char * s2){
 }
 
 void askForAnyletter(){
+	int currentsize = call_getSize();
+	call_setSize(1);
+	char text[] = "\n\n\n\n->PRESIONE CUALQUIER TECLA PARA CONTINUAR";
+	for(int i=0; text[i]!=0; i++){
+		call_drawLetterFromChar(text[i]);
+	}
+	call_setSize(currentsize);
 	int key_captured=0;				//presiona cualquier tecla para terminar
-		while(!key_captured){
-			int letter = call_getChar();
-			if(letter!=0){
-				key_captured=1;
-				deleteConsole();
-				runConsole();
-			}
+	while(!key_captured){
+		int letter = call_getChar();
+		if(letter!=0){
+			key_captured=1;
+			deleteConsole();
+			runConsole();
 		}
+	}
+
 }
 
 
 void printHelp(){
 	deleteConsole();
 	call_drawRectangle(LIGHT_GRAY, 0, 500, call_getWidth(), call_getHeight()-500);
-	char text[] = "->Imprimir saracatunga: printsaracatunga\n->Aumentar tamanio de fuente: increasefont\n->Reducir tamanio de fuente: reducefont\n->Obtener oro: greedisgood\n\n->PRESIONE CUALQUIER TECLA PARA CONTINUAR";
+	int currentsize = call_getSize();
+	call_setSize(2);
+	char text[] = "->Testear division por cero: testdivzero\n->Testear invalid op code: testinvalidopcode\n->Aumentar tamanio de fuente: increasefontsize\n->Reducir tamanio de fuente: reducefontsize";
 	call_setXBuffer(0);
 	call_setYBuffer(2*(call_getHeight()/3) + 13*call_getSize());
 	for(int i=0; text[i]!=0; i++){
 		call_drawLetterFromChar(text[i]);
 	}
-}
-void printSaracatunga(){
-	char text[] = "\nSARACATUNGA\n";
-	for(int i=0; text[i]!=0; i++){
-		call_drawLetterFromChar(text[i]);
-	}
+	call_setSize(currentsize);
 }
 void enlargeFontSize(){
     call_setSize(call_getSize()+1);
@@ -74,47 +82,49 @@ void enlargeFontSize(){
 void decreaseFontSize(){	//no actualiza el tamño del menu mientras este en la consola
     call_setSize(call_getSize()-1);	//es comportamiento esperado
 }
-void greedIsGood(){
-	char text[] = "+500g";
-	for(int i=0; text[i]!=0; i++){
-		call_drawLetterFromChar(text[i]);
-	}
-}
-
 void interpretCommand(char command[]){
 	char enlargefontsize[] = "increasefont";
 	char reducefontsize[] = "reducefont";
-	char printsaracatunga[] = "printsaracatunga";
-	char greedisgood[] = "greedisgood";
+	char testdivzero[] = "testdivzero";
+	char testinvalidopcode[] = "testinvalidopcode";
+	char calculadora[] = "calculadora";
 	char printhelp[] = "help";
 	//char presionecualquierletra[] = "Presione cualquier letra para continuar";
 	char letter;
 	if(compareStrings(command, enlargefontsize)==0){
-		enlargeFontSize();
-	}
-	if(compareStrings(command, printsaracatunga)==0){
-		printSaracatunga();
-	}
-	if(compareStrings(command, greedisgood)==0){
-		greedIsGood();
-	}
-	if(compareStrings(command, printhelp)==0){	//imprime comandos de ayuda
-		printHelp();
+		if(call_getSize()<4){
+			enlargeFontSize();
+		}
+		else{
+			call_setSize(4);
+		}
 		askForAnyletter();
 	}
-	if(compareStrings(command, reducefontsize)==0){
+	else if(compareStrings(command, reducefontsize)==0){
 		if(call_getSize()>1){
 			decreaseFontSize();
 		}
 		else{
 			call_setSize(1);
 		}
+		askForAnyletter();
 	}
+	else if(compareStrings(command, testdivzero)==0){
+		//TEST DIVISION POR 0
+	}
+	else if(compareStrings(command, testinvalidopcode)==0){
+		//TEST INVALID OP CODE
+	}
+	else if(compareStrings(command, printhelp)==0){	//imprime comandos de ayuda
+		printHelp();
+		askForAnyletter();
+	}
+
 }
 void runConsole(){
 	drawConsole();
 	call_setXBuffer(0);
-	call_setYBuffer(2*(call_getHeight()/3) + 13*call_getSize());
+	call_setYBuffer(2*(call_getHeight()/3) + 13);
 
 	char internalBuffer[50] ={0};	//tamaño maximo de 50 chars
 	int bufferSize = 0;

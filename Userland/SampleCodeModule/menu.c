@@ -142,7 +142,16 @@ void drawMenu(){
 		char letter = call_getChar();
 		switch(letter){
 			case '\n':
-				if(optionMenu.options[3]->isHovered){	//consola.isHovered
+				if(optionMenu.options[0]->isHovered){	//jugar snake 1p
+					//JUGAR SNAKE 1p
+				}
+				else if(optionMenu.options[1]->isHovered){
+					//JUGAR SNAKE 2p
+				}
+				else if(optionMenu.options[2]->isHovered){
+					//IMPRIMRIR HORA
+				}
+				else if(optionMenu.options[3]->isHovered){	//consola.isHovered
 					runConsole(&optionMenu);
 					optionMenu.options[3]->isClicked=1;
 				}
@@ -153,7 +162,6 @@ void drawMenu(){
 				break;
 			case 17: case 'w':
 				hoverOverPreviousOption(&optionMenu);
-				
 				break;
 			case 20: case 's':
 				hoverOverNextoption(&optionMenu);

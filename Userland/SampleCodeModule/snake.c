@@ -33,7 +33,7 @@ void start_game()
             if (currentTick - lastTick >= delay)
             {
                   call_drawRectangle(CARAMEL_BROWN, snake.body[snake.length - 1].x, snake.body[snake.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
-                  updateSnake(&snake, mapWidth, mapHeight, &flagWall, &flagSnake, 0);
+                  updateSnake(&snake, mapWidth, mapHeight, &flagWall, &flagSnake, 0, faceStartingX, faceStartingY);
                   redrawSnake(&snake);
 
                   lastTick = currentTick;
@@ -43,7 +43,7 @@ void start_game()
       // Hacer el display de lo q hizo juli
 }
 
-int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint8_t *flagWall, uint8_t *flagSnake, int gameMode)
+int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint8_t *flagWall, uint8_t *flagSnake, int gameMode, uint32_t faceX, uint32_t faceY)
 {
       struct Point head;
       head.x = snake->body[0].x;
@@ -55,19 +55,19 @@ int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint
       {
       case DOWN:
             head.y += SQUARE_SIZE;
-            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode);
+            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode, faceX, faceY);
             break;
       case UP:
             head.y -= SQUARE_SIZE;
-            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode);
+            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode, faceX, faceY);
             break;
       case RIGHT:
             head.x += SQUARE_SIZE;
-            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode);
+            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode, faceX, faceY);
             break;
       case LEFT:
             head.x -= SQUARE_SIZE;
-            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode);
+            eaten = checkSnakeEatFace(SQUARE_SIZE, 0, head.x, head.y, gameMode, faceX, faceY);
             break;
       }
 
@@ -107,15 +107,15 @@ void redrawSnake(struct Snake *snake)
       drawSnakeHead(snake->body[0].x, snake->body[0].y, snake);
 }
 
-int checkSnakeEatFace(int offsetX, int offsetY, uint32_t headX, uint32_t headY, int gameMode)
+int checkSnakeEatFace(int offsetX, int offsetY, uint32_t headX, uint32_t headY, int gameMode, uint32_t faceX, uint32_t faceY)
 {
       uint8_t eaten = 0;
       for (int i = 0; i <= offsetX && !eaten; i++)
       {
             for (int j = 0; j <= offsetY && !eaten; j++)
             {
-                  if ((headX + i >= faceStartingX && headX + i <= faceStartingX + SQUARE_SIZE) &&
-                      (headY + j >= faceStartingY && headY + j <= faceStartingY + SQUARE_SIZE))
+                  if ((headX + i >= faceX && headX + i <= faceX + SQUARE_SIZE) &&
+                      (headY + j >= faceY && headY + j <= faceY + SQUARE_SIZE))
                   {
                         if (gameMode == 1)
                         { // Estamos en el juego para 2 jugadores
@@ -193,6 +193,7 @@ void initializeSnake(struct Snake *snake, uint16_t startingX, uint16_t startingY
             }
       }
 }
+
 uint32_t seed;
 
 uint32_t rand_()
