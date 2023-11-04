@@ -143,10 +143,10 @@ void drawMenu(){
 		switch(letter){
 			case '\n':
 				if(optionMenu.options[0]->isHovered){	//jugar snake 1p
-					//JUGAR SNAKE 1p
+					start_game();
 				}
 				else if(optionMenu.options[1]->isHovered){
-					//JUGAR SNAKE 2p
+					start_gameTwo();
 				}
 				else if(optionMenu.options[2]->isHovered){
 					//IMPRIMRIR HORA
@@ -216,10 +216,6 @@ void drawSnakeEndingScreen(unsigned int puntos){
 
 }
 
-void drawSnakeInterface(uint32_t bg){	//pasarle el color del bg
-	
-	call_drawStringFormatted()
-}
 
 
 
