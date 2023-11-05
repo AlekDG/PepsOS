@@ -2,6 +2,7 @@
 #include <snake.h>
 #include <snake2.h>
 #include <menu.h>
+#include <sound.h>
 
 struct Snake snakeP1;
 struct Snake snakeP2;
@@ -55,7 +56,8 @@ void start_gameTwo()
             lastTick = currentTick;
         }
     }
-    call_beep(500, 1);
+    //call_beep(500, 1);
+    playMegalovania();
 
     if (eaten1 || (!flagSnakeP1 && !flagWallP1 && !eaten2))
     {

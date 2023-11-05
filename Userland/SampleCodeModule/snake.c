@@ -1,6 +1,7 @@
 #include <UserSyscalls.h>
 #include <snake.h>
 #include <menu.h>
+#include <sound.h>
 
 struct Snake snake;
 
@@ -41,7 +42,8 @@ void start_game()
                   lastTick = currentTick;
             }
       }
-      call_beep(END_FREQ, 1);
+      //call_beep(END_FREQ, 1);
+      playEndingSound();
 
       drawSnakeEndingScreen(snake.length - INITIAL_LENGTH);
       while (1)

@@ -8,11 +8,10 @@
 
 int main()
 {
-	playEndingSound();
-
-	/*while(1){
+	playStartingSound();
+	while(1){
 		drawMenu();
-	}*/
+	}
 
 	return 0;
 }
