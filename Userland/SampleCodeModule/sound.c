@@ -214,7 +214,6 @@ void playStartingSound(){
 //d4 d5 a4 g#4 g4 f4 d4 f4 g4
 void playMegalovania(){
     playD4(2);
-    call_wait(1);
     playD4(2);
     call_wait(2);
     playD5(2);

@@ -324,6 +324,6 @@ void draw2pSnake(unsigned int bg){
 
 	call_setXBuffer(39);
 	call_setYBuffer(35);
-	call_drawStringFormatted("Playing 2p snake ", WHITE, bg, 2);
+	call_drawStringFormatted("Playing 2p snake     P1 = WHITE   P2 = PURPLE", WHITE, bg, 2);
 }
 
