@@ -59,36 +59,40 @@ void start_gameTwo()
     if (eaten1 || (!flagSnakeP1 && !flagWallP1 && !eaten2))
     {
         draw2pEnding(1);
-        while(1){
+        while (1)
+        {
             int letter = call_getChar();
-            switch(letter){
-                  case '\n':
-                        start_gameTwo();
-                        return;
-                  case 27:
-                        return;
-                  default:
-                        break;
+            switch (letter)
+            {
+            case '\n':
+                start_gameTwo();
+                return;
+            case 27:
+                return;
+            default:
+                break;
             }
-      }
-      return;
+        }
+        return;
     }
     else
     {
         draw2pEnding(2);
-        while(1){
+        while (1)
+        {
             int letter = call_getChar();
-            switch(letter){
-                  case '\n':
-                        start_gameTwo();
-                        return;
-                  case 27:
-                        return;
-                  default:
-                        break;
+            switch (letter)
+            {
+            case '\n':
+                start_gameTwo();
+                return;
+            case 27:
+                return;
+            default:
+                break;
             }
-      }
-      return;
+        }
+        return;
     }
 }
 
@@ -124,10 +128,31 @@ void drawRandomFaceTwo()
     uint8_t collision = 1;
     uint8_t collision2 = 1;
 
-    faceStartingX2 = getRandomTwo(minX, maxX - FACE_RADIUS);
-    faceStartingY2 = getRandomTwo(minY, maxY - FACE_RADIUS);
+    uint8_t collisionSnakeP1 = 1;
+    uint8_t collisionSnakeP2 = 1;
+    do
+    {
+        faceStartingX2 = minX + getRandomTwo(50, 900) % (maxX - minX + 1);
+        faceStartingY2 = minY + getRandomTwo(minY, 700) % (maxY - minY + 1);
+
+        collisionSnakeP1 = checkSelfCollision(faceStartingX2, faceStartingY2, &snakeP1);
+        collisionSnakeP2 = checkSelfCollision(faceStartingX2, faceStartingY2, &snakeP2);
+    } while (collisionSnakeP1 || collisionSnakeP2);
 
     call_drawFace(faceStartingX2, faceStartingY2, SQUARE_SIZE);
+}
+
+uint8_t checkSelfCollisionTwo(uint32_t x, uint32_t y, struct Snake *snake)
+{
+    for (int i = 0; i < snake->length; i++)
+    {
+        if (x < snake->body[i].x + SQUARE_SIZE && x + SQUARE_SIZE > snake->body[i].x &&
+            y < snake->body[i].y + SQUARE_SIZE && y + SQUARE_SIZE > snake->body[i].y)
+        {
+            return 1; // Colisiona
+        }
+    }
+    return 0;
 }
 
 void gameInputTwo()

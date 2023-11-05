@@ -15,8 +15,8 @@ void start_game()
 {
       call_paintScreen(CARAMEL_BROWN);
       drawSnakeInterface(CARAMEL_BROWN);
+      initializeSnake(&snake, 50, 120, SNAKE_COLOR);
       drawRandomFace();
-      initializeSnake(&snake, 50, 120, WHITE);
 
       uint8_t flagWall = 0;
       uint8_t flagSnake = 0;
@@ -42,16 +42,18 @@ void start_game()
             }
       }
       drawSnakeEndingScreen(snake.length - INITIAL_LENGTH);
-      while(1){
+      while (1)
+      {
             int letter = call_getChar();
-            switch(letter){
-                  case '\n':
-                        start_game();
-                        return;
-                  case 27:
-                        return;
-                  default:
-                        break;
+            switch (letter)
+            {
+            case '\n':
+                  start_game();
+                  return;
+            case 27:
+                  return;
+            default:
+                  break;
             }
       }
       return;
@@ -183,7 +185,10 @@ void drawSnakeHead(uint32_t x, uint32_t y, struct Snake *snake)
       uint32_t eyeX = x + (3 * SQUARE_SIZE / 4);
       uint32_t eyeY = y + (SQUARE_SIZE / 4);
       uint32_t eyeRadius = SQUARE_SIZE / 8;
-      call_drawCircle(RED, eyeX, eyeY, eyeRadius);
+      if (eyeX < call_getWidth() && eyeY < call_getHeight())
+      {
+            call_drawCircle(RED, eyeX, eyeY, eyeRadius);
+      }
 }
 
 void initializeSnake(struct Snake *snake, uint16_t startingX, uint16_t startingY, uint32_t snakeColor)
@@ -225,10 +230,10 @@ uint8_t checkSelfCollision(uint32_t x, uint32_t y, struct Snake *snake)
 {
       for (int i = 0; i < snake->length; i++)
       {
-            if (x <= snake->body[i].x + SQUARE_SIZE && x >= snake->body[i].x &&
-                y <= snake->body[i].y + SQUARE_SIZE && y >= snake->body[i].y)
+            if (x < snake->body[i].x + SQUARE_SIZE && x + SQUARE_SIZE > snake->body[i].x &&
+                y < snake->body[i].y + SQUARE_SIZE && y + SQUARE_SIZE > snake->body[i].y)
             {
-                  return 1;
+                  return 1; // Colisiona
             }
       }
       return 0;
@@ -253,8 +258,8 @@ void drawRandomFace()
       uint8_t collision = 1;
       do
       {
-            faceStartingX = minX + getRandom(50, 500) % (maxX - minX + 1);
-            faceStartingY = minY + getRandom(50, 500) % (maxY - minY + 1);
+            faceStartingX = minX + getRandom(50, 900) % (maxX - minX + 1);
+            faceStartingY = minY + getRandom(minY, 700) % (maxY - minY + 1);
 
             collision = checkSelfCollision(faceStartingX, faceStartingY, &snake);
       } while (collision);

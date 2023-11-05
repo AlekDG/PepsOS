@@ -4,7 +4,7 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-#define SQUARE_SIZE 40
+#define SQUARE_SIZE 34
 #define FACE_RADIUS 15
 #define WHITE 0xFFFFFF
 #define CARAMEL_BROWN 0x613613
@@ -13,6 +13,7 @@
 #define PURPLE 0x8F00FF
 #define INTERFACE_LENGTH 100
 #define INITIAL_LENGTH 6
+#define SNAKE_COLOR 0x00A86B
 
 enum Movement
 {
