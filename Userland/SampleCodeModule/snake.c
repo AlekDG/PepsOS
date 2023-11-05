@@ -6,7 +6,7 @@ struct Snake snake;
 
 // Habria que hacer un menu inicial para que cuando el jugador pierda pueda volver a jugar apretando ah
 
-uint8_t delayTicks = 2; // Ajustar esto segun la dificultad(Crear una opcion en el menu inicial del juego en el que te pida seleccionar la dificultad).
+double delayTicks = 1; // Ajustar esto segun la dificultad(Crear una opcion en el menu inicial del juego en el que te pida seleccionar la dificultad).
 
 uint32_t faceStartingX;
 uint32_t faceStartingY;
@@ -258,7 +258,7 @@ void drawRandomFace()
       uint8_t collision = 1;
       do
       {
-            faceStartingX = minX + getRandom(50, 900) % (maxX - minX + 1);
+            faceStartingX = minX + getRandom(minX, maxX) % (maxX - minX + 1);
             faceStartingY = minY + getRandom(minY, 700) % (maxY - minY + 1);
 
             collision = checkSelfCollision(faceStartingX, faceStartingY, &snake);

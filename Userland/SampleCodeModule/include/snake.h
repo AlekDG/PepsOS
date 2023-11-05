@@ -4,7 +4,7 @@
 #ifndef SNAKE_H
 #define SNAKE_H
 
-#define SQUARE_SIZE 34
+#define SQUARE_SIZE 20
 #define FACE_RADIUS 15
 #define WHITE 0xFFFFFF
 #define CARAMEL_BROWN 0x613613
