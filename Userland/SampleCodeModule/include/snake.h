@@ -14,6 +14,8 @@
 #define INTERFACE_LENGTH 100
 #define INITIAL_LENGTH 6
 #define SNAKE_COLOR 0x00A86B
+#define EAT_FREQ 400
+#define END_FREQ 700
 
 enum Movement
 {

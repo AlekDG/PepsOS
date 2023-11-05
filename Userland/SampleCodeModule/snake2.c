@@ -55,6 +55,7 @@ void start_gameTwo()
             lastTick = currentTick;
         }
     }
+    call_beep(500, 1);
 
     if (eaten1 || (!flagSnakeP1 && !flagWallP1 && !eaten2))
     {

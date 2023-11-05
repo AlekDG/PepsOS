@@ -41,6 +41,8 @@ void start_game()
                   lastTick = currentTick;
             }
       }
+      call_beep(END_FREQ, 1);
+
       drawSnakeEndingScreen(snake.length - INITIAL_LENGTH);
       while (1)
       {
@@ -138,6 +140,7 @@ int checkSnakeEatFace(int offsetX, int offsetY, uint32_t headX, uint32_t headY, 
                               return 1;
                         }
                         eat();
+                        call_beep(EAT_FREQ, 1);
                         call_drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
                         drawRandomFace();
                         eaten = 1;
