@@ -86,7 +86,7 @@ void * initializeKernelBinary()
 int main()
 {	
 	load_idt();
-	beep(300,10);
+	//beep(300,10);
 	initialState();
 	((EntryPoint)sampleCodeModuleAddress)();
 	while(1);

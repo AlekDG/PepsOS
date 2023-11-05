@@ -3,12 +3,16 @@
 #include <pepsiman.h>
 #include <snake.h>
 #include <snake2.h>
+#include <sound.h>
+#include <stdint.h>
 
 int main()
 {
-	while(1){
+	playEndingSound();
+
+	/*while(1){
 		drawMenu();
-	}
+	}*/
 
 	return 0;
 }
