@@ -248,15 +248,15 @@ void drawRandomFace()
 
       uint32_t minX = FACE_RADIUS;
       uint32_t minY = FACE_RADIUS + INTERFACE_LENGTH;
-      uint32_t maxX = call_getWidth() - FACE_RADIUS;
-      uint32_t maxY = call_getHeight() - FACE_RADIUS;
+      uint32_t maxX = call_getWidth() - SQUARE_SIZE;
+      uint32_t maxY = call_getHeight() - SQUARE_SIZE;
       ;
 
       uint8_t collision = 1;
       do
       {
-            faceStartingX = getRandom(minX, maxX - FACE_RADIUS);;
-            faceStartingY = getRandom(minY, maxY - FACE_RADIUS);
+            faceStartingX = getRandom(minX, maxX - SQUARE_SIZE);;
+            faceStartingY = getRandom(minY, maxY - SQUARE_SIZE);
 
             collision = checkSelfCollision(faceStartingX, faceStartingY, &snake);
       } while (collision);
