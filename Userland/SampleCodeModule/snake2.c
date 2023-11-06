@@ -122,11 +122,11 @@ void drawRandomFaceTwo()
         initialized = 1;
     }
 
-    uint32_t minX = FACE_RADIUS;
-    uint32_t minY = FACE_RADIUS + INTERFACE_LENGTH;
+    uint32_t minX = SQUARE_SIZE;
+    uint32_t minY = SQUARE_SIZE + INTERFACE_LENGTH;
     ;
-    uint32_t maxX = call_getWidth() - FACE_RADIUS;
-    uint32_t maxY = call_getHeight() - FACE_RADIUS;
+    uint32_t maxX = call_getWidth() - SQUARE_SIZE;
+    uint32_t maxY = call_getHeight() - SQUARE_SIZE;
 
     uint8_t collision = 1;
     uint8_t collision2 = 1;
@@ -135,8 +135,8 @@ void drawRandomFaceTwo()
     uint8_t collisionSnakeP2 = 1;
     do
     {
-        faceStartingX2 = minX + getRandomTwo(50, 900) % (maxX - minX + 1);
-        faceStartingY2 = minY + getRandomTwo(minY, 700) % (maxY - minY + 1);
+        faceStartingX2 = getRandomTwo(minX, maxX);
+        faceStartingY2 = getRandomTwo(minY, maxY);
 
         collisionSnakeP1 = checkSelfCollision(faceStartingX2, faceStartingY2, &snakeP1);
         collisionSnakeP2 = checkSelfCollision(faceStartingX2, faceStartingY2, &snakeP2);
