@@ -401,6 +401,25 @@ void printInteger(int num){
 		drawLetterFromChar(buffer[i]);
 }
 
+void printHex(int num){
+	char buffer[5];
+	int index = 0;
+
+	while(index<5) {
+		int temp = num % 16;
+		if(temp<10)
+			buffer[index] = temp +'0';
+		else
+			buffer[index] = temp - 10 +'A';
+		num = num / 10;
+		index++;
+	}
+
+	// Reverse the hexadecimal array
+	for(int i=index-1; i>=0; i--)
+		drawLetterFromChar(buffer[i]);
+}
+
 void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size){
 	uint32_t currentfg = globalFGColor;
 	uint32_t currentbg = globalBGColor;

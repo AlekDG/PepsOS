@@ -8,9 +8,10 @@ typedef struct regStruct{
     uint64_t rsi,rdi,rbp,rsp;
     uint64_t r8,r9,r10,r11;
     uint64_t r12,r13,r14,r15;
-    uint64_t ss,cs,rflags,rip;
+    uint64_t rip,cs,rflags,ss;
 } regStruct;
 
+void saveRegsBuffer(uint64_t regs);
 void * memset(void * destination, int32_t character, uint64_t length);
 void * memcpy(void * destination, const void * source, uint64_t length);
 char *cpuVendor(char *result);

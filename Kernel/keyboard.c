@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <video.h>
 #include <lib.h>
+#include <getKey.h>
 
 const unsigned char kbArr[4][128] = {
     {0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
@@ -32,6 +33,11 @@ const unsigned char kbArr[4][128] = {
 
 bool shift = false;
 bool blockMayus = false;
+
+void regCheckSave(uint64_t regs){
+    if(getKey()==0x38)
+        saveRegsBuffer(regs);
+}
 
 char hexToChar(uint8_t hex){
     uint8_t shiftState;

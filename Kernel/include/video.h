@@ -31,6 +31,7 @@ void write(char string[], uint32_t x_offset, uint32_t y_offset);
 void drawCircle(uint32_t hexColor, int centerX, int centerY, int radius);
 void drawFace(uint32_t startingX, uint32_t startingY, uint32_t size);
 int getSize();
+void printHex(int num);
 uint32_t getFGColor();
 uint32_t getBGColor();
 uint32_t getXBuffer();

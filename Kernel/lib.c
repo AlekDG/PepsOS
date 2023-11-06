@@ -1,6 +1,8 @@
 #include <lib.h>
 #include <video.h>
 
+#define REG_AMOUNT 10
+
 void * memset(void * destination, int32_t c, uint64_t length)
 {
 	uint8_t chr = (uint8_t)c;
@@ -79,7 +81,32 @@ char getKbChar(void){
 	return kbBuffer[--bufferIndx];
 }
 
-void printRegs(regStruct*toPrint){
+regStruct regBuffer={0};
+
+void saveRegsBuffer(uint64_t regs){
+	uint64_t*cast= (uint64_t *)regs;
+	regBuffer.r15=*cast++;
+	regBuffer.r14=*cast++;
+	regBuffer.r13=*cast++;
+	regBuffer.r12=*cast++;
+	regBuffer.r11=*cast++;
+	regBuffer.r10=*cast++;
+	regBuffer.r9=*cast++;
+	regBuffer.r8=*cast++;
+	regBuffer.rsi=*cast++;
+	regBuffer.rdi=*cast++;
+	regBuffer.rbp=*cast++;
+	regBuffer.rdx=*cast++;
+	regBuffer.rcx=*cast++;
+	regBuffer.rbx=*cast++;
+	regBuffer.rax=*cast++;
+	regBuffer.rsp=*cast++;
+	regBuffer.cs=*cast++;
+	regBuffer.rflags=*cast++;
+	regBuffer.ss=*cast;
+}
+
+void printRegs(void){
 	drawRectangle(BLACK, 0,0, getFullWidth(), getFullHeight());
 	uint32_t currentfg = getFGColor();
 	uint32_t currentbg = getBGColor();
@@ -89,23 +116,26 @@ void printRegs(regStruct*toPrint){
 	setBGColor(BLACK);
 	setXBuffer(0);
 	setYBuffer(26);
-	drawStringDef("RIP = 0x");printInteger(toPrint->rip);newLine();
-	drawStringDef("RAX = 0x");printInteger(toPrint->rax);newLine();
-	drawStringDef("RBX = 0x");printInteger(toPrint->rbx);newLine();
-	drawStringDef("RCX = 0x");printInteger(toPrint->rcx);newLine();
-	drawStringDef("RDX = 0x");printInteger(toPrint->rdx);newLine();
-	drawStringDef("RSP = 0x");printInteger(toPrint->rsp);newLine();
-	drawStringDef("RBP = 0x");printInteger(toPrint->rbp);newLine();
-	drawStringDef("RSI = 0x");printInteger(toPrint->rsi);newLine();
-	drawStringDef("RDI = 0x");printInteger(toPrint->rdi);newLine();
-	drawStringDef("R8 = 0x");printInteger(toPrint->r8);newLine();
-	drawStringDef("R9 = 0x");printInteger(toPrint->r9);newLine();
-	drawStringDef("R10 = 0x");printInteger(toPrint->r10);newLine();
-	drawStringDef("R11 = 0x");printInteger(toPrint->r11);newLine();
-	drawStringDef("R12 = 0x");printInteger(toPrint->r12);newLine();
-	drawStringDef("R13 = 0x");printInteger(toPrint->r13);newLine();
-	drawStringDef("R14 = 0x");printInteger(toPrint->r14);newLine();
-	drawStringDef("R15 = 0x");printInteger(toPrint->r15);newLine();
+	drawStringDef("RIP = 0x");printHex(regBuffer.rip);newLine();
+	drawStringDef("RAX = 0x");printHex(regBuffer.rax);newLine();
+	drawStringDef("RBX = 0x");printHex(regBuffer.rbx);newLine();
+	drawStringDef("RCX = 0x");printHex(regBuffer.rcx);newLine();
+	drawStringDef("RDX = 0x");printHex(regBuffer.rdx);newLine();
+	drawStringDef("RSP = 0x");printHex(regBuffer.rsp);newLine();
+	drawStringDef("RBP = 0x");printHex(regBuffer.rbp);newLine();
+	drawStringDef("RSI = 0x");printHex(regBuffer.rsi);newLine();
+	drawStringDef("RDI = 0x");printHex(regBuffer.rdi);newLine();
+	drawStringDef("R8 = 0x");printHex(regBuffer.r8);newLine();
+	drawStringDef("R9 = 0x");printHex(regBuffer.r9);newLine();
+	drawStringDef("R10 = 0x");printHex(regBuffer.r10);newLine();
+	drawStringDef("R11 = 0x");printHex(regBuffer.r11);newLine();
+	drawStringDef("R12 = 0x");printHex(regBuffer.r12);newLine();
+	drawStringDef("R13 = 0x");printHex(regBuffer.r13);newLine();
+	drawStringDef("R14 = 0x");printHex(regBuffer.r14);newLine();
+	drawStringDef("R15 = 0x");printHex(regBuffer.r15);newLine();
+	drawStringDef("CS = 0x");printHex(regBuffer.cs);newLine();
+	drawStringDef("RFLAGS = 0x");printHex(regBuffer.rflags);newLine();
+	drawStringDef("SS = 0x");printHex(regBuffer.ss);newLine();
 	setFGColor(currentfg);
 	setBGColor(currentbg);
 	setXBuffer(currentx);
