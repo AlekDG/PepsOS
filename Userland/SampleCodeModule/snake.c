@@ -135,8 +135,8 @@ int checkSnakeEatRevamped(uint32_t headX, uint32_t headY, int gameMode, uint32_t
                         { // Estamos en el juego para 2 jugadores
                               return 1;
                         }
-                        eat();
                         call_beep(EAT_FREQ, 1);
+                        eat();
                         call_drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
                         drawRandomFace();
                         eaten = 1;
