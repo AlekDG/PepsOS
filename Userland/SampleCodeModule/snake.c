@@ -255,8 +255,8 @@ void drawRandomFace()
       uint8_t collision = 1;
       do
       {
-            faceStartingX = minX + getRandom(minX, maxX) % (maxX - minX + 1);
-            faceStartingY = minY + getRandom(minY, 700) % (maxY - minY + 1);
+            faceStartingX = getRandom(minX, maxX - FACE_RADIUS);;
+            faceStartingY = getRandom(minY, maxY - FACE_RADIUS);
 
             collision = checkSelfCollision(faceStartingX, faceStartingY, &snake);
       } while (collision);
