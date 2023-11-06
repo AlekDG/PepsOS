@@ -402,10 +402,10 @@ void printInteger(int num){
 }
 
 void printHex(int num){
-	char buffer[5];
+	char buffer[8];
 	int index = 0;
 
-	while(index<5) {
+	while(index<8) {
 		int temp = num % 16;
 		if(temp<10)
 			buffer[index] = temp +'0';

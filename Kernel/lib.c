@@ -100,9 +100,10 @@ void saveRegsBuffer(uint64_t regs){
 	regBuffer.rcx=*cast++;
 	regBuffer.rbx=*cast++;
 	regBuffer.rax=*cast++;
-	regBuffer.rsp=*cast++;
+	regBuffer.rip=*cast++;
 	regBuffer.cs=*cast++;
 	regBuffer.rflags=*cast++;
+	regBuffer.rsp=*cast++;
 	regBuffer.ss=*cast;
 }
 

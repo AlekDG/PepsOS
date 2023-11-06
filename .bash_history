@@ -58,3 +58,13 @@ cd root/
 ./compilacion.sh 
 ./compilacion.sh 
 exit
+dc root/
+cd root/
+./compilacion.sh 
+exit
+cd root/
+./compilacion.sh 
+exit
+cd root/
+./compilacion.sh 
+exit
