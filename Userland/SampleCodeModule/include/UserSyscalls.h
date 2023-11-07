@@ -3,25 +3,15 @@
 #ifndef USERSYSCALLS
 #define USERSYSCALLS
 
-#define INCODE 0
-#define OUTCODE 1
-#define ERRCODE 2
-
-void call_read(char *strn, int size, int fd);
-void call_write(char *strn, int size, int fd);
-void call_time(char *strn);
 void call_regRead(void);
 void call_paintScreen(uint32_t color);
 void call_drawRectangle(uint32_t color, uint32_t offset_x, uint32_t offset_y, uint32_t width, uint32_t height);
-void call_drawCenteredRectangle(uint32_t color, uint32_t offset_x, uint32_t offset_y, uint32_t width, uint32_t height);
 void call_drawCircle(uint32_t color, uint32_t offset_x, uint32_t offset_y, uint32_t radius);
 void call_drawFace(uint32_t offset_x, uint32_t offset_y, uint32_t size);
-int call_bufferPosition();
 uint8_t call_getChar();
 void call_wait(int ticks);
 int call_ticks(void);
 void call_setSize(unsigned int size);
-char call_drawBufferedChar(void);
 void call_beep(uint32_t freq, uint8_t tix);
 uint32_t call_getWidth();
 uint32_t call_getHeight();
@@ -47,9 +37,9 @@ void call_drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t siz
 void call_drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size);
 void call_excepDivZero(void);
 void call_excepInvalidOp(void);
-unsigned int minutes();
-unsigned int hours();
-unsigned int day();
-unsigned int month();
-unsigned int year();
+unsigned int call_minutes();
+unsigned int call_hours();
+unsigned int call_day();
+unsigned int call_month();
+unsigned int call_year();
 #endif

@@ -1,10 +1,26 @@
+GLOBAL clock
 GLOBAL cpuVendor
+GLOBAL getKey
 GLOBAL outb
 GLOBAL inb
 GLOBAL userBuild
 EXTERN getStackBase
 section .text
 	
+clock:
+	push rbp
+	mov rbp, rsp
+
+	mov al, dil
+	out 70h, al
+	xor rax, rax
+	in al, 71h
+
+	mov rsp, rbp
+	pop rbp
+	ret
+
+
 cpuVendor:
 	push rbp
 	mov rbp, rsp
@@ -30,6 +46,14 @@ cpuVendor:
 	ret
 
 
+getKey:
+        push rbp
+        mov rbp, rsp
+        xor rax,rax
+        in al, 0x60
+        mov rsp, rbp
+        pop rbp
+        ret
 outb:
 	push rbp
 	mov rbp,rsp
@@ -49,25 +73,16 @@ inb:
 	pop rbp
 	ret
 
-;================================================================================================================================
 userBuild:
- 
 	add rsp, 32
-
 	mov rax, 0x400000
-    mov [rsp], rax          ; hard-code goes brrrrrr
-
+    mov [rsp], rax          
     mov rax, 0x8
-    mov [rsp + 8], rax      ; CS de userland
-
+    mov [rsp + 8], rax      
     mov rax, 0x202
-    mov [rsp + 8*2], rax    ; RFLAGS
-
+    mov [rsp + 8*2], rax    
     call getStackBase       
-    mov [rsp + 8*3], rax    ; sp ahora esta en la base 
-
+    mov [rsp + 8*3], rax    
     mov rax, 0x0
-    mov [rsp + 8*4], rax    ; SS de userland
-	
+    mov [rsp + 8*4], rax    
 	iretq
-;================================================================================================================================

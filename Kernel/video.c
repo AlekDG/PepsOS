@@ -136,17 +136,6 @@ void paintScreen(uint32_t hexColor){
 			putpixel(hexColor, x, y);
 		}
 	}
-
-	/*
-	uint32_t xCenter = myWidth/2;
-	uint32_t yCenter = myHeight/2;
-
-	for(uint32_t x=300; x<600; x++){
-		for(uint32_t y=300; y<600; y++){
-			if((x-xCenter)*(x-xCenter)+(y-yCenter)*(y-yCenter)<900)
-				putpixel(hexColor, x, y);
-		}
-	}*/
 }
 
 void clear(void){
@@ -166,20 +155,6 @@ void drawRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t
 		}
 	}
 }
-
-void drawRectangleCentered(uint32_t hexColor, uint32_t xStart, uint32_t yStart, uint32_t mywidth, uint32_t myheight){
-	int semiWidth = mywidth/2;
-	int semiHeight = myheight/2;
-	for(uint32_t x=(xStart-semiWidth); x<(xStart+semiWidth); x++){
-		for(uint32_t y=(yStart-semiHeight); y<(yStart+semiHeight); y++){
-			if(x>=0 && x<width && y>=0 && y<height){
-				putpixel(hexColor, x, y);
-			}
-		}
-	}
-}
-
-
 
 void drawCircle(uint32_t hexColor, int centerX, int centerY, int radius)
 {
@@ -370,20 +345,6 @@ void deleteLetterBuffered(){
 	backtrackBuffer();
 	drawRectangle(globalBGColor, globalXPos, globalYPos, globalSize*8, globalSize*13);	//dibujo un rectangulo de color BGColor
 }
-
-
-void highlightBuffer(){
-	static int ishighlighted = 0;
-	if(ticks_elapsed() % 18==0 && !ishighlighted){
-		drawRectangle(CYAN, globalXPos, globalYPos, globalSize*8, globalSize*13);	//2 pixeles de ancho y el alto de una letra
-		ishighlighted=1;
-	}
-	else if((*ticks_elapsed)() % 18==0 && ishighlighted){
-		drawRectangle(globalBGColor, globalXPos, globalYPos, globalSize*8, globalSize*13);	//2 pixeles de ancho y el alto de una letra
-		ishighlighted=0;
-	}
-}
-
 
 void printInteger(int num){
 	char buffer[5];

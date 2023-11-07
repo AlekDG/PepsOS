@@ -19,14 +19,14 @@ static void play_sound(uint32_t nFrequence)
 		outb(0x61, tmp | 3);
 }
 
-// make it shutup
+// silence the speaker
 static void nosound()
 {
 	uint8_t tmp = inb(0x61) & 0xFC;
 	outb(0x61, tmp);
 }
 
-// Make a beep
+// Make a beep for a specified number of ticks
 void beep(uint32_t freq, uint8_t ticks)
 {
 	play_sound(freq);

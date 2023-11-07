@@ -13,7 +13,7 @@ void exceptionDispatcher(int exception,uint64_t regs) {
 		invalid_opcode();
 	saveRegsBuffer(regs);
 	printRegs();
-	drawStringFormatted("Press any key to continue\n",WHITE,BLACK,2);
+	drawStringFormatted("Restarting...\n",WHITE,BLACK,2);
 
 }
 
