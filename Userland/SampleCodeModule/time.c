@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <time.h>
+#include <UserSyscalls.h>
 
 #define TIME_ZONE -3
 
