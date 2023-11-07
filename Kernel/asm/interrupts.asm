@@ -84,10 +84,15 @@ SECTION .text
 	call exceptionDispatcher
 	popState
 	call getStackBase
-	;sub rax, 28h
+	mov rax,[bootFlag]
+	cmp rax,0
+	jez unpack
+
+	xor rax,rax
+	mov [bootFlag],rax
+	unpack:
 	mov qword [rsp+8*3], rax
 	mov qword [rsp], 0x400000
-	mov qword [rsp+8*2], 0x202
 	iretq
 %endmacro
 
@@ -189,6 +194,9 @@ haltcpu:
 	cli
 	hlt
 	ret
+
+section .data
+	bootFlag db 1
 
 SECTION .bss
 	reserve resq 4

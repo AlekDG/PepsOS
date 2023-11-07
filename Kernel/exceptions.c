@@ -14,14 +14,14 @@ void exceptionDispatcher(int exception,uint64_t regs) {
 	saveRegsBuffer(regs);
 	printRegs();
 	drawStringFormatted("Press any key to continue\n",WHITE,BLACK,2);
-	int flag = 0;
+	//int flag = 0;
 	
-	while(!flag){
-		char c = getKbChar();
-		if(c!=0){
-			flag=1;
-		}
-	}
+	//while(!flag){
+//		char c = getKbChar();
+//		if(c!=0){
+//			flag=1;
+//		}
+//	}
 }
 
 static void zero_division() {
