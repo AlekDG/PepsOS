@@ -52,6 +52,7 @@ void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size);
 void clear(void);
 void drawStringDef(char str[]);
 void newLine();
+int *getXBufferPointer();
+int *getYBufferPointer();
+uint32_t *getFGColorPointer();
 #endif
-
-
