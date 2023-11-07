@@ -112,11 +112,11 @@ void interpretCommand(char command[]){
 		return;
 	}
 	else if(compareStrings(command, testdivzero)==0){
-		//TEST DIVISION POR 0
+		call_excepDivZero();
 		return;
 	}
 	else if(compareStrings(command, testinvalidopcode)==0){
-		//TEST INVALID OP CODE
+		call_excepInvalidOp();
 		return;
 	}
 	else if(compareStrings(command, printhelp)==0){	//imprime comandos de ayuda

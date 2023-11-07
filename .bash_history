@@ -68,3 +68,7 @@ exit
 cd root/
 ./compilacion.sh 
 exit
+cd root/
+./compilacion.sh 
+cd ..
+exit

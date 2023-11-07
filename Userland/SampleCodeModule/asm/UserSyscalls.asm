@@ -41,6 +41,8 @@ GLOBAL call_hours
 GLOBAL call_day
 GLOBAL call_month
 GLOBAL call_year
+GLOBAL call_excepDivZero
+GLOBAL call_excepInvalidOp
 
 %macro call_to_handler 1
     push rbp
@@ -143,3 +145,7 @@ call_month:
     call_to_handler 44
 call_year:
     call_to_handler 45
+call_excepDivZero:
+    div 0
+call_excepInvalidOp:
+    mov cr6, rax
