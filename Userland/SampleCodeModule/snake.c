@@ -5,7 +5,7 @@
 
 struct Snake snake;
 
-uint8_t delayTicks = 1; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
+uint32_t delayTicks = 1; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
 
 uint32_t faceStartingX;
 uint32_t faceStartingY;
@@ -22,7 +22,6 @@ void start_game()
 
       uint32_t lastTick = call_ticks();
       uint32_t currentTick;
-      unsigned int delay = delayTicks;
 
       uint32_t mapWidth = call_getWidth();
       uint32_t mapHeight = call_getHeight();
@@ -31,7 +30,7 @@ void start_game()
       {
             currentTick = call_ticks();
             gameInput();
-            if (currentTick - lastTick >= delay)
+            if (currentTick - lastTick >= delayTicks)
             {
                   call_drawRectangle(CARAMEL_BROWN, snake.body[snake.length - 1].x, snake.body[snake.length - 1].y, SQUARE_SIZE, SQUARE_SIZE);
                   updateSnake(&snake, mapWidth, mapHeight, &flagWall, &flagSnake, 0, faceStartingX, faceStartingY);
