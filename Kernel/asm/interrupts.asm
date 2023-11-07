@@ -84,13 +84,6 @@ SECTION .text
 	call exceptionDispatcher
 	popState
 	call getStackBase
-	mov rax,[bootFlag]
-	cmp rax,0
-	jez unpack
-
-	xor rax,rax
-	mov [bootFlag],rax
-	unpack:
 	mov qword [rsp+8*3], rax
 	mov qword [rsp], 0x400000
 	iretq

@@ -189,7 +189,8 @@ void drawMenu()
 				}
 			}
 			else if (optionMenu.options[3]->isHovered)
-			{ // consola.isHovered
+			{ 
+				call_drawRectangle(BLACK, 0, 0, call_getWidth(), call_getHeight());
 				call_regRead();
 				while(1){
 					int letter = call_getChar();
