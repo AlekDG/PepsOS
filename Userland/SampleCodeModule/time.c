@@ -5,9 +5,9 @@
 
 void timeToStr(char *dest)
 {
-      uint8_t s = call_seconds();
-      uint8_t m = call_minutes();
-      int h = call_hours() + TIME_ZONE;
+      unsigned int s = call_seconds();
+      unsigned int m = call_minutes();
+      unsigned int h = call_hours() + TIME_ZONE;
 
       if (h < 0)
       {
@@ -27,9 +27,9 @@ void timeToStr(char *dest)
 
 void dateToStr(char *dest)
 {
-      uint8_t d = call_day();
-      uint8_t m = call_month();
-      uint8_t y = call_year();
+      unsigned int d = call_day();
+      unsigned int m = call_month();
+      unsigned int y = call_year();
 
       dest[0] = (d / 10) % 10 + '0';
       dest[1] = d % 10 + '0';
