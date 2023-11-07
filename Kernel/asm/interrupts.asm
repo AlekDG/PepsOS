@@ -3,7 +3,7 @@ GLOBAL _cli
 GLOBAL _sti
 GLOBAL picMasterMask
 GLOBAL picSlaveMask
-GLOBAL haltcpuany key
+GLOBAL haltcpu
 GLOBAL _hlt
 
 GLOBAL _irq00Handler
@@ -21,7 +21,6 @@ EXTERN regCheckSave
 EXTERN irqDispatcher
 EXTERN sysIntDispatcher
 EXTERN exceptionDispatcher
-EXTERN main
 
 SECTION .text
 
@@ -83,7 +82,6 @@ SECTION .text
 	mov rdi, %1 ; pasaje de parametro
 	call exceptionDispatcher
 	popState
-	call main
 	iretq
 %endmacro
 
