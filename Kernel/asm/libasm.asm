@@ -1,6 +1,8 @@
 GLOBAL cpuVendor
 GLOBAL outb
 GLOBAL inb
+GLOBAL userBuild
+EXTERN getStackBase
 section .text
 	
 cpuVendor:
@@ -46,3 +48,26 @@ inb:
 	mov rsp,rbp
 	pop rbp
 	ret
+
+;================================================================================================================================
+userBuild:
+ 
+	add rsp, 32
+
+	mov rax, 0x400000
+    mov [rsp], rax          ; hard-code goes brrrrrr
+
+    mov rax, 0x8
+    mov [rsp + 8], rax      ; CS de userland
+
+    mov rax, 0x202
+    mov [rsp + 8*2], rax    ; RFLAGS
+
+    call getStackBase       
+    mov [rsp + 8*3], rax    ; sp ahora esta en la base 
+
+    mov rax, 0x0
+    mov [rsp + 8*4], rax    ; SS de userland
+	
+	iretq
+;================================================================================================================================
