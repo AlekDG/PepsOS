@@ -411,7 +411,7 @@ void printHex(int num){
 			buffer[index] = temp +'0';
 		else
 			buffer[index] = temp - 10 +'A';
-		num = num / 10;
+		num = num / 16;
 		index++;
 	}
 

@@ -14,8 +14,14 @@ void exceptionDispatcher(int exception,uint64_t regs) {
 	saveRegsBuffer(regs);
 	printRegs();
 	drawStringFormatted("Press any key to continue\n",WHITE,BLACK,2);
-	char c = getKbChar();
-	while(c==getKbChar());
+	int flag = 0;
+	
+	while(!flag){
+		char c = getKbChar();
+		if(c!=0){
+			flag=1;
+		}
+	}
 }
 
 static void zero_division() {
@@ -23,5 +29,5 @@ static void zero_division() {
 }
 
 static void invalid_opcode() {
-	drawStringFormatted("FATAL ERROR: Unrecognised opcode\n",WHITE,BLACK,3);
+	drawStringFormatted("FATAL ERROR: Invalid opcode\n",WHITE,BLACK,3);
 }
