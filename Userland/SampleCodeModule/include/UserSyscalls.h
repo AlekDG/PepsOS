@@ -37,6 +37,7 @@ void call_drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t siz
 void call_drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size);
 void call_excepDivZero(void);
 void call_excepInvalidOp(void);
+unsigned int call_seconds();
 unsigned int call_minutes();
 unsigned int call_hours();
 unsigned int call_day();
