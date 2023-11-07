@@ -125,14 +125,6 @@ picSlaveMask:
 
 ;8254 Timer (Timer Tick)
 _irq00Handler:
-	mov rax, 0
-	cmp [bootFlag], rax
-	jne .exit
-	mov [bootFlag], rax
-	call getStackBase
-	mov qword [rsp+8*3], rax
-	mov qword [rsp], 0x400000
-.exit:
 	irqHandlerMaster 0
 
 ;Keyboard
@@ -197,9 +189,6 @@ haltcpu:
 	cli
 	hlt
 	ret
-
-section .data
-	bootFlag db 1
 
 SECTION .bss
 	reserve resq 4
