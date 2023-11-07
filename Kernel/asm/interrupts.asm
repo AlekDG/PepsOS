@@ -87,7 +87,7 @@ SECTION .text
 	;sub rax, 28h
 	mov qword [rsp+8*3], rax
 	mov qword [rsp], 0x400000
-	mov qword [rsp+8*2], 0x202
+	;mov qword [rsp+8*2], 0x202
 	iretq
 %endmacro
 
