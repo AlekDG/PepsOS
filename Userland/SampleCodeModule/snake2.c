@@ -54,7 +54,6 @@ void start_gameTwo()
             lastTick = currentTick;
         }
     }
-    //call_beep(500, 1);
     playMegalovania();
 
     if (eaten1 || (!flagSnakeP1 && !flagWallP1 && !eaten2))
@@ -125,9 +124,6 @@ void drawRandomFaceTwo()
     ;
     uint32_t maxX = call_getWidth() - SQUARE_SIZE;
     uint32_t maxY = call_getHeight() - SQUARE_SIZE;
-
-    uint8_t collision = 1;
-    uint8_t collision2 = 1;
 
     uint8_t collisionSnakeP1 = 1;
     uint8_t collisionSnakeP2 = 1;

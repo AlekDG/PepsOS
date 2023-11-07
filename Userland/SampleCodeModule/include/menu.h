@@ -6,7 +6,6 @@
 #define BLUE 0x0000AA
 #define GREEN 0x00AA00
 #define CYAN 0x00AAAA
-#define RED 0xAA0000
 #define MAGENTA 0xAA00AA
 #define BROWN 0xAA5500
 #define LIGHT_GRAY 0xAAAAAA

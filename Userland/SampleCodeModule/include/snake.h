@@ -49,5 +49,7 @@ uint8_t checkSelfCollision(uint32_t x, uint32_t y, struct Snake *snake);
 void initializeSnake(struct Snake *snake, uint16_t startingX, uint16_t startingY, uint32_t snakeColor); // startingY debe ser mayor a 100 para que funcione adecuadamente
 void redrawSnake(struct Snake *snake);
 int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight, uint8_t *flagWall, uint8_t *flagSnake, int gameMode, uint32_t faceX, uint32_t faceY);
+void gameInput();
+int checkSnakeEatRevamped(uint32_t headX, uint32_t headY, int gameMode, uint32_t faceX, uint32_t faceY);
 
 #endif

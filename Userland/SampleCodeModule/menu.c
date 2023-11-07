@@ -4,6 +4,8 @@
 #include <pepsiman.h>
 #include <UserSyscalls.h>
 #include <time.h>
+#include <snake.h>
+#include <snake2.h>
 
 void hoverOverOption(Option *option) { option->isHovered = 1; }
 void deactivateHover(Option *option) { option->isHovered = 0; }
@@ -67,7 +69,7 @@ void unclickOption(Option *option) { option->isClicked = 0; }
 
 // drawTriangle(){funcion que dibuja la flechita de las opciones}
 
-void drawOption(Option option, uint32_t *globalFGColor, int *globalXPos, int *globalYPos)
+void drawOption(Option option, uint32_t *globalFGColor, uint32_t *globalXPos, uint32_t *globalYPos)
 {
 	call_setBGColor(WHITE);
 	call_setFGColor(PEPSIBLUE); // por seguridad
@@ -130,10 +132,10 @@ void drawOptionMenuArray(OptionMenu *optionMenu)
 }
 
 void drawMenu()
-{	
+{
 	int width = call_getWidth();
 	int height = call_getHeight();
-	call_drawRectangle(BLACK, 0,0,width, height);
+	call_drawRectangle(BLACK, 0, 0, width, height);
 	drawPepsiman(width - 500, 0, 5);
 	drawPepsos(width - 460, 500, 3);
 
@@ -175,25 +177,29 @@ void drawMenu()
 				char aux[8];
 				timeToStr(aux);
 				call_drawStringFormatted(aux, WHITE, BLACK, 5);
-				//PEDIR TECLA
-				call_setYBuffer(call_getYBuffer()+130);
+				// PEDIR TECLA
+				call_setYBuffer(call_getYBuffer() + 130);
 				call_setXBuffer(50);
 				call_drawStringFormatted("->PRESIONE CUALQUIER TECLA PARA CONTINUAR",
-				WHITE, BLACK, 1);
-				while(1){
+								 WHITE, BLACK, 1);
+				while (1)
+				{
 					int letter = call_getChar();
-					if(letter!=0){
+					if (letter != 0)
+					{
 						return;
 					}
 				}
 			}
 			else if (optionMenu.options[3]->isHovered)
-			{ 
+			{
 				call_drawRectangle(BLACK, 0, 0, call_getWidth(), call_getHeight());
 				call_regRead();
-				while(1){
+				while (1)
+				{
 					int letter = call_getChar();
-					if(letter!=0){
+					if (letter != 0)
+					{
 						return;
 					}
 				}
@@ -204,8 +210,8 @@ void drawMenu()
 				runConsole(&optionMenu);
 				return;
 			}
-			else if (optionMenu.options[5]->isHovered)	//restart menu
-			{	
+			else if (optionMenu.options[5]->isHovered) // restart menu
+			{
 				return;
 			}
 			break;
@@ -227,20 +233,21 @@ void drawMenu()
 Menu para el snake
 =============================*/
 
-void drawEndingContext(){
-	int half_width = call_getWidth()/2;
-	int half_height = call_getHeight()/2;
-	int size=25;
+void drawEndingContext()
+{
+	int half_width = call_getWidth() / 2;
+	int half_height = call_getHeight() / 2;
+	int size = 25;
 
-	drawFancyMenu(half_width-size*45/2, half_height-size*25/2, size);
+	drawFancyMenu(half_width - size * 45 / 2, half_height - size * 25 / 2, size);
 	call_setFGColor(DARK_GRAY);
 	call_setBGColor(LIGHT_GRAY);
-	call_drawRectangle(LIGHT_GRAY, half_width-125, half_height-90, 300, 75);
-	call_drawRectangle(LIGHT_GRAY, half_width-290, half_height+15, 300, 75);
-	call_drawRectangle(LIGHT_GRAY, half_width+50, half_height+15, 300, 75);
-	
-	call_setXBuffer(half_width-275);
-	call_setYBuffer(half_height+35);
+	call_drawRectangle(LIGHT_GRAY, half_width - 125, half_height - 90, 300, 75);
+	call_drawRectangle(LIGHT_GRAY, half_width - 290, half_height + 15, 300, 75);
+	call_drawRectangle(LIGHT_GRAY, half_width + 50, half_height + 15, 300, 75);
+
+	call_setXBuffer(half_width - 275);
+	call_setYBuffer(half_height + 35);
 	char menuText[] = "ESC => Menu";
 	for (int j = 0; menuText[j] != 0; j++)
 	{
@@ -256,75 +263,82 @@ void drawEndingContext(){
 	}
 }
 
-void drawSnakeEndingScreen(unsigned int puntos){
+void drawSnakeEndingScreen(unsigned int puntos)
+{
 	drawEndingContext();
-	int half_width = call_getWidth()/2;
-	int half_height = call_getHeight()/2;
-	call_setXBuffer(half_width-100);
-	call_setYBuffer(half_height-65);
+	int half_width = call_getWidth() / 2;
+	int half_height = call_getHeight() / 2;
+	call_setXBuffer(half_width - 100);
+	call_setYBuffer(half_height - 65);
 	call_setFGColor(DARK_GRAY);
 	call_setBGColor(LIGHT_GRAY);
-	char puntosText[]="Puntuacion: ";
+	char puntosText[] = "Puntuacion: ";
 
 	call_setSize(2);
-	for(int i=0; puntosText[i]!=0; i++){
+	for (int i = 0; puntosText[i] != 0; i++)
+	{
 		call_drawLetterFromChar(puntosText[i]);
 	}
 	call_printInteger(puntos);
 }
 
-void draw2pEnding(int player){
+void draw2pEnding(int player)
+{
 	drawEndingContext();
-	int half_width = call_getWidth()/2;
-	int half_height = call_getHeight()/2;
-	call_setXBuffer(half_width-90);
-	call_setYBuffer(half_height-65);
+	int half_width = call_getWidth() / 2;
+	int half_height = call_getHeight() / 2;
+	call_setXBuffer(half_width - 90);
+	call_setYBuffer(half_height - 65);
 	call_setFGColor(DARK_GRAY);
 	call_setBGColor(LIGHT_GRAY);
-	char player1wins[]="Player 1 wins!";
-	char player2wins[]="Player 2 wins!";
+	char player1wins[] = "Player 1 wins!";
+	char player2wins[] = "Player 2 wins!";
 	call_setSize(2);
-	if(player==1){
-		for(int i=0; player1wins[i]!=0; i++){
-		call_drawLetterFromChar(player1wins[i]);
+	if (player == 1)
+	{
+		for (int i = 0; player1wins[i] != 0; i++)
+		{
+			call_drawLetterFromChar(player1wins[i]);
 		}
 	}
-	else if(player==2){
-		for(int i=0; player2wins[i]!=0; i++){
-		call_drawLetterFromChar(player2wins[i]);
+	else if (player == 2)
+	{
+		for (int i = 0; player2wins[i] != 0; i++)
+		{
+			call_drawLetterFromChar(player2wins[i]);
 		}
-	}	
+	}
 }
 
-void drawSnakeInterface(unsigned int bg){
+void drawSnakeInterface(unsigned int bg)
+{
 	int fullwidth = call_getWidth();
 	int interfaceheight = 100;
 	call_drawRectangle(WHITE, 0, 0, fullwidth, interfaceheight);
-	call_drawRectangle(bg, 13, 13, fullwidth-26, interfaceheight-13*2);
-
+	call_drawRectangle(bg, 13, 13, fullwidth - 26, interfaceheight - 13 * 2);
 
 	call_setXBuffer(39);
 	call_setYBuffer(35);
 	call_drawStringFormatted("Puntuacion: ", WHITE, bg, 2);
-	
+
 	call_printIntFormatted(0, WHITE, bg, 2);
 }
 
-void setPoints(int points, unsigned int bg){
+void setPoints(int points, unsigned int bg)
+{
 	call_drawRectangle(bg, 231, 35, 80, 26);
 	call_setXBuffer(231);
 	call_printIntFormatted(points, WHITE, bg, 2);
 }
 
-
-void draw2pSnake(unsigned int bg){
+void draw2pSnake(unsigned int bg)
+{
 	int fullwidth = call_getWidth();
 	int interfaceheight = 100;
 	call_drawRectangle(WHITE, 0, 0, fullwidth, interfaceheight);
-	call_drawRectangle(bg, 13, 13, fullwidth-26, interfaceheight-13*2);
+	call_drawRectangle(bg, 13, 13, fullwidth - 26, interfaceheight - 13 * 2);
 
 	call_setXBuffer(39);
 	call_setYBuffer(35);
 	call_drawStringFormatted("Playing 2p snake     P1 = WHITE   P2 = PURPLE", WHITE, bg, 2);
 }
-

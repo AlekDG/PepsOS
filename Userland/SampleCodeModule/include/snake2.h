@@ -4,5 +4,6 @@
 
 void start_gameTwo();
 void drawRandomFaceTwo();
+void gameInputTwo();
 
 #endif

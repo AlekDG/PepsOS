@@ -4,7 +4,6 @@
 #include <sound.h>
 
 struct Snake snake;
-
 uint32_t delayTicks = 1; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
 
 uint32_t faceStartingX;
@@ -122,20 +121,22 @@ void redrawSnake(struct Snake *snake)
 
       drawSnakeHead(snake->body[0].x, snake->body[0].y, snake);
 }
-int checkSnakeEatRevamped(uint32_t headX, uint32_t headY, int gameMode, uint32_t faceX, uint32_t faceY){
+int checkSnakeEatRevamped(uint32_t headX, uint32_t headY, int gameMode, uint32_t faceX, uint32_t faceY)
+{
       int eaten = 0;
-      int headXCondition = (headX >= faceX-SQUARE_SIZE) && (headX <= faceX + SQUARE_SIZE);
-      int headYCondition = (headY >= faceY-SQUARE_SIZE) && (headY <= faceY + SQUARE_SIZE);
-      if(headXCondition && headYCondition){
+      int headXCondition = (headX >= faceX - SQUARE_SIZE) && (headX <= faceX + SQUARE_SIZE);
+      int headYCondition = (headY >= faceY - SQUARE_SIZE) && (headY <= faceY + SQUARE_SIZE);
+      if (headXCondition && headYCondition)
+      {
             if (gameMode == 1)
-                        { // Estamos en el juego para 2 jugadores
-                              return 1;
-                        }
-                        call_beep(EAT_FREQ, 1);
-                        eat();
-                        call_drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
-                        drawRandomFace();
-                        eaten = 1;
+            { // Estamos en el juego para 2 jugadores
+                  return 1;
+            }
+            call_beep(EAT_FREQ, 1);
+            eat();
+            call_drawRectangle(CARAMEL_BROWN, faceStartingX, faceStartingY, SQUARE_SIZE, SQUARE_SIZE);
+            drawRandomFace();
+            eaten = 1;
       }
       return eaten;
 }
@@ -251,7 +252,8 @@ void drawRandomFace()
       uint8_t collision = 1;
       do
       {
-            faceStartingX = getRandom(minX, maxX);;
+            faceStartingX = getRandom(minX, maxX);
+            ;
             faceStartingY = getRandom(minY, maxY);
 
             collision = checkSelfCollision(faceStartingX, faceStartingY, &snake);
