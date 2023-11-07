@@ -243,8 +243,8 @@ void drawRandomFace()
             initialized = 1;
       }
 
-      uint32_t minX = FACE_RADIUS;
-      uint32_t minY = FACE_RADIUS + INTERFACE_LENGTH;
+      uint32_t minX = SQUARE_SIZE;
+      uint32_t minY = SQUARE_SIZE + INTERFACE_LENGTH;
       uint32_t maxX = call_getWidth() - SQUARE_SIZE;
       uint32_t maxY = call_getHeight() - SQUARE_SIZE;
       ;
