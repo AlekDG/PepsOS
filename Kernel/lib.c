@@ -108,7 +108,6 @@ void saveRegsBuffer(uint64_t regs){
 }
 
 void printRegs(void){
-	drawRectangle(BLACK, 0,0, getFullWidth(), getFullHeight());
 	uint32_t currentfg = getFGColor();
 	uint32_t currentbg = getBGColor();
 	uint32_t currentx = getXBuffer();
@@ -116,7 +115,7 @@ void printRegs(void){
 	setFGColor(WHITE);
 	setBGColor(BLACK);
 	setXBuffer(0);
-	setYBuffer(26);
+	setYBuffer(45);
 	drawStringDef("RIP = 0x");printHex(regBuffer.rip);newLine();
 	drawStringDef("RAX = 0x");printHex(regBuffer.rax);newLine();
 	drawStringDef("RBX = 0x");printHex(regBuffer.rbx);newLine();
@@ -139,6 +138,4 @@ void printRegs(void){
 	drawStringDef("SS = 0x");printHex(regBuffer.ss);newLine();
 	setFGColor(currentfg);
 	setBGColor(currentbg);
-	setXBuffer(currentx);
-	setYBuffer(currenty);
 }
