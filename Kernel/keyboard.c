@@ -1,6 +1,5 @@
 #include <stdint.h>
 #include <stdbool.h>
-#include <video.h>
 #include <lib.h>
 
 const unsigned char kbArr[4][128] = {
