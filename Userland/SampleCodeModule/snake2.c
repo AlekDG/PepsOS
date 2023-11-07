@@ -10,9 +10,7 @@ struct Snake snakeP2;
 uint32_t faceStartingX2;
 uint32_t faceStartingY2;
 
-uint8_t delayTicksTwo = 1; // Ajustar esto segun la dificultad(Crear una opcion en el menu inicial del juego en el que te pida seleccionar la dificultad).
-
-// Habria que hacer un menu inicial para que cuando el jugador pierda pueda volver a jugar apretando ah
+uint8_t delayTicksTwo = 1; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
 
 void start_gameTwo()
 {
