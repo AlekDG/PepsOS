@@ -146,6 +146,7 @@ call_month:
 call_year:
     call_to_handler 45
 call_excepDivZero:
-    div 0
+    xor rdx,rdx
+    div rdx
 call_excepInvalidOp:
     mov cr6, rax
