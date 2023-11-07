@@ -190,5 +190,8 @@ haltcpu:
 	hlt
 	ret
 
+section .data
+	bootFlag db 1
+
 SECTION .bss
 	reserve resq 4

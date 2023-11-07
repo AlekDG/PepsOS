@@ -172,6 +172,7 @@ void drawMenu()
 			}
 			else if (optionMenu.options[2]->isHovered)
 			{
+				call_drawRectangle(BLACK,0,0,call_getWidth(),call_getHeight());
 				char aux[8];
 				timeToStr(aux);
 				call_drawStringFormatted(aux, WHITE, BLACK, 5);

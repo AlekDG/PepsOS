@@ -21,4 +21,5 @@ void addToBuffer(char c);
 char getKbChar(void);
 void keyPressed(bool state);
 bool keyIsPressed(void);    
+void flagsSet(void);
 #endif
