@@ -5,7 +5,7 @@
 
 struct Snake snake;
 
-double delayTicks = 1; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
+uint8_t delayTicks = 1; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
 
 uint32_t faceStartingX;
 uint32_t faceStartingY;
