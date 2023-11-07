@@ -113,6 +113,13 @@ void interpretCommand(char command[]){
 	}
 	else if(compareStrings(command, testdivzero)==0){
 		call_excepDivZero();
+		call_drawStringFormatted("SARACATUNGA", GREEN, RED, 3);
+		while(1){
+			int letter = call_getChar();
+			if(letter!=0){
+				return;
+			}
+		}
 		return;
 	}
 	else if(compareStrings(command, testinvalidopcode)==0){
