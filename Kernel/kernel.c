@@ -88,6 +88,7 @@ int main()
 	load_idt();
 	initialState();
 	userBuild();
+    _sti();
 	((EntryPoint)sampleCodeModuleAddress)();
 	while(1);
 	return 0;
