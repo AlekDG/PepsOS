@@ -38,6 +38,8 @@ GLOBAL call_month
 GLOBAL call_year
 GLOBAL call_excepDivZero
 GLOBAL call_excepInvalidOp
+GLOBAL call_free
+GLOBAL call_malloc
 
 %macro call_to_handler 1
     push rbp
@@ -130,6 +132,10 @@ call_month:
     call_to_handler 37
 call_year:
     call_to_handler 38
+call_malloc:
+    call_to_handler 39
+call_free:
+    call_to_handler 40
 call_excepDivZero:
     xor rdx,rdx
     div rdx

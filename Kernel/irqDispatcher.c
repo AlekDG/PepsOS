@@ -4,6 +4,7 @@
 #include <video.h>
 #include <lib.h>
 #include <sound.h>
+#include <memMan.h>
 
 static void int_20();
 static void int_21();
@@ -153,6 +154,12 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 		break;
 	case 38:
 		return year();
+		break;
+	case 39:
+		return malloc(rsi);
+		break;
+	case 40:
+		free(rsi);
 		break;
 	default:
 		return 0;

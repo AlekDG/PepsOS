@@ -2,6 +2,10 @@
 
 #ifndef USERSYSCALLS
 #define USERSYSCALLS
+
+//Allocate and free memory
+void *call_malloc(int size);
+void call_free(void* toFree);
 //Prints the Registries
 void call_regRead(void);
 //Paints the entire screen a single color in hexadecimal
