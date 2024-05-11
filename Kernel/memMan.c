@@ -1,31 +1,36 @@
-#include <stdint.h>
-#include <stddef.h>
-#include <interrupts.h>
-#define TOTAL_HEAP_SIZE ( ( size_t ) ( 1024*25 ) )
-static uint8_t ucHeap[ TOTAL_HEAP_SIZE ];
-static size_t xNextFreeByte = ( size_t ) 0;
+#include <memMan.h>
 
-void* malloc(int size){
-    void *pvReturn = NULL;
-    static uint8_t *pucAlignedHeap = NULL;
-    static size_t xNextFreeByte = ( size_t ) 0;
+typedef struct MemoryManagerCDT {
+    char *nextAddress;
+    char *startAddress;
+    size_t size;
+    size_t spaceUsed;
+} MemoryManagerCDT;
 
-	_cli();
-	{
-		/* Check there is enough room left for the allocation. */
-		if( ((xNextFreeByte + size) > xNextFreeByte ))/* Check for overflow. */
-		{
-			/* Return the next free byte then increment the index past this
-			block. */
-			pvReturn = pucAlignedHeap + xNextFreeByte;
-			xNextFreeByte += size;
-		}
-	}
-	_sti();
-	return pvReturn;
+MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
+    MemoryManagerADT memoryManager = (MemoryManagerADT) memoryForMemoryManager;
+    memoryManager->nextAddress = managedMemory;
+    memoryManager->spaceUsed = 0;
+    memoryManager->size = 100000;
+    memoryManager->startAddress = NULL; //  Donde termina el userspace.
+    return memoryManager;
+}
+
+void *allocMemory(MemoryManagerADT const restrict memoryManager, const size_t memoryToAllocate) {
+
+
+    if(memoryManager->spaceUsed + memoryToAllocate > memoryManager->size){
+        return NULL;
+    }
+    else{
+        char *allocation = memoryManager->nextAddress;
+        memoryManager->nextAddress += memoryToAllocate;
+        memoryManager->spaceUsed += memoryToAllocate;
+        return (void *) allocation;
+    }
 
 }
 
-void free(void* toFree){
-
+void my_free(void * toFree){
+    ;
 }

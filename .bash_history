@@ -125,3 +125,29 @@ make all
 cd ..
 make all
 exit
+cd /root
+cd Toolchain
+make all
+cd ..
+make all
+exit
+cd /root
+cd Toolchain
+make all
+cd ..
+make all
+exit
+cd /root
+cd Toolchain
+make all
+cd ..
+make all
+make all
+make all
+make all
+make all
+make all
+make all
+make all
+make all
+exit
