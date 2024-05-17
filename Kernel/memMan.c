@@ -18,7 +18,6 @@ MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager
 
 void *allocMemory(MemoryManagerADT const restrict memoryManager, const size_t memoryToAllocate) {
 
-
     if(memoryManager->spaceUsed + memoryToAllocate > memoryManager->size){
         return NULL;
     }
@@ -31,6 +30,8 @@ void *allocMemory(MemoryManagerADT const restrict memoryManager, const size_t me
 
 }
 
+
 void my_free(void * toFree){
-    ;
+    memoryManager->nextAddress = memoryManager->startAddress;
+    memoryManager->spaceUsed = 0;
 }
