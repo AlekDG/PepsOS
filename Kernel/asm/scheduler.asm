@@ -5,7 +5,7 @@ section .text
 prepareStack:
     push rbp
     mov rbp, rsp
-    
+
     mov rsp, rsi ; new stack
     ;intento el align
     ;Comienzo a crear el nuevo stack
@@ -21,3 +21,7 @@ prepareStack:
     pop rbp
     ret
 
+
+
+haltCpu:
+    hlt

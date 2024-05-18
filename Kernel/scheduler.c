@@ -7,6 +7,7 @@
 #include "include/memMan.h"
 
 extern uint64_t prepareStack(uint64_t rsp, uint64_t rip);
+extern int haltCpu();
 
 typedef int (*newProcess) (int,char*);
 
@@ -33,6 +34,7 @@ typedef struct processTable{
     Process *ready;
     Process *lastReady;
     Process *blocked;
+    Process *halt;
 } processTable;
 /*
 la idea es tener una lista de procesos ready. B -> C -> D donde runningProcess = A y cuando se cumple
@@ -52,6 +54,7 @@ processTable createPCB(){
     pcb.ready = NULL;
     pcb.lastReady = NULL;
     pcb.blocked = NULL;
+    pcb.halt = createProcessStruct(haltCpu(0,"halt"),0,"halt");
     return pcb;
 }
 
@@ -69,11 +72,18 @@ uint64_t scheduler(processTable pcb,uint64_t rsp){
             return rsp; 
             }
         //como no hay nadie ready, paso pcb.running a la lista de blocked y seteo como running a proceso que hace halt
+        if(pcb.running != pcb.halt){
         pcb.running->next = pcb.blocked;
         pcb.blocked = pcb.running;
-        pcb.running = halt(); //VER
-        return 0x00000000; //PONER STACK HALT!!
+        pcb.running = pcb.halt; 
+        }
+        return pcb.halt->rsp; 
     }
+
+    if(pcb.running == pcb.halt){
+     pcb.running = pcb.ready;
+     pcb.ready = pcb.running->next;
+    }else{
 
    Process* current = pcb.running;
    current->rsp = rsp;
@@ -94,7 +104,7 @@ uint64_t scheduler(processTable pcb,uint64_t rsp){
      pcb.running = pcb.ready;
      pcb.ready = pcb.running->next;
      }
-
+    }
    return pcb.running->rsp;
    }
 
@@ -122,8 +132,7 @@ int unblock(int pid, processTable pcb){
     //si el proceso no esta en block, no hago nada
 }
 
-
-int createProcess(newProcess process,int argc, char* argv, processTable pcb){
+Process* createProcessStruct(newProcess process,int argc, char*argv){
     uint64_t newProcessStack = 0;//= allocMemory(....);
     newProcessStack = prepareStack(newProcessStack,process);
     Process* newProcess = 0;//allocMemory(process);
@@ -132,6 +141,13 @@ int createProcess(newProcess process,int argc, char* argv, processTable pcb){
     newProcess->state = READY;
     newProcess->rsp = newProcessStack /*+ lo que agregue en prepareStack*/ ;
     newProcess->next = NULL;
+    return newProcess;
+
+}
+
+
+int createProcess(newProcess process,int argc, char* argv, processTable pcb){
+    Process* newProcess = createProcessStruct(process,argc,argv);
     if(pcb.ready == NULL){
         pcb.ready = newProcess;
         pcb.lastReady = newProcess;
@@ -140,3 +156,5 @@ int createProcess(newProcess process,int argc, char* argv, processTable pcb){
     }
     return newProcess->pid;
 }
+
+
