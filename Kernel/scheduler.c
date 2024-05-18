@@ -4,6 +4,13 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "include/lib.h"
+#include "include/memMan.h"
+
+extern uint64_t prepareStack(uint64_t rsp, uint64_t rip);
+
+typedef int (*newProcess) (int,char*);
+
+static int nextPid = 0;
 
 typedef enum State{
     BLOCKED,
@@ -34,32 +41,61 @@ D -> C -> A (osea aplicamos round robin). Cuando un proc se bloquea pasa a la li
 pasa o al final o al principio de ready y se llama al scheduler
 */
 
-
+/**
+ * Create a new process table
+ * @return a new process table 
+*/
+processTable createPCB(){
+    processTable pcb;
+    pcb.processCount = 0;
+    pcb.running = NULL;
+    pcb.ready = NULL;
+    pcb.lastReady = NULL;
+    pcb.blocked = NULL;
+    return pcb;
+}
 
 /**
  * Round Robin Scheduler implementation. Change the current running process for a ready one if it exists.
+ * If the running process was blocked, it should be noted en the pcb table before calling this procedure.
  * @param pcb the process table
  * @param rsp the stack pointer of the current running process
+ * @return the new rsp
 */
-void scheduler(processTable pcb,uint64_t rsp){
-    if(pcb.ready != NULL ){
+uint64_t scheduler(processTable pcb,uint64_t rsp){
+    if(pcb.ready == NULL ){
         if(pcb.running->state != BLOCKED){
             //Si no hay nadie mas en estado ready, sigo con este proceso
-            return; }
-        //paso pcb.running a blocked y seteo como running a proceso que hace halt
+            return rsp; 
+            }
+        //como no hay nadie ready, paso pcb.running a la lista de blocked y seteo como running a proceso que hace halt
+        pcb.running->next = pcb.blocked;
+        pcb.blocked = pcb.running;
+        pcb.running = halt(); //VER
+        return 0x00000000; //PONER STACK HALT!!
     }
+
    Process* current = pcb.running;
    current->rsp = rsp;
 
    if(pcb.running->state == BLOCKED){
      //paso a blocked y tomo el primero de ready como running 
-   }
-   //si estoy aca el proceso running cumplio su quantum -> lo ponemos al final de la lista de ready 
-   //y tomamos el primer ready como running 
-   pcb.lastReady->next = current;
-   pcb.lastReady = current;
-   pcb.running = pcb.ready;
-   pcb.ready = pcb.running->next;
+     pcb.running->next = pcb.blocked;
+     pcb.blocked = pcb.running;
+     pcb.running = pcb.ready;
+     pcb.ready = pcb.ready->next;
+     pcb.running->next = NULL;
+   }else{
+     //si estoy aca el proceso running cumplio su quantum -> lo ponemos al final de la lista de ready 
+     //y tomamos el primer ready como running 
+     current->next = NULL;
+     pcb.lastReady->next = current;
+     pcb.lastReady = current;
+     pcb.running = pcb.ready;
+     pcb.ready = pcb.running->next;
+     }
+
+   return pcb.running->rsp;
    }
 
 
@@ -84,4 +120,23 @@ int block(int pid, processTable pcb){
 int unblock(int pid, processTable pcb){
     //busco el proceso en la lista de block y lo paso a ready
     //si el proceso no esta en block, no hago nada
+}
+
+
+int createProcess(newProcess process,int argc, char* argv, processTable pcb){
+    uint64_t newProcessStack = 0;//= allocMemory(....);
+    newProcessStack = prepareStack(newProcessStack,process);
+    Process* newProcess = 0;//allocMemory(process);
+    newProcess->pid = nextPid++;
+    newProcess->priority = 0;
+    newProcess->state = READY;
+    newProcess->rsp = newProcessStack /*+ lo que agregue en prepareStack*/ ;
+    newProcess->next = NULL;
+    if(pcb.ready == NULL){
+        pcb.ready = newProcess;
+        pcb.lastReady = newProcess;
+    }else{
+        pcb.lastReady->next = newProcess;
+    }
+    return newProcess->pid;
 }
