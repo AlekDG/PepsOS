@@ -1,4 +1,5 @@
 GLOBAL prepareStack
+GLOBAL haltCpu
 
 section .text
 
@@ -10,12 +11,14 @@ prepareStack:
     ;intento el align
     ;Comienzo a crear el nuevo stack
     push 0x0 ;SS
-    push rsp + 3 ;RSP final
+    mov rax, rsp
+    add rax, 3
+    push rax ;RSP final
     push 0x202 ;RFLAGS
     push 0x8 ;CS
     push rdi ; RIP
     ;falta ver tema registros generales
-    mov eax, rsp 
+    mov rax, rsp 
 
     mov rsp, rbp
     pop rbp

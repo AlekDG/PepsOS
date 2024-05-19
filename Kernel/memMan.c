@@ -32,6 +32,6 @@ void *allocMemory(MemoryManagerADT const restrict memoryManager, const size_t me
 
 
 void my_free(void * toFree){
-    memoryManager->nextAddress = memoryManager->startAddress;
-    memoryManager->spaceUsed = 0;
+    //memoryManager->nextAddress = memoryManager->startAddress;
+    //memoryManager->spaceUsed = 0;
 }

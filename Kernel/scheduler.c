@@ -19,13 +19,13 @@ typedef enum State{
     RUNNING,
 } State;
 
-typedef struct {
+typedef struct process {
     regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos en el stack.
     uint64_t rsp;                           //Esto si lo quiero porque tenemos que guardar el puntero al stack para retomar y poder hacer popState
     unsigned int pid;
     State state;
     int priority;                          //deberiamos ver si directamente implementamos queue entonces esta info no dbeeria estar aca
-    Process *next;
+    struct process *next;
 }  Process; //podriamos ver de agregar el tiempo de quantum que corrio por si esta corriendo porque volvio de blocked y no por el timer tick
 
 typedef struct processTable{        
@@ -43,6 +43,8 @@ D -> C -> A (osea aplicamos round robin). Cuando un proc se bloquea pasa a la li
 pasa o al final o al principio de ready y se llama al scheduler
 */
 
+Process* createProcessStruct(newProcess process,int argc, char*argv);
+
 /**
  * Create a new process table
  * @return a new process table 
@@ -54,7 +56,7 @@ processTable createPCB(){
     pcb.ready = NULL;
     pcb.lastReady = NULL;
     pcb.blocked = NULL;
-    pcb.halt = createProcessStruct(haltCpu(0,"halt"),0,"halt");
+    pcb.halt = createProcessStruct(haltCpu,0,"halt");
     return pcb;
 }
 
@@ -134,7 +136,7 @@ int unblock(int pid, processTable pcb){
 
 Process* createProcessStruct(newProcess process,int argc, char*argv){
     uint64_t newProcessStack = 0;//= allocMemory(....);
-    newProcessStack = prepareStack(newProcessStack,process);
+    newProcessStack = prepareStack(newProcessStack,(uint64_t) process);
     Process* newProcess = 0;//allocMemory(process);
     newProcess->pid = nextPid++;
     newProcess->priority = 0;
