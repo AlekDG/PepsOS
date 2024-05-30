@@ -4,38 +4,16 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "include/lib.h"
+#include "include/BlockMemoryManager.h"
 #include "include/memMan.h"
-
-extern uint64_t prepareStack(uint64_t rsp, uint64_t rip);
-extern int haltCpu();
+#include "include/scheduler.h"
 
 typedef int (*newProcess) (int,char*);
 
 static int nextPid = 0;
 
-typedef enum State{
-    BLOCKED,
-    READY,
-    RUNNING,
-} State;
+MemoryManagerADT* mem;
 
-typedef struct process {
-    regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos en el stack.
-    uint64_t rsp;                           //Esto si lo quiero porque tenemos que guardar el puntero al stack para retomar y poder hacer popState
-    unsigned int pid;
-    State state;
-    int priority;                          //deberiamos ver si directamente implementamos queue entonces esta info no dbeeria estar aca
-    struct process *next;
-}  Process; //podriamos ver de agregar el tiempo de quantum que corrio por si esta corriendo porque volvio de blocked y no por el timer tick
-
-typedef struct processTable{        
-    int processCount;
-    Process *running;
-    Process *ready;
-    Process *lastReady;
-    Process *blocked;
-    Process *halt;
-} processTable;
 /*
 la idea es tener una lista de procesos ready. B -> C -> D donde runningProcess = A y cuando se cumple
 el quantum A pasa al final de la lista entonces queda running = B y lastProc = A quedando la lista
@@ -188,9 +166,9 @@ int unblock(int pid, processTable pcb){
 }
 
 Process* createProcessStruct(newProcess process,int argc, char*argv){
-    uint64_t newProcessStack = 0;//= allocMemory(....);
-    newProcessStack = prepareStack(newProcessStack,(uint64_t) process);
-    Process* newProcess = 0;//allocMemory(process);
+    uint64_t newProcessStack = allocMemory(mem,PROCESS_STACK_SIZE);
+    newProcessStack = prepareStack(newProcessStack,(uint64_t) process,argc,argv);
+    Process* newProcess = allocMemory(mem,sizeof(process));
     newProcess->pid = nextPid++;
     newProcess->priority = 0;
     newProcess->state = READY;
@@ -208,8 +186,12 @@ int createProcess(newProcess process,int argc, char* argv, processTable pcb){
         pcb.lastReady = newProcess;
     }else{
         pcb.lastReady->next = newProcess;
+        pcb.lastReady = newProcess;
     }
     return newProcess->pid;
 }
 
-
+//retorna 1 si lo mato, 0 si no
+int kill(int pid){
+    return 0;
+}
