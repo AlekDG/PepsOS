@@ -68,6 +68,7 @@ processTable createPCB(){
  * @return the new rsp
 */
 uint64_t scheduler(processTable pcb,uint64_t rsp){
+    pcb.running->rsp = rsp;
     if(pcb.ready == NULL ){
         if(pcb.running->state != BLOCKED){
             //Si no hay nadie mas en estado ready, sigo con este proceso
@@ -79,7 +80,7 @@ uint64_t scheduler(processTable pcb,uint64_t rsp){
         pcb.blocked = pcb.running;
         pcb.running = pcb.halt; 
         }
-        return pcb.halt->rsp; 
+        return pcb.running->rsp; 
     }
 
     if(pcb.running == pcb.halt){
@@ -87,25 +88,23 @@ uint64_t scheduler(processTable pcb,uint64_t rsp){
      pcb.ready = pcb.running->next;
     }else{
 
-   Process* current = pcb.running;
-   current->rsp = rsp;
-
-   if(pcb.running->state == BLOCKED){
-     //paso a blocked y tomo el primero de ready como running 
-     pcb.running->next = pcb.blocked;
-     pcb.blocked = pcb.running;
-     pcb.running = pcb.ready;
-     pcb.ready = pcb.ready->next;
-     pcb.running->next = NULL;
-   }else{
-     //si estoy aca el proceso running cumplio su quantum -> lo ponemos al final de la lista de ready 
-     //y tomamos el primer ready como running 
-     current->next = NULL;
-     pcb.lastReady->next = current;
-     pcb.lastReady = current;
-     pcb.running = pcb.ready;
-     pcb.ready = pcb.running->next;
-     }
+            Process* current = pcb.running;
+            if(pcb.running->state == BLOCKED){
+              //paso a blocked y tomo el primero de ready como running 
+              pcb.running->next = pcb.blocked;
+              pcb.blocked = pcb.running;
+              pcb.running = pcb.ready;
+              pcb.ready = pcb.ready->next;
+              pcb.running->next = NULL;
+            }else{
+              //si estoy aca el proceso running cumplio su quantum -> lo ponemos al final de la lista de ready 
+              //y tomamos el primer ready como running 
+              current->next = NULL;
+              pcb.lastReady->next = current;
+              pcb.lastReady = current;
+              pcb.running = pcb.ready;
+              pcb.ready = pcb.running->next;
+              }
     }
    return pcb.running->rsp;
    }
@@ -121,17 +120,71 @@ uint64_t scheduler(processTable pcb,uint64_t rsp){
    }
 
 
+
 //ret 1 si lo bloqueo, 0 si no
 int block(int pid, processTable pcb){
     //busco el proceso en la lista de ready y lo paso a blocked
     //si el proceso no esta en ready, no hago nada
+    if(pcb.running->pid == pid){
+        pcb.running->state = BLOCKED;
+        //Interrupt 0x20 para hacer el cambio de contexto
+        return 1;
+    }
+
+    Process* aux = pcb.ready;
+    if(aux != NULL && aux->pid == pid){
+        aux->state = BLOCKED;
+        pcb.ready = aux->next;
+        aux->next = pcb.blocked;
+        pcb.blocked = aux;
+        return 1;
+    }
+    while(aux != NULL){
+        if(aux->next != NULL && aux->next->pid == pid){
+            Process* blocked = aux->next ;
+            blocked->state = BLOCKED;
+            aux->next = blocked->next;
+            if(blocked == pcb.lastReady){
+                pcb.lastReady = aux;
+            }
+            blocked->next = pcb.blocked;
+            pcb.blocked = blocked;
+            return 1;
+        }
+        aux = aux->next;
+    }
+    return 0;
 }
+
 
 
 //ret 1 si lo paso a ready, 0 si no
 int unblock(int pid, processTable pcb){
     //busco el proceso en la lista de block y lo paso a ready
     //si el proceso no esta en block, no hago nada
+    Process* aux = pcb.blocked;
+    if(aux != NULL && aux->pid == pid){
+        aux->state = READY;
+        pcb.blocked = aux->next;
+        pcb.lastReady->next = aux;
+        pcb.lastReady = aux;
+        aux->next = NULL;
+        return 1;
+    }
+    while(aux != NULL){
+        if(aux->next != NULL && aux->next->pid == pid){
+            Process* unblocked = aux->next ;
+            unblocked->state = READY;
+            aux->next = unblocked->next;
+            pcb.lastReady->next = unblocked;
+            pcb.lastReady = unblocked;
+            unblocked->next = NULL;
+            return 1;
+        }
+        aux = aux->next;
+    }
+    return 0;
+
 }
 
 Process* createProcessStruct(newProcess process,int argc, char*argv){
