@@ -124,7 +124,8 @@ void *allocMemory(MemoryManagerADT const restrict memoryManager, const size_t me
         BlockADT block = createBlock(memoryManager->startAddress + memoryManager->spaceUsed + 1, memoryToAllocate, memoryManager->firstBlock);
         block->isFree = 0;
         memoryManager->firstBlock = block;
-        memoryManager->spaceUsed += memoryToAllocate;
+        memoryManager->spaceUsed += memoryToAllocate + sizeof block->startAddress +
+                                 sizeof block->size + sizeof block->spaceUsed + sizeof block->nextBlock + sizeof block->isFree;;
         return block->startAddress;
     }
 }
@@ -146,12 +147,5 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager, void * memToFr
     else {
         freeMemoryRec(memoryManager, memToFree, currentBlock->nextBlock);
     }
-}
-
-char * printMemStatus(MemoryManagerADT const restrict memoryManager){
-    char * result;
-    sprintf(result, "Current Memory Status\nTotal Memory: %d, Allocated Memory: %d, Free Memory: %d\n", (int) memoryManager->size,
-            (int) memoryManager->spaceUsed, (int) (memoryManager->size-memoryManager->spaceUsed));
-    return result;
 }
 

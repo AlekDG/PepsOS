@@ -1,7 +1,7 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-#define PROCESS_STACK_SIZE 50 
+#define PROCESS_STACK_SIZE 1000 
 typedef int (*newProcess) (int,char*);
 
 typedef enum State{
@@ -28,7 +28,7 @@ typedef struct processTable{
     Process *halt;
 } processTable;
 
-uint64_t prepareStack(uint64_t rsp, uint64_t rip, int argc, char* argv);
+uint64_t prepareStack(void* rsp, uint64_t rip, int argc, char* argv);
 int haltCpu();
 
 /**

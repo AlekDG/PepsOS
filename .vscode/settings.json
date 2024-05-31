@@ -6,6 +6,7 @@
         "idtloader.h": "c",
         "stdint.h": "c",
         "time.h": "c",
-        "usersyscalls.h": "c"
+        "usersyscalls.h": "c",
+        "stddef.h": "c"
     }
 }

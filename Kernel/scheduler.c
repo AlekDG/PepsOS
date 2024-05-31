@@ -169,7 +169,7 @@ int unblock(int pid){
 
 Process* createProcessStruct(newProcess process,int argc, char*argv){
     int s = PROCESS_STACK_SIZE;
-    uint64_t newProcessStack = (uint64_t) allocMemory(*mem , s );
+    void* newProcessStack = allocMemory(*mem , s ) + PROCESS_STACK_SIZE;
     newProcessStack =  prepareStack(newProcessStack,(uint64_t) process,argc,argv);
     Process* newProcess = allocMemory(*mem,sizeof(process));
     newProcess->pid = nextPid++;
