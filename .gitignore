@@ -11,3 +11,6 @@
 *.o
 
 .bash_history
+*.elf
+.gdb*
+r.sh

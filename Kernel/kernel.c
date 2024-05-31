@@ -9,6 +9,9 @@
 #include <sound.h>
 #include <time.h>
 #include <interrupts.h>
+#include "include/BlockMemoryManager.h"
+#include "include/memMan.h"
+#include "include/scheduler.h"
 
 extern uint8_t text;
 extern uint8_t rodata;
@@ -84,11 +87,19 @@ void * initializeKernelBinary()
 	return getStackBase();
 }
 
+
+static MemoryManagerADT systemMemory = 0x0000000000050000;
+static processTable* systemProcessTable;
+
 int main()
 {	
 	load_idt();
 	initialState();
+	systemMemory = createMemoryManager(0x0000000000050000,(void *) 0x0000000000500000);
+	systemProcessTable = createPCB(&systemMemory);
+	//createProcess(((EntryPoint)sampleCodeModuleAddress),0,"menu");	
 	userBuild();
+
     _sti();
 	((EntryPoint)sampleCodeModuleAddress)();
 	while(1);

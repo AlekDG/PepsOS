@@ -12,7 +12,9 @@
 
 static int nextPid = 0;
 
-MemoryManagerADT* mem;
+static MemoryManagerADT* mem;
+
+static processTable pcb;
 
 /*
 la idea es tener una lista de procesos ready. B -> C -> D donde runningProcess = A y cuando se cumple
@@ -27,15 +29,15 @@ Process* createProcessStruct(newProcess process,int argc, char*argv);
  * Create a new process table
  * @return a new process table 
 */
-processTable createPCB(){
-    processTable pcb;
-    pcb.processCount = 0;
+processTable* createPCB(MemoryManagerADT* memory){
+    mem = memory;
+    pcb.processCount = 15;
     pcb.running = NULL;
     pcb.ready = NULL;
     pcb.lastReady = NULL;
     pcb.blocked = NULL;
     pcb.halt = createProcessStruct(haltCpu,0,"halt");
-    return pcb;
+    return &pcb;
 }
 
 /**
@@ -45,7 +47,7 @@ processTable createPCB(){
  * @param rsp the stack pointer of the current running process
  * @return the new rsp
 */
-uint64_t scheduler(processTable pcb,uint64_t rsp){
+uint64_t scheduler(uint64_t rsp){
     pcb.running->rsp = rsp;
     if(pcb.ready == NULL ){
         if(pcb.running->state != BLOCKED){
@@ -93,14 +95,14 @@ uint64_t scheduler(processTable pcb,uint64_t rsp){
  * @param pcb the proccess table
  * @return the pid of the running process
 */
-   int getPid(processTable pcb){
+   int getPid(){
     return pcb.running->pid;
    }
 
 
 
 //ret 1 si lo bloqueo, 0 si no
-int block(int pid, processTable pcb){
+int block(int pid){
     //busco el proceso en la lista de ready y lo paso a blocked
     //si el proceso no esta en ready, no hago nada
     if(pcb.running->pid == pid){
@@ -137,7 +139,7 @@ int block(int pid, processTable pcb){
 
 
 //ret 1 si lo paso a ready, 0 si no
-int unblock(int pid, processTable pcb){
+int unblock(int pid){
     //busco el proceso en la lista de block y lo paso a ready
     //si el proceso no esta en block, no hago nada
     Process* aux = pcb.blocked;
@@ -180,7 +182,7 @@ Process* createProcessStruct(newProcess process,int argc, char*argv){
 }
 
 
-int createProcess(newProcess process,int argc, char* argv, processTable pcb){
+int createProcess(newProcess process,int argc, char* argv){
     Process* newProcess = createProcessStruct(process,argc,argv);
     if(pcb.ready == NULL){
         pcb.ready = newProcess;

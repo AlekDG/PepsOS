@@ -35,7 +35,7 @@ int haltCpu();
  * Create a new process table
  * @return a new process table 
 */
-processTable createPCB();
+processTable* createPCB(MemoryManagerADT* memory);
 
 /**
  * Round Robin Scheduler implementation. Change the current running process for a ready one if it exists.
@@ -44,25 +44,25 @@ processTable createPCB();
  * @param rsp the stack pointer of the current running process
  * @return the new rsp
 */
-uint64_t scheduler(processTable pcb,uint64_t rsp);
+uint64_t scheduler(uint64_t rsp);
 
 /**
  * Get current running process pid
  * @param pcb the proccess table
  * @return the pid of the running process
 */
-   int getPid(processTable pcb);
+   int getPid();
 
 
    //ret 1 si lo bloqueo, 0 si no
-int block(int pid, processTable pcb);
+int block(int pid);
 
 
 
 //ret 1 si lo paso a ready, 0 si no
-int unblock(int pid, processTable pcb);
+int unblock(int pid);
 
-int createProcess(newProcess process,int argc, char* argv, processTable pcb);
+int createProcess(newProcess process,int argc, char* argv);
 
 //retorna 1 si lo mato, 0 si no
 int kill(int pid);
