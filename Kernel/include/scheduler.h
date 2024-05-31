@@ -2,6 +2,7 @@
 #define SCHEDULER_H
 
 #define PROCESS_STACK_SIZE 50 
+typedef int (*newProcess) (int,char*);
 
 typedef enum State{
     BLOCKED,

@@ -8,7 +8,7 @@
 #include "include/memMan.h"
 #include "include/scheduler.h"
 
-typedef int (*newProcess) (int,char*);
+
 
 static int nextPid = 0;
 
@@ -166,9 +166,10 @@ int unblock(int pid, processTable pcb){
 }
 
 Process* createProcessStruct(newProcess process,int argc, char*argv){
-    uint64_t newProcessStack = allocMemory(mem,PROCESS_STACK_SIZE);
-    newProcessStack = prepareStack(newProcessStack,(uint64_t) process,argc,argv);
-    Process* newProcess = allocMemory(mem,sizeof(process));
+    int s = PROCESS_STACK_SIZE;
+    uint64_t newProcessStack = (uint64_t) allocMemory(*mem , s );
+    newProcessStack =  prepareStack(newProcessStack,(uint64_t) process,argc,argv);
+    Process* newProcess = allocMemory(*mem,sizeof(process));
     newProcess->pid = nextPid++;
     newProcess->priority = 0;
     newProcess->state = READY;
