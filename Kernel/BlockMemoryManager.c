@@ -3,7 +3,7 @@
 //
 #include "BlockMemoryManager.h"
 #include <stddef.h>
-#include <stdlib.h>
+#include <stdio.h>
 
 typedef struct MemoryManagerCDT {
     char *startAddress;
@@ -97,6 +97,13 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager, void * memToFr
 	else{
 		freeMemoryRec(memoryManager, memToFree, currentBlock->nextBlock);
 	}
+}
+
+char * printMemStatus(MemoryManagerADT const restrict memoryManager){
+    char * result;
+    sprintf(result, "Current Memory Status\nTotal Memory: %d, Allocated Memory: %d, Free Memory: %d\n", (int) memoryManager->size,
+            (int) memoryManager->spaceUsed, (int) (memoryManager->size-memoryManager->spaceUsed));
+    return result;
 }
 
 
