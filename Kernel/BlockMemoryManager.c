@@ -100,25 +100,3 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager, void * memToFr
 }
 
 
-int main(){
-	void * memoryForManager = malloc(1000);
-	void * managedMem = malloc(1000);
-	MemoryManagerADT memoryManager = createMemoryManager(memoryForManager, managedMem);
-	void * newArr = allocMemory(memoryManager, 100);
-	void * otherArr = allocMemory(memoryManager, 12);
-	int * int_arr = (int *) newArr;
-	for(int i = 0; i < 10; i++){
-		int_arr[i] = i;
-	}
-	char * char_arr = (char *) otherArr;
-	for(char i = 0; i < 10; i++){
-		char_arr[i] = 'a'+i;
-	}
-	freeMemory(memoryManager, newArr);
-	void * aThirdArr = allocMemory(memoryManager, 50);
-	free(memoryForManager);
-	free(managedMem);
-	free(newArr);
-	free(int_arr);
-	return 0;
-}

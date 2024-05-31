@@ -158,9 +158,9 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 	case 39:
 		return allocMemory(rsi, rdx);
 		break;
-	case 40:
+	/*case 40:
 		my_free(rsi);
-		break;
+		break;*/
 	default:
 		return 0;
 	}
