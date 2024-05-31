@@ -37,7 +37,7 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager, void * memToFr
 BlockADT createBuddyBlock(int size, BlockADT currentBlock, void * startAddress);
 void initiateBuddySystem(MemoryManagerADT const restrict memoryManager);
 MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
-BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock);
+BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock,BlockADT * result);
 
 
 MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
@@ -80,7 +80,7 @@ BlockADT createBuddyBlock(int size, BlockADT currentBlock, void * startAddress){
 }
 #endif
 
-BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock){
+BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock, BlockADT* result ){
     if(currentBlock != NULL){
         if(currentBlock->isFree == 1){
             //	Si soy un bloque libre de size suficiente, escribir.
@@ -96,7 +96,7 @@ BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock){
             }
         }
         else{
-            currentBlock->nextBlock = createBlock(startAddress, size, currentBlock->nextBlock);
+            currentBlock->nextBlock = createBlock(startAddress, size, currentBlock->nextBlock,result);
             return currentBlock;
         }
         return currentBlock;
@@ -111,6 +111,7 @@ BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock){
         newBlock->spaceUsed = 0;
         newBlock->nextBlock = NULL;
         newBlock->isFree = 0;
+        *result = newBlock;
         return newBlock;
     }
 }
@@ -121,7 +122,8 @@ void *allocMemory(MemoryManagerADT const restrict memoryManager, const size_t me
     }
     else{
         //  Retorno el puntero al inicio de un nuevo bloque de memoria.
-        BlockADT block = createBlock(memoryManager->startAddress + memoryManager->spaceUsed + 1, memoryToAllocate, memoryManager->firstBlock);
+        BlockADT block = NULL;
+        createBlock(memoryManager->startAddress + memoryManager->spaceUsed + 1, memoryToAllocate, memoryManager->firstBlock,&block);
         block->isFree = 0;
         memoryManager->firstBlock = block;
         memoryManager->spaceUsed += memoryToAllocate + sizeof block->startAddress +
