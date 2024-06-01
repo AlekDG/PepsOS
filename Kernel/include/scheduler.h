@@ -12,7 +12,7 @@ typedef enum State{
 
 typedef struct process {
     regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos en el stack.
-    uint64_t rsp;                           //Esto si lo quiero porque tenemos que guardar el puntero al stack para retomar y poder hacer popState
+    void* rsp;                           //Esto si lo quiero porque tenemos que guardar el puntero al stack para retomar y poder hacer popState
     unsigned int pid;
     State state;
     int priority;                          //deberiamos ver si directamente implementamos queue entonces esta info no dbeeria estar aca
@@ -28,7 +28,7 @@ typedef struct processTable{
     Process *halt;
 } processTable;
 
-uint64_t prepareStack(void* rsp, uint64_t rip, int argc, char* argv);
+void* prepareStack(void* rsp, uint64_t rip, int argc, char* argv);
 int haltCpu();
 
 /**
@@ -44,7 +44,7 @@ processTable* createPCB(MemoryManagerADT* memory);
  * @param rsp the stack pointer of the current running process
  * @return the new rsp
 */
-uint64_t scheduler(uint64_t rsp);
+void* scheduler(void* rsp);
 
 /**
  * Get current running process pid
@@ -66,5 +66,10 @@ int createProcess(newProcess process,int argc, char* argv);
 
 //retorna 1 si lo mato, 0 si no
 int kill(int pid);
+
+
+void startFirstProcess();
+
+void setFirstProcess(void* rsp);
 
 #endif

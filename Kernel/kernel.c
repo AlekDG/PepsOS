@@ -97,11 +97,12 @@ int main()
 	initialState();
 	systemMemory = createMemoryManager(0x0000000000050000,(void *) 0x0000000000500000);
 	systemProcessTable = createPCB(&systemMemory);
-	//createProcess(((EntryPoint)sampleCodeModuleAddress),0,"menu");	
-	userBuild();
+	createProcess(((EntryPoint)sampleCodeModuleAddress),0,"menu");	
+	startFirstProcess();
+	//userBuild();
 
     _sti();
-	((EntryPoint)sampleCodeModuleAddress)();
+	//((EntryPoint)sampleCodeModuleAddress)();
 	while(1);
 	return 0;
 }

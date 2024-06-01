@@ -47,7 +47,7 @@ processTable* createPCB(MemoryManagerADT* memory){
  * @param rsp the stack pointer of the current running process
  * @return the new rsp
 */
-uint64_t scheduler(uint64_t rsp){
+void* scheduler(void* rsp){
     pcb.running->rsp = rsp;
     if(pcb.ready == NULL ){
         if(pcb.running->state != BLOCKED){
@@ -197,4 +197,10 @@ int createProcess(newProcess process,int argc, char* argv){
 //retorna 1 si lo mato, 0 si no
 int kill(int pid){
     return 0;
+}
+
+void startFirstProcess(){
+    pcb.running = pcb.ready;
+    pcb.ready = pcb.lastReady = NULL;
+    setFirstProcess(pcb.running->rsp);
 }
