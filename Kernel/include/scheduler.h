@@ -1,14 +1,20 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-#define PROCESS_STACK_SIZE 1000 
+#define PROCESS_STACK_SIZE 10000
 typedef int (*newProcess) (int,char*);
 
 typedef enum State{
     BLOCKED,
     READY,
     RUNNING,
+    EXITED,
 } State;
+
+typedef enum processType{
+    FOREGROUND,
+    BACKGROUND,
+} processType;
 
 typedef struct process {
     regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos en el stack.
@@ -17,6 +23,9 @@ typedef struct process {
     State state;
     int priority;                          //deberiamos ver si directamente implementamos queue entonces esta info no dbeeria estar aca
     struct process *next;
+    int parentPID;
+    processType tipo;
+    
 }  Process; //podriamos ver de agregar el tiempo de quantum que corrio por si esta corriendo porque volvio de blocked y no por el timer tick
 
 typedef struct processTable{        
@@ -71,5 +80,19 @@ int kill(int pid);
 void startFirstProcess();
 
 void setFirstProcess(void* rsp);
+
+void fireTimerInt();
+
+int createBackgroundProcess(newProcess process,int argc, char* argv);
+
+int createForegroundProcess(newProcess process,int argc, char* argv);
+
+void exit();
+
+/**
+ * Renunciar al cpu
+ * Si no hay procesos libres se asegura que seguira ejecutando el proceso llamador
+*/
+void yield();
 
 #endif

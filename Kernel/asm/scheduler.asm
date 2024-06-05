@@ -3,6 +3,8 @@ GLOBAL haltCpu
 
 global setFirstProcess
 
+GLOBAL fireTimerInt
+
 section .text
 
 
@@ -77,4 +79,6 @@ setFirstProcess:
 	iretq
 
 
-
+fireTimerInt:
+	int 20h
+	ret

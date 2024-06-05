@@ -41,6 +41,13 @@ GLOBAL call_excepInvalidOp
 GLOBAL call_free
 GLOBAL call_malloc
 
+GLOBAL call_createProcess
+
+GLOBAL call_getPid
+global call_createBackgroundProcess
+global call_createForegroundProcess
+global call_exit
+
 %macro call_to_handler 1
     push rbp
     mov rbp, rsp
@@ -134,8 +141,18 @@ call_year:
     call_to_handler 38
 call_malloc:
     call_to_handler 39
-call_free:
+call_createProcess:
     call_to_handler 40
+call_getPid:
+    call_to_handler 41
+call_createBackgroundProcess:
+    call_to_handler 42
+call_createForegroundProcess:
+    call_to_handler 43
+call_exit:
+    call_to_handler 44
+
+call_
 call_excepDivZero:
     xor rdx,rdx
     div rdx

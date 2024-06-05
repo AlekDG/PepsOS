@@ -31,7 +31,7 @@ Process* createProcessStruct(newProcess process,int argc, char*argv);
 */
 processTable* createPCB(MemoryManagerADT* memory){
     mem = memory;
-    pcb.processCount = 15;
+    pcb.processCount = 0;
     pcb.running = NULL;
     pcb.ready = NULL;
     pcb.lastReady = NULL;
@@ -50,12 +50,16 @@ processTable* createPCB(MemoryManagerADT* memory){
 void* scheduler(void* rsp){
     pcb.running->rsp = rsp;
     if(pcb.ready == NULL ){
-        if(pcb.running->state != BLOCKED){
+        if(pcb.running->state != BLOCKED && pcb.running->state != EXITED){
             //Si no hay nadie mas en estado ready, sigo con este proceso
             return rsp; 
             }
         //como no hay nadie ready, paso pcb.running a la lista de blocked y seteo como running a proceso que hace halt
-        if(pcb.running != pcb.halt){
+        if(pcb.running->state == EXITED){
+            //hago free
+            pcb.running = NULL;
+        }
+        if(pcb.running != pcb.halt){      
         pcb.running->next = pcb.blocked;
         pcb.blocked = pcb.running;
         pcb.running = pcb.halt; 
@@ -66,15 +70,24 @@ void* scheduler(void* rsp){
     if(pcb.running == pcb.halt){
      pcb.running = pcb.ready;
      pcb.ready = pcb.running->next;
+     if(pcb.ready  == NULL) pcb.lastReady = NULL ; //no hay readys
     }else{
 
             Process* current = pcb.running;
+            if(pcb.running->state == EXITED){
+              pcb.running = pcb.ready;
+              pcb.ready = pcb.running->next;
+              if(pcb.ready == NULL) pcb.lastReady = NULL;
+              //METER free
+              return pcb.running->rsp;
+            }
             if(pcb.running->state == BLOCKED){
               //paso a blocked y tomo el primero de ready como running 
               pcb.running->next = pcb.blocked;
               pcb.blocked = pcb.running;
               pcb.running = pcb.ready;
               pcb.ready = pcb.ready->next;
+              if(pcb.ready == NULL) pcb.lastReady = NULL;
               pcb.running->next = NULL;
             }else{
               //si estoy aca el proceso running cumplio su quantum -> lo ponemos al final de la lista de ready 
@@ -108,6 +121,7 @@ int block(int pid){
     if(pcb.running->pid == pid){
         pcb.running->state = BLOCKED;
         //Interrupt 0x20 para hacer el cambio de contexto
+        fireTimerInt();
         return 1;
     }
 
@@ -146,6 +160,7 @@ int unblock(int pid){
     if(aux != NULL && aux->pid == pid){
         aux->state = READY;
         pcb.blocked = aux->next;
+        if(pcb.ready == NULL) pcb.ready = aux;
         pcb.lastReady->next = aux;
         pcb.lastReady = aux;
         aux->next = NULL;
@@ -156,6 +171,7 @@ int unblock(int pid){
             Process* unblocked = aux->next ;
             unblocked->state = READY;
             aux->next = unblocked->next;
+            if(pcb.ready == NULL) pcb.ready = unblocked;
             pcb.lastReady->next = unblocked;
             pcb.lastReady = unblocked;
             unblocked->next = NULL;
@@ -169,9 +185,9 @@ int unblock(int pid){
 
 Process* createProcessStruct(newProcess process,int argc, char*argv){
     int s = PROCESS_STACK_SIZE;
-    void* newProcessStack = allocMemory(*mem , s ) + PROCESS_STACK_SIZE;
-    newProcessStack =  prepareStack(newProcessStack,(uint64_t) process,argc,argv);
-    Process* newProcess = allocMemory(*mem,sizeof(process));
+    void* newProcessStack = allocMemory(*mem , s ) + PROCESS_STACK_SIZE;            //VER DE AGREGAR VERIFICACION ret == NULL
+    newProcessStack =  prepareStack(newProcessStack,(uint64_t) process,0x876,0x678);
+    Process* newProcess = allocMemory(*mem,sizeof(Process));                       // ACA SAME
     newProcess->pid = nextPid++;
     newProcess->priority = 0;
     newProcess->state = READY;
@@ -183,7 +199,15 @@ Process* createProcessStruct(newProcess process,int argc, char*argv){
 
 
 int createProcess(newProcess process,int argc, char* argv){
-    Process* newProcess = createProcessStruct(process,argc,argv);
+    Process* newProcess = createProcessStruct(process,argc,argv);  // AGREGAR CHECK si es null hay error
+    newProcess->tipo = FOREGROUND;                     //AGREGAR COMO ARGUMENTO, ESTO ES PARA DEBUG RAPIDO
+    pcb.processCount++;
+    if(pcb.running != NULL){
+        newProcess->parentPID = pcb.running->pid;
+    }else{
+        //es el primer proceso
+        newProcess->parentPID = 0;
+    }
     if(pcb.ready == NULL){
         pcb.ready = newProcess;
         pcb.lastReady = newProcess;
@@ -196,6 +220,7 @@ int createProcess(newProcess process,int argc, char* argv){
 
 //retorna 1 si lo mato, 0 si no
 int kill(int pid){
+    
     return 0;
 }
 
@@ -203,4 +228,33 @@ void startFirstProcess(){
     pcb.running = pcb.ready;
     pcb.ready = pcb.lastReady = NULL;
     setFirstProcess(pcb.running->rsp);
+}
+
+
+int createBackgroundProcess(newProcess process,int argc, char* argv){
+    //no bloqueo el actual
+    return createProcess(process,argc,argv);
+
+}
+
+int createForegroundProcess(newProcess process,int argc, char* argv){
+    // bloqueo el actual
+    int pid = createProcess(process,argc,argv);
+    block(pcb.running->pid);
+    return pid;
+}
+
+void exit(){
+    pcb.running->state = EXITED;
+    if(pcb.running->tipo == FOREGROUND){ //desbloquo al padre!
+    unblock(pcb.running->parentPID);}
+    fireTimerInt();
+}
+
+/**
+ * Renunciar al cpu
+ * Si no hay procesos libres se asegura que seguira ejecutando el proceso llamador
+*/
+void yield(){
+    fireTimerInt();
 }
