@@ -220,6 +220,7 @@ int createProcess(newProcess process,int argc, char* argv){
 
 //retorna 1 si lo mato, 0 si no
 int kill(int pid){
+    
     return 0;
 }
 
@@ -247,5 +248,13 @@ void exit(){
     pcb.running->state = EXITED;
     if(pcb.running->tipo == FOREGROUND){ //desbloquo al padre!
     unblock(pcb.running->parentPID);}
+    fireTimerInt();
+}
+
+/**
+ * Renunciar al cpu
+ * Si no hay procesos libres se asegura que seguira ejecutando el proceso llamador
+*/
+void yield(){
     fireTimerInt();
 }

@@ -89,4 +89,10 @@ int createForegroundProcess(newProcess process,int argc, char* argv);
 
 void exit();
 
+/**
+ * Renunciar al cpu
+ * Si no hay procesos libres se asegura que seguira ejecutando el proceso llamador
+*/
+void yield();
+
 #endif
