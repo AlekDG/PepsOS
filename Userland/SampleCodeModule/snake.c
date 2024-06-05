@@ -50,6 +50,7 @@ void start_game()
                   start_game();
                   return;
             case 27:
+                  call_exit();
                   return;
             default:
                   break;

@@ -5,6 +5,7 @@
 #include <lib.h>
 #include <sound.h>
 #include <memMan.h>
+#include <scheduler.h>
 
 static void int_20();
 static void int_21();
@@ -158,9 +159,21 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8, 
 	case 39:
 		return allocMemory(rsi, rdx);
 		break;
-	/*case 40:
-		my_free(rsi);
-		break;*/
+	case 40:
+		return createProcess(rsi, rdx, rcx);
+		break;
+	case 41:
+		return getPid();
+		break;
+	case 42:
+		 return createBackgroundProcess(rsi, rdx, rcx);
+		 break;
+	case 43:
+		return createForegroundProcess(rsi, rdx, rcx);
+		break;
+	case 44:
+		exit();
+		break;
 	default:
 		return 0;
 	}

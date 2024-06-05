@@ -64,4 +64,8 @@ unsigned int call_hours();
 unsigned int call_day();
 unsigned int call_month();
 unsigned int call_year();
+int call_createProcess(void process(), int argc, char* argv);
+int call_createBackgroundProcess(void process(), int argc, char* argv);
+int call_createForegroundProcess(void process(), int argc, char* argv);
+void call_exit();
 #endif
