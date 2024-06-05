@@ -187,7 +187,7 @@ Process* createProcessStruct(newProcess process,int argc, char*argv){
     int s = PROCESS_STACK_SIZE;
     void* newProcessStack = allocMemory(*mem , s ) + PROCESS_STACK_SIZE;            //VER DE AGREGAR VERIFICACION ret == NULL
     newProcessStack =  prepareStack(newProcessStack,(uint64_t) process,0x876,0x678);
-    Process* newProcess = allocMemory(*mem,sizeof(process));                       // ACA SAME
+    Process* newProcess = allocMemory(*mem,sizeof(Process));                       // ACA SAME
     newProcess->pid = nextPid++;
     newProcess->priority = 0;
     newProcess->state = READY;
