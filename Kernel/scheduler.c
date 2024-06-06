@@ -25,6 +25,13 @@ pasa o al final o al principio de ready y se llama al scheduler
 
 Process* createProcessStruct(newProcess process,int argc, char*argv);
 
+void setPriorityQueuesNull(){
+    for(int i = 0; i < MAX_PRIORITY ; i++){
+        pcb.priorityQueue[i].lastReady = NULL;
+        pcb.priorityQueue[i].ready = NULL;
+    }
+}
+
 /**
  * Create a new process table
  * @return a new process table 
@@ -33,8 +40,7 @@ processTable* createPCB(MemoryManagerADT* memory){
     mem = memory;
     pcb.processCount = 0;
     pcb.running = NULL;
-    pcb.ready = NULL;
-    pcb.lastReady = NULL;
+    setPriorityQueuesNull();
     pcb.blocked = NULL;
     pcb.halt = createProcessStruct(haltCpu,0,"halt");
     return &pcb;
@@ -58,8 +64,8 @@ void* scheduler(void* rsp){
         if(pcb.running->state == EXITED){
             //hago free
             pcb.running = NULL;
-        }
-        if(pcb.running != pcb.halt){      
+            pcb.running = pcb.halt; 
+        }else if(pcb.running != pcb.halt){      
         pcb.running->next = pcb.blocked;
         pcb.blocked = pcb.running;
         pcb.running = pcb.halt; 
@@ -69,7 +75,7 @@ void* scheduler(void* rsp){
 
     if(pcb.running == pcb.halt){
      pcb.running = pcb.ready;
-     pcb.ready = pcb.running->next;
+     pcb.ready = pcb.running->next;  //y actualizar last ready
      if(pcb.ready  == NULL) pcb.lastReady = NULL ; //no hay readys
     }else{
 
@@ -116,7 +122,7 @@ void* scheduler(void* rsp){
 
 //ret 1 si lo bloqueo, 0 si no
 int block(int pid){
-    //busco el proceso en la lista de ready y lo paso a blocked
+    //busco el proceso en las listas de ready y lo paso a blocked
     //si el proceso no esta en ready, no hago nada
     if(pcb.running->pid == pid){
         pcb.running->state = BLOCKED;
@@ -125,27 +131,30 @@ int block(int pid){
         return 1;
     }
 
-    Process* aux = pcb.ready;
-    if(aux != NULL && aux->pid == pid){
-        aux->state = BLOCKED;
-        pcb.ready = aux->next;
-        aux->next = pcb.blocked;
-        pcb.blocked = aux;
-        return 1;
-    }
-    while(aux != NULL){
-        if(aux->next != NULL && aux->next->pid == pid){
-            Process* blocked = aux->next ;
-            blocked->state = BLOCKED;
-            aux->next = blocked->next;
-            if(blocked == pcb.lastReady){
-                pcb.lastReady = aux;
-            }
-            blocked->next = pcb.blocked;
-            pcb.blocked = blocked;
+    for(int i = 0; i < MAX_PRIORITY; i++){
+        Process* aux = pcb.priorityQueue[i].ready;
+        if(aux != NULL && aux->pid == pid){
+            aux->state = BLOCKED;
+            pcb.priorityQueue[i].ready = aux->next;
+            if(pcb.priorityQueue[i].ready == NULL) pcb.priorityQueue[i].lastReady = NULL;
+            aux->next = pcb.blocked;
+            pcb.blocked = aux;
             return 1;
         }
+        while(aux != NULL){
+            if(aux->next != NULL && aux->next->pid == pid){
+                Process* blocked = aux->next ;
+                blocked->state = BLOCKED;
+                aux->next = blocked->next;
+                if(blocked == pcb.lastReady){
+                    pcb.lastReady = aux;
+                }
+                blocked->next = pcb.blocked;
+                pcb.blocked = blocked;
+                return 1;
+            }
         aux = aux->next;
+        }
     }
     return 0;
 }
@@ -160,9 +169,14 @@ int unblock(int pid){
     if(aux != NULL && aux->pid == pid){
         aux->state = READY;
         pcb.blocked = aux->next;
-        if(pcb.ready == NULL) pcb.ready = aux;
-        pcb.lastReady->next = aux;
-        pcb.lastReady = aux;
+        if(pcb.priorityQueue[aux->priority].ready == NULL){
+             pcb.priorityQueue[aux->priority].ready = aux;
+             pcb.priorityQueue[aux->priority].lastReady = aux;
+
+        }else{
+            pcb.lastReady->next = aux;
+            pcb.lastReady = aux;
+        }
         aux->next = NULL;
         return 1;
     }
@@ -171,9 +185,14 @@ int unblock(int pid){
             Process* unblocked = aux->next ;
             unblocked->state = READY;
             aux->next = unblocked->next;
-            if(pcb.ready == NULL) pcb.ready = unblocked;
-            pcb.lastReady->next = unblocked;
-            pcb.lastReady = unblocked;
+            if(pcb.priorityQueue[aux->priority].ready == NULL){
+                pcb.priorityQueue[aux->priority].ready = unblocked;
+                pcb.priorityQueue[aux->priority].lastReady = unblocked;
+
+            }else{
+                pcb.lastReady->next = unblocked;
+                pcb.lastReady = unblocked;
+            }
             unblocked->next = NULL;
             return 1;
         }
@@ -198,22 +217,29 @@ Process* createProcessStruct(newProcess process,int argc, char*argv){
 }
 
 
-int createProcess(newProcess process,int argc, char* argv){
-    Process* newProcess = createProcessStruct(process,argc,argv);  // AGREGAR CHECK si es null hay error
-    newProcess->tipo = FOREGROUND;                     //AGREGAR COMO ARGUMENTO, ESTO ES PARA DEBUG RAPIDO
-    pcb.processCount++;
+int createProcess(newProcess process,int argc, char* argv, int priority){
+    Process* newProcess;
+    if(0 <= priority && priority < MAX_PRIORITY){
+        newProcess = createProcessStruct(process,argc,argv);  // AGREGAR CHECK si es null hay error
+        newProcess->tipo = FOREGROUND;                     //AGREGAR COMO ARGUMENTO, ESTO ES PARA DEBUG RAPIDO
+        pcb.processCount++;
+        newProcess->priority = priority;
+    }else {
+        return -1; //ERROR
+    }
+
     if(pcb.running != NULL){
         newProcess->parentPID = pcb.running->pid;
     }else{
         //es el primer proceso
         newProcess->parentPID = 0;
     }
-    if(pcb.ready == NULL){
-        pcb.ready = newProcess;
-        pcb.lastReady = newProcess;
+    if(pcb.priorityQueue[priority].ready == NULL){
+        pcb.priorityQueue[priority].ready = newProcess;
+        pcb.priorityQueue[priority].lastReady = newProcess;
     }else{
-        pcb.lastReady->next = newProcess;
-        pcb.lastReady = newProcess;
+        pcb.priorityQueue[priority].lastReady->next = newProcess;
+        pcb.priorityQueue[priority].lastReady = newProcess;
     }
     return newProcess->pid;
 }
@@ -225,21 +251,21 @@ int kill(int pid){
 }
 
 void startFirstProcess(){
-    pcb.running = pcb.ready;
-    pcb.ready = pcb.lastReady = NULL;
+    pcb.running = pcb.priorityQueue[0].ready;
+   pcb.priorityQueue[0].ready = pcb.priorityQueue[0].lastReady = NULL;
     setFirstProcess(pcb.running->rsp);
 }
 
 
-int createBackgroundProcess(newProcess process,int argc, char* argv){
+int createBackgroundProcess(newProcess process,int argc, char* argv, int priority){
     //no bloqueo el actual
-    return createProcess(process,argc,argv);
+    return createProcess(process,argc,argv,priority);
 
 }
 
-int createForegroundProcess(newProcess process,int argc, char* argv){
+int createForegroundProcess(newProcess process,int argc, char* argv, int priority){
     // bloqueo el actual
-    int pid = createProcess(process,argc,argv);
+    int pid = createProcess(process,argc,argv,priority);
     block(pcb.running->pid);
     return pid;
 }
@@ -257,4 +283,51 @@ void exit(){
 */
 void yield(){
     fireTimerInt();
+}
+
+/// @brief 
+/// @param rsp 
+/// @return 
+void* priorityScheduler(void* rsp){
+    Process* running = pcb.running;
+    running->rsp = rsp;
+    if(running->state == EXITED){
+        //hago free
+        pcb.running = pcb.halt; //si encuentro algun prceso ready despues lo cambio
+    }else if(running->state == BLOCKED){
+        pcb.running->next = pcb.blocked;
+        pcb.blocked = pcb.running;
+        pcb.running =  pcb.halt; 
+    }
+    
+    //el proceso cumplio su quantum
+    if(pcb.running->priority > 0) pcb.running->priority--; 
+
+    //busco el primer ready con mayor prioridad para hacer el switch
+    for(int i = MAX_PRIORITY - 1; 0 <= i; i-- ){
+       // Process* ready = pcb.priorityQueue[i].ready;
+       // Process* lastReady = pcb.priorityQueue[i].lastReady;
+        if(pcb.priorityQueue[i].ready == NULL){
+            //No hay procs ready con prioridad i
+            if(pcb.running->priority == i){
+                return pcb.running->rsp; //Le doy un quantum mas
+            }
+            continue; //busco en prioridad i-1
+        }
+
+        if(pcb.running == pcb.halt){ //si es halt,no quiero ponerlo en la lista de ready
+            pcb.running = pcb.priorityQueue[i].ready;
+            pcb.priorityQueue[i].ready = pcb.priorityQueue[i].ready->next;  
+            if(pcb.priorityQueue[i].ready  == NULL) pcb.priorityQueue[i].lastReady = NULL ; 
+        }else{
+            pcb.running->next = NULL;
+            pcb.priorityQueue[i].lastReady->next = running;
+            pcb.priorityQueue[i].lastReady = running;
+            pcb.running = pcb.priorityQueue[i].ready;
+            pcb.priorityQueue[i].ready = pcb.running->next;
+
+        }
+        break;
+    }
+    return pcb.running->rsp;
 }

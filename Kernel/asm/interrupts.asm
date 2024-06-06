@@ -24,6 +24,7 @@ EXTERN exceptionDispatcher
 EXTERN getStackBase
 
 EXTERN scheduler
+EXTERN priorityScheduler
 
 EXTERN timer_handler
 
@@ -132,7 +133,7 @@ _irq00Handler:
 	pushState
 
 	mov rdi, rsp ; pasaje de parametro
-	call scheduler
+	call priorityScheduler
 	mov rsp, rax
 
 	call timer_handler

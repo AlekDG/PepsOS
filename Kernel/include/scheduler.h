@@ -17,7 +17,7 @@ typedef enum processType{
 } processType;
 
 typedef struct process {
-    regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos en el stack.
+    //regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos en el stack.
     void* rsp;                           //Esto si lo quiero porque tenemos que guardar el puntero al stack para retomar y poder hacer popState
     unsigned int pid;
     State state;
@@ -28,11 +28,19 @@ typedef struct process {
     
 }  Process; //podriamos ver de agregar el tiempo de quantum que corrio por si esta corriendo porque volvio de blocked y no por el timer tick
 
+#define MAX_PRIORITY 5
+
+typedef struct readyList{
+    Process *ready;
+    Process *lastReady;
+}readyList;
+
 typedef struct processTable{        
     int processCount;
     Process *running;
-    Process *ready;
-    Process *lastReady;
+    Process *ready;   //sacar cuando se termine de implementar prioridades
+    Process *lastReady; //sacar cuando se termine de implementar prioridades
+    readyList priorityQueue[MAX_PRIORITY];
     Process *blocked;
     Process *halt;
 } processTable;
@@ -71,7 +79,7 @@ int block(int pid);
 //ret 1 si lo paso a ready, 0 si no
 int unblock(int pid);
 
-int createProcess(newProcess process,int argc, char* argv);
+int createProcess(newProcess process,int argc, char* argv, int priority);
 
 //retorna 1 si lo mato, 0 si no
 int kill(int pid);
@@ -83,9 +91,9 @@ void setFirstProcess(void* rsp);
 
 void fireTimerInt();
 
-int createBackgroundProcess(newProcess process,int argc, char* argv);
+int createBackgroundProcess(newProcess process,int argc, char* argv, int priority);
 
-int createForegroundProcess(newProcess process,int argc, char* argv);
+int createForegroundProcess(newProcess process,int argc, char* argv, int priority);
 
 void exit();
 

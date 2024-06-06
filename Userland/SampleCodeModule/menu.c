@@ -171,7 +171,7 @@ void drawMenu()
 		case '\n':
 			if (optionMenu.options[0]->isHovered)
 			{ // jugar snake 1p
-			call_createForegroundProcess(start_game,0,"snake1");
+			call_createForegroundProcess(start_game,0,"snake1",4);
 			
 				return;
 			}
