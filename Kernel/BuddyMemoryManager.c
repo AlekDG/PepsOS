@@ -6,6 +6,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <math.h>
+#include <lib.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -67,7 +68,7 @@ void * allocMemory(MemoryManagerADT manager, int size) {
 	int bsize;
 	// Search for a free block of the required size or larger
 
-	bsize = log2(blockSize);
+    bsize = fast_log2(blockSize);
 	if (manager->freeLists[bsize] != NULL) {
 		// Found a free block of the required size or larger
 		BlockADT block = manager->freeLists[bsize];
@@ -95,8 +96,8 @@ void * allocMemory(MemoryManagerADT manager, int size) {
 		buddyBlock->startAddress = (void *) buddyBlock + manager->spaceUsed+sizeof newBlock + sizeof newBlock->startAddress + sizeof newBlock->size + sizeof newBlock->isFree + sizeof newBlock->nextBlock;
 		buddyBlock->size = newBlock->size;
 		buddyBlock->isFree = TRUE;
-		buddyBlock->nextBlock = manager->freeLists[(int)log2(buddyBlock->size)];
-		manager->freeLists[(int)log2(buddyBlock->size)]->nextBlock = buddyBlock;
+		buddyBlock->nextBlock = manager->freeLists[fast_log2(buddyBlock->size)];
+		manager->freeLists[fast_log2(buddyBlock->size)]->nextBlock = buddyBlock;
 	}
 	// Insert the remaining larger block into the free list
 	if (manager->freeLists[bsize] == NULL) {
@@ -137,7 +138,7 @@ void freeMemory(MemoryManagerADT manager, void *ptr) {
 	}
 
 	block->isFree = TRUE;
-	int bsize = log2(block->size);
+	int bsize = fast_log2(block->size);
 	BlockADT buddyBlock;
 
 	// Try to coalesce with buddy blocks
@@ -177,7 +178,7 @@ void freeMemory(MemoryManagerADT manager, void *ptr) {
 
 
 
-
+/*
 int main(){
 	void * memoryForManager = malloc(1000);
 	void * memToAllocate = malloc(1000);
@@ -196,3 +197,4 @@ int main(){
 	freeMemory(memoryManager, arr);
 	freeMemory(memoryManager, buddyAlloc);
 }
+ */
