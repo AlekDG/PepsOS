@@ -14,3 +14,8 @@
 *.elf
 .gdb*
 r.sh
+
+#IDE directories:
+.vscode
+.idea
+.config/pulse
