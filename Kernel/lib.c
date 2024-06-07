@@ -255,3 +255,18 @@ int same_string(char*s1,char*s2){
 		return 1;
 	return 0;
 }
+
+int fast_log2(int X){
+  if (X <= 0) {
+    return -1;
+  }
+    int log2 = 0; 
+    // Use bit shifting to find the position of the highest set bit
+    if (X >> 32) { X >>= 32; log2 += 32; }
+    if (X >> 16) { X >>= 16; log2 += 16; }
+    if (X >> 8)  { X >>= 8;  log2 += 8;  }
+    if (X >> 4)  { X >>= 4;  log2 += 4;  }
+    if (X >> 2)  { X >>= 2;  log2 += 2;  }
+    if (X >> 1)  { log2 += 1; }
+    return log2;
+}

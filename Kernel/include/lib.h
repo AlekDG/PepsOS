@@ -54,4 +54,5 @@ void leave_region(uint64_t* lock_address);
 unsigned int string_length(const char* str);
 void string_copy(char*from,char*to);
 int same_string(char*s1,char*s2);
+int fast_log2(int X);
 #endif
