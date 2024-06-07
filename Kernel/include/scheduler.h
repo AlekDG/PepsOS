@@ -3,7 +3,7 @@
 
 #define PROCESS_STACK_SIZE 10000
 typedef int (*newProcess) (int,char*);
-
+#include "memMan.h"
 typedef enum State{
     BLOCKED,
     READY,

@@ -27,11 +27,11 @@ typedef struct BlockCDT{
 	char isFree;
 }BlockCDT;
 
-MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
-void initManager(MemoryManagerADT manager);
-void * allocMemory(MemoryManagerADT manager, int size);
+MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
+void initManagerImpl(MemoryManagerADT manager);
+void * allocMemoryImpl(MemoryManagerADT manager, int size);
 
-	MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
+	MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
 	MemoryManagerADT memoryManager = (MemoryManagerADT) memoryForMemoryManager;
 	memoryManager->startAddress = managedMemory; //  Donde termina el userspace.
 	memoryManager->spaceUsed = 0;
@@ -40,7 +40,7 @@ void * allocMemory(MemoryManagerADT manager, int size);
 	return memoryManager;
 }
 
-void initManager(MemoryManagerADT manager) {
+void initManagerImpl(MemoryManagerADT manager) {
 	manager->firstBlock = (BlockADT) manager->startAddress;
 	manager->firstBlock->size = manager->size;
 	manager->firstBlock->isFree = TRUE;
@@ -59,7 +59,7 @@ int findPower2(int size){
 	return block_size;
 }
 
-void * allocMemory(MemoryManagerADT manager, int size) {
+void * allocMemoryImpl(MemoryManagerADT manager, int size) {
 	if (size > manager->size || size <= 0){
 		return NULL;
 	}
@@ -131,7 +131,7 @@ BlockADT findBlock(MemoryManagerADT manager, void *ptr) {
 }
 
 
-void freeMemory(MemoryManagerADT manager, void *ptr) {
+void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
 	BlockADT block = findBlock(manager, ptr);
 	if (block == NULL || block->isFree) {
 		return;
@@ -178,23 +178,3 @@ void freeMemory(MemoryManagerADT manager, void *ptr) {
 
 
 
-/*
-int main(){
-	void * memoryForManager = malloc(1000);
-	void * memToAllocate = malloc(1000);
-	MemoryManagerADT memoryManager = createMemoryManager(memoryForManager, memToAllocate);
-	initManager(memoryManager);
-	void * buddyAlloc = allocMemory(memoryManager, 45);
-	void * bAlloc2 = allocMemory(memoryManager, 17);
-	void * bAlloc3 = allocMemory(memoryManager, 345612);
-	int * arr = (int *)bAlloc2;
-	for(int i = 0; i < 3; i++){
-		arr[i] = i;
-	}
-	void * bAlloc4 = allocMemory(memoryManager, 1);
-	void * bAlloc5 = allocMemory(memoryManager, 234);
-
-	freeMemory(memoryManager, arr);
-	freeMemory(memoryManager, buddyAlloc);
-}
- */

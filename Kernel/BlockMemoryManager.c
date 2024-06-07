@@ -36,17 +36,21 @@ typedef struct BlockCDT{
 void freeMemoryRec(MemoryManagerADT const restrict memoryManager, void * memToFree, BlockADT currentBlock);
 BlockADT createBuddyBlock(int size, BlockADT currentBlock, void * startAddress);
 void initiateBuddySystem(MemoryManagerADT const restrict memoryManager);
-MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
+MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
 BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock,BlockADT * result);
 
 
-MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
+MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
     MemoryManagerADT memoryManager = (MemoryManagerADT) memoryForMemoryManager;
     memoryManager->startAddress = managedMemory; //  Donde termina el userspace.
     memoryManager->spaceUsed = 0;
     memoryManager->size = 100000;
     memoryManager->firstBlock = NULL;
     return memoryManager;
+}
+
+void initManagerImpl(MemoryManagerADT manager){
+    return;
 }
 
 #ifdef BUDDY
@@ -114,7 +118,7 @@ BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock, Bl
     }
 }
 
-void *allocMemory(MemoryManagerADT const restrict memoryManager, const size_t memoryToAllocate) {
+void *allocMemoryImpl(MemoryManagerADT const restrict memoryManager, const size_t memoryToAllocate) {
     if(memoryManager->spaceUsed + memoryToAllocate > memoryManager->size){
         return NULL;
     }
@@ -130,7 +134,7 @@ void *allocMemory(MemoryManagerADT const restrict memoryManager, const size_t me
     }
 }
 
-void freeMemory(MemoryManagerADT const restrict memoryManager, void * memToFree){
+void freeMemoryImpl(MemoryManagerADT const restrict memoryManager, void * memToFree){
     if(memoryManager == NULL || memToFree == NULL){
         return;
     }

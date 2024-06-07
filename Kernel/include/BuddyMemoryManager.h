@@ -1,11 +1,17 @@
-#ifndef BUDDYMEMORYMANAGER_H
-#define BUDDYMEMORYMANAGER_H
+// BuddyMemoryManager.h
+#ifndef BUDDY_MEMORY_MANAGER_H
+#define BUDDY_MEMORY_MANAGER_H
+
+#include "memMan.h"
 
 #define TRUE 1
 #define FALSE 0
 
-typedef struct BlockCDT * BlockADT;
 typedef struct MemoryManagerCDT * MemoryManagerADT;
-MemoryManagerADT createMemoryManager(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
+typedef
+MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
+void initManagerImpl(MemoryManagerADT manager);
+void *allocMemoryImpl(MemoryManagerADT manager, size_t size);
+void freeMemoryImpl(MemoryManagerADT manager, void *ptr);
 
-#endif // BUDDYMEMORYMANAGER_H
+#endif // BUDDY_MEMORY_MANAGER_H

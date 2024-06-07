@@ -24,3 +24,7 @@ clean:
 	cd Userland; make clean
 
 .PHONY: bootloader image collections kernel userland all clean buddy buddy_kernel
+
+# Additional target to build with BuddyMemoryManager
+buddy_kernel:
+	cd Kernel; make CFLAGS+=-DUSE_BUDDY all
