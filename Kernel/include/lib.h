@@ -42,5 +42,16 @@ unsigned int month();
 void timeToStr(char *dest);
 void dateToStr(char *dest);
 void getDate(char *dest);
+
+//For printing the registries:
 void printRegs();
+
+//For Entering and exiting critical region:
+void enter_region(uint64_t* lock_address,uint64_t sem_indx);
+void leave_region(uint64_t* lock_address);
+
+//General purpose functions:
+unsigned int string_length(const char* str);
+void string_copy(char*from,char*to);
+int same_string(char*s1,char*s2);
 #endif

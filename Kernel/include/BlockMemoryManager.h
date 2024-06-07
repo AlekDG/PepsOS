@@ -1,11 +1,7 @@
-//
-// Created by jo on 17/05/24.
-//
-
-#ifndef SRC_BLOCKMEMORYMANAGER_H
-#define SRC_BLOCKMEMORYMANAGER_H
+#ifndef BLOCKMEMORYMANAGER_H
+#define BLOCKMEMORYMANAGER_H
 
 typedef struct MemoryManagerCDT * MemoryManagerADT;
 typedef struct BlockCDT * BlockADT;
 
-#endif //SRC_BLOCKMEMORYMANAGER_H
+#endif //BLOCKMEMORYMANAGER_H

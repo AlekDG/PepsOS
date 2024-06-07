@@ -5,6 +5,9 @@ GLOBAL outb
 GLOBAL inb
 GLOBAL userBuild
 EXTERN getStackBase
+GLOBAL enter_region
+GLOBAL leave_region
+EXTERN sem_miss
 section .text
 	
 clock:
@@ -86,3 +89,37 @@ userBuild:
     mov rax, 0x0
     mov [rsp + 8*4], rax    
 	iretq
+
+enter_region:
+	mov rax, lockd
+	xchg rax,[rdi]
+	cmp rax,lockd
+	jne .hit
+	push rdi
+	mov rdi,rsi
+	push rsi
+	call sem_miss
+	pop rsi
+	pop rdi
+	jmp .miss
+
+.hit:
+	sti
+	ret
+
+.miss:
+	int 20h
+	jmp enter_region
+
+leave_region:
+	push rbp
+	mov rbp,rsp
+	mov rax,unlockd
+	mov qword [rdi],rax
+	mov rsp,rbp
+	pop rbp
+	ret
+
+section .data
+	lockd equ 0x01
+	unlockd equ 0x00
