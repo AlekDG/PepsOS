@@ -8,7 +8,7 @@
 #include "include/memMan.h"
 #include "include/scheduler.h"
 
-
+void freeMemory(MemoryManagerADT const restrict memoryManager, void * memToFree); //Hay que ponerlo en el .h del mem manager
 
 static int nextPid = 0;
 
@@ -146,8 +146,8 @@ int block(int pid){
                 Process* blocked = aux->next ;
                 blocked->state = BLOCKED;
                 aux->next = blocked->next;
-                if(blocked == pcb.lastReady){
-                    pcb.lastReady = aux;
+                if(blocked == pcb.priorityQueue[i].lastReady){
+                   pcb.priorityQueue[i].lastReady = aux;
                 }
                 blocked->next = pcb.blocked;
                 pcb.blocked = blocked;
@@ -204,7 +204,8 @@ int unblock(int pid){
 
 Process* createProcessStruct(newProcess process,int argc, char*argv){
     int s = PROCESS_STACK_SIZE;
-    void* newProcessStack = allocMemory(*mem , s ) + PROCESS_STACK_SIZE;            //VER DE AGREGAR VERIFICACION ret == NULL
+    void* startAdress = allocMemory(*mem , s );
+    void* newProcessStack = startAdress + PROCESS_STACK_SIZE;            //VER DE AGREGAR VERIFICACION ret == NULL
     newProcessStack =  prepareStack(newProcessStack,(uint64_t) process,0x876,0x678);
     Process* newProcess = allocMemory(*mem,sizeof(Process));                       // ACA SAME
     newProcess->pid = nextPid++;
@@ -212,6 +213,7 @@ Process* createProcessStruct(newProcess process,int argc, char*argv){
     newProcess->state = READY;
     newProcess->rsp = newProcessStack /*+ lo que agregue en prepareStack*/ ;
     newProcess->next = NULL;
+    newProcess->memStartAdress = startAdress;
     return newProcess;
 
 }
@@ -244,10 +246,67 @@ int createProcess(newProcess process,int argc, char* argv, int priority){
     return newProcess->pid;
 }
 
+
+int killBlocked(int pid){
+     Process* aux = pcb.blocked;
+     if(aux != NULL && aux->pid == pid){
+        pcb.blocked = aux->next;
+        freeMemory(*mem,aux->memStartAdress);
+        freeMemory(*mem,aux);
+        return 1;
+     }
+    while(aux != NULL){
+      if(aux->next != NULL && aux->next->pid == pid){
+          Process* toKill = aux->next ;
+          aux->next = toKill->next;
+          freeMemory(*mem,toKill->memStartAdress);
+          freeMemory(*mem,toKill);
+          return 1;
+      }
+      aux = aux->next;
+    }
+    return 0;
+
+}
+
+int killReady(int pid){
+    for(int i = 0; i < MAX_PRIORITY ; i++){
+        Process* aux = pcb.priorityQueue[i].ready;
+        if(aux != NULL && aux->pid == pid){
+            pcb.priorityQueue[i].ready = aux->next;
+            if(pcb.priorityQueue[i].ready == NULL) pcb.priorityQueue[i].lastReady = NULL;
+            freeMemory(*mem,aux->memStartAdress);
+            freeMemory(*mem,aux);
+            return 1;
+        }
+        while(aux != NULL){
+            if(aux->next != NULL && aux->next->pid == pid){
+                Process* toKill = aux->next ;
+                aux->next = toKill->next;
+                if(toKill == pcb.priorityQueue[i].lastReady){
+                    pcb.priorityQueue[i].lastReady = aux;
+                }
+                freeMemory(*mem,toKill->memStartAdress);
+                freeMemory(*mem,toKill);
+                return 1;
+            }
+        aux = aux->next;
+        }      
+    }
+    return 0;
+
+}
 //retorna 1 si lo mato, 0 si no
 int kill(int pid){
-    
-    return 0;
+    if(pcb.running->pid == pid){
+        pcb.running->state = EXITED;
+        fireTimerInt();
+    }
+    int wasKilled =killBlocked(pid);
+    if(!wasKilled){
+        wasKilled = killReady(pid);
+    }    
+    return wasKilled;
 }
 
 void startFirstProcess(){
@@ -292,7 +351,8 @@ void* priorityScheduler(void* rsp){
     Process* running = pcb.running;
     running->rsp = rsp;
     if(running->state == EXITED){
-        //hago free
+        freeMemory(*mem,running->memStartAdress);
+        freeMemory(*mem,running);
         pcb.running = pcb.halt; //si encuentro algun prceso ready despues lo cambio
     }else if(running->state == BLOCKED){
         pcb.running->next = pcb.blocked;

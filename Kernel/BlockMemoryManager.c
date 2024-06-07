@@ -95,11 +95,9 @@ BlockADT createBlock(void * startAddress, size_t size, BlockADT currentBlock, Bl
                 return currentBlock;
             }
         }
-        else{
             currentBlock->nextBlock = createBlock(startAddress, size, currentBlock->nextBlock,result);
             return currentBlock;
-        }
-        return currentBlock;
+        
     }
 
     else{

@@ -19,6 +19,7 @@ typedef enum processType{
 typedef struct process {
     //regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos en el stack.
     void* rsp;                           //Esto si lo quiero porque tenemos que guardar el puntero al stack para retomar y poder hacer popState
+    void* memStartAdress;
     unsigned int pid;
     State state;
     int priority;                          //deberiamos ver si directamente implementamos queue entonces esta info no dbeeria estar aca
