@@ -87,12 +87,12 @@ void start_gameTwo()
                 start_gameTwo();
                 return;
             case 27:
-                return;
+                call_exit();
             default:
                 break;
             }
         }
-        return;
+        call_exit();
     }
 }
 

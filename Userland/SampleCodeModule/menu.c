@@ -7,12 +7,6 @@
 #include <snake.h>
 #include <snake2.h>
 
-void aa(){
-	int a = 1;
-	a++;
-	a = 7;
-	while(1);
-}
 
 void hoverOverOption(Option *option) { option->isHovered = 1; }
 void deactivateHover(Option *option) { option->isHovered = 0; }
@@ -171,13 +165,13 @@ void drawMenu()
 		case '\n':
 			if (optionMenu.options[0]->isHovered)
 			{ // jugar snake 1p
-			call_createForegroundProcess(start_game,0,"snake1",4);
+			    call_createForegroundProcess(start_game,0,"snake1",4);
 			
 				return;
 			}
 			else if (optionMenu.options[1]->isHovered)
 			{
-				start_gameTwo();
+				call_createForegroundProcess(start_gameTwo,0,"snake2",4);
 				return;
 			}
 			else if (optionMenu.options[2]->isHovered)
