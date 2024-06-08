@@ -43,7 +43,7 @@ uint64_t create_sem(uint64_t val, char *id) {
 }
 
 void clear_sem(int index) {
-  if (index <= 0 || index >= NAME_LENGTH)
+  if (index <= 0 || index >= SEM_AMOUNT)
     return;
   while (sem_inst[index].sem.size_list > 0)
     sem_dq_proc(index);
@@ -51,7 +51,7 @@ void clear_sem(int index) {
 }
 
 uint64_t sem_post(int index) {
-  if (index <= 0 || index >= NAME_LENGTH)
+  if (index <= 0 || index >= SEM_AMOUNT)
     return 1;
   semaphore *sem = &(sem_inst[index].sem);
   if (sem->val = !0)
@@ -66,7 +66,7 @@ uint64_t sem_post(int index) {
 }
 
 uint64_t sem_wait(int index) {
-  if (index <= 0 || index >= NAME_LENGTH)
+  if (index <= 0 || index >= SEM_AMOUNT)
     return;
   semaphore *sem = &(sem_inst[index].sem);
   enter_region(&(sem->lock), index);

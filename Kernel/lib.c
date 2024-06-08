@@ -221,8 +221,8 @@ int same_string(char *s1, char *s2) {
     i++;
   }
   if (s1[i] == s2[i])
-    return 1;
-  return 0;
+    return TRUE;
+  return FALSE;
 }
 
 int fast_log2(int X) {
