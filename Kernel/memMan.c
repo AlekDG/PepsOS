@@ -23,3 +23,7 @@ createMemoryManager(void *const restrict memoryForMemoryManager,
 void *allocMemory(size_t size) { return allocMemoryImpl(systemMemory, size); }
 
 void freeMemory(void *ptr) { freeMemoryImpl(systemMemory, ptr); }
+
+void memState(MemoryManagerADT const restrict memoryManager, int * freeMemory, int * totalMemory, int * allocatedMemory){
+    memStateImpl(memoryManager, freeMemory, totalMemory, allocatedMemory);
+}
