@@ -141,6 +141,8 @@ call_year:
     call_to_handler 38
 call_malloc:
     call_to_handler 39
+call_free:
+    call_to_handler 45
 call_createProcess:
     call_to_handler 40
 call_getPid:
@@ -152,7 +154,24 @@ call_createForegroundProcess:
 call_exit:
     call_to_handler 44
 
-call_
+call_sem_open:
+    call_to_handler 46
+call_sem_close:
+    call_to_handler 47
+call_sem_create:
+    call_to_handler 48
+call_sem_post:
+    call_to_handler 49
+call_sem_wait:
+    call_to_handler 50
+call_pipe_open:
+    call_to_handler 51
+call_pipe_close:
+    call_to_handler 52
+call_pipe_write:
+    call_to_handler 53
+call_pipe_read:
+    call_to_handler 54
 call_excepDivZero:
     xor rdx,rdx
     div rdx

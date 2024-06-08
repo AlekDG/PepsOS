@@ -1,6 +1,8 @@
 #include <keyboard.h>
 #include <lib.h>
 #include <memMan.h>
+#include <pipes.h>
+#include <sem.h>
 #include <scheduler.h>
 #include <sound.h>
 #include <time.h>
@@ -166,6 +168,36 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     break;
   case 44:
     exit();
+    break;
+  case 45:
+    freeMemory(rsi);
+    break;
+  case 46:
+    sem_open(rsi,rdx);
+    break;
+  case 47:
+    sem_close(rsi);
+    break;
+  case 48:
+    create_sem(rsi,rdx);
+    break;
+  case 49:
+    sem_post(rsi);
+    break;
+  case 50:
+    sem_wait(rsi);
+    break;
+  case 51:
+    open_pipe(rsi);
+    break;
+  case 52:
+    close_pipe(rsi);
+    break;
+  case 53:
+    write_to_pipe(rsi,rdi);
+    break;
+  case 54:
+    read_pipe(rsi);
     break;
   default:
     return 0;

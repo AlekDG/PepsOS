@@ -6,6 +6,17 @@
 //Allocate and free memory
 void *call_malloc(int size);
 void call_free(void* toFree);
+//Semaphores
+int call_sem_open(int value,char* sem_name);
+int call_sem_close(char* sem_name);
+uint64_t call_sem_create(uint64_t starting_value,char* sem_name);
+uint64_t call_sem_post(int sem);
+uint64_t call_sem_wait(int sem);
+//pipes
+int call_pipe_open(char* pipe_name);
+int call_pipe_close(int pipe);
+int call_pipe_write(int pipe,char*string);
+char call_pipe_read(int pipe);
 //Prints the Registries
 void call_regRead(void);
 //Paints the entire screen a single color in hexadecimal
@@ -64,6 +75,7 @@ unsigned int call_hours();
 unsigned int call_day();
 unsigned int call_month();
 unsigned int call_year();
+//scheduling
 int call_createProcess(void process(), int argc, char* argv,int priority);
 int call_createBackgroundProcess(void process(), int argc, char* argv,int priority);
 int call_createForegroundProcess(void process(), int argc, char* argv,int priority);
