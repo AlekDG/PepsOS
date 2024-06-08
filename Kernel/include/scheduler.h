@@ -21,6 +21,7 @@ typedef struct process {
   // en el stack.
   void *rsp; // Esto si lo quiero porque tenemos que guardar el puntero al stack
              // para retomar y poder hacer popState
+  void *rbp;
   void *memStartAdress;
   unsigned int pid;
   State state;
@@ -29,6 +30,7 @@ typedef struct process {
   struct process *next;
   int parentPID;
   processType tipo;
+  char* name;
 
 } Process; // podriamos ver de agregar el tiempo de quantum que corrio por si
            // esta corriendo porque volvio de blocked y no por el timer tick
@@ -107,5 +109,15 @@ void exit();
  * llamador
  */
 void yield();
+
+/**
+ * Change the priority of a process
+ * @param pid the process id
+ * @param priority the new priority
+ * @return 1 if the priority was changed, 0 if not
+*/
+int changePriority(int pid, int priority);
+
+//AGREGAR PS
 
 #endif

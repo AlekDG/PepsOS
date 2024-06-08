@@ -6,6 +6,7 @@
 #include <memMan.h>
 #include <scheduler.h>
 #include <stdint.h>
+#include <pipes.h>
 
 static int nextPid = 0;
 
@@ -328,6 +329,7 @@ void exit() {
   if (pcb.running->tipo == FOREGROUND) { // desbloquo al padre!
     unblock(pcb.running->parentPID);
   }
+  pcb.processCount--;
   fireTimerInt();
 }
 
@@ -386,4 +388,108 @@ void *priorityScheduler(void *rsp) {
     break;
   }
   return pcb.running->rsp;
+}
+
+
+
+int changeBlockedProcessPriority(int pid, int priority){
+  Process *aux = pcb.blocked;
+  while (aux != NULL) {
+    if (aux->pid == pid) {
+      aux->priority = priority;
+      return 1;
+    }
+    aux = aux->next;
+  }
+  return 0;
+}
+
+int changeReadyProcessPriority(int pid, int priority){
+  for (int i = 0; i < MAX_PRIORITY; i++) {
+    Process *aux = pcb.priorityQueue[i].ready;
+    while (aux != NULL) {
+      if (aux->pid == pid) {
+        aux->priority = priority;
+        return 1;
+      }
+      aux = aux->next;
+    }
+  }
+  return 0;
+}
+
+/**
+ * Change the priority of a process
+ * @param pid the process id
+ * @param priority the new priority
+ * @return 1 if the priority was changed, 0 if not
+*/
+int changePriority(int pid, int priority){
+  if(priority < 0 || priority >= MAX_PRIORITY){
+    return 0;
+  }
+  if(pcb.running->pid == pid){
+     pcb.running->priority = priority;
+     return 1;
+  }
+  int wasChanged = changeBlockedProcessPriority(pid,priority);
+  if(!wasChanged){
+    wasChanged = changeReadyProcessPriority(pid,priority);
+  }
+  return wasChanged;
+}
+
+typedef struct processInfo{
+  char* name;
+  void *rsp;
+  void *rbp;
+  unsigned int pid;
+  unsigned int parentPid;
+  unsigned int prioriy;
+  State state;
+  processType tipo;
+  processInfo* next;
+} processInfo;
+
+
+
+void copyProcToArray(int* indexCount, processInfo* procs, Process* process){
+    procs[*indexCount].name = process->name;
+    procs[*indexCount].parentPid = process->parentPID;
+    procs[*indexCount].pid = process->pid;
+    procs[*indexCount].prioriy = process->priority;
+    procs[*indexCount].rbp = process->rbp;
+    procs[*indexCount].rsp = process->rsp;
+    procs[*indexCount].state = process->state;
+    procs[*indexCount].tipo = process->tipo;
+}
+
+
+void copyListOnArrayFromIndex(int* indexCount, processInfo* procs, Process* list){
+  Process* process = list;
+  while(process != NULL){
+      copyProcToArray(indexCount,procs,process);
+      (*indexCount)++;
+      process = process->next;
+  }  
+}
+
+/**
+ * Makes an array with the information of each process on the system.
+ * @return An array cointaning the information of the procceses null terminated.
+ * Must be free by calee when its no longer needed
+*/
+processInfo* getAllProcessInfo(){
+  processInfo* procs = allocMemory(pcb.processCount * sizeof(processInfo));
+  int indexCount = 0;
+  
+  copyListOnArrayFromIndex(&indexCount,procs,pcb.blocked); 
+
+  for(int i = 0; i < MAX_PRIORITY; i++){
+    copyListOnArrayFromIndex(&indexCount,procs,pcb.priorityQueue[i].ready);
+  }
+
+  copyProcToArray(&indexCount,procs,pcb.running);
+
+  return procs;
 }
