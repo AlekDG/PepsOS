@@ -98,15 +98,15 @@ BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
     if (currentBlock->isFree == 1) {
       //	Si soy un bloque libre de size suficiente, escribir.
       if (currentBlock->size >= size) {
-        currentBlock->startAddress =
-            startAddress + sizeof currentBlock->startAddress +
-            sizeof currentBlock->size + sizeof currentBlock->spaceUsed +
-            sizeof currentBlock->nextBlock + sizeof currentBlock->isFree;
-        currentBlock->size = size;
+        //currentBlock->startAddress =
+        //    startAddress + sizeof currentBlock->startAddress +
+        //    sizeof currentBlock->size + sizeof currentBlock->spaceUsed +
+        //    sizeof currentBlock->nextBlock + sizeof currentBlock->isFree;
+        //currentBlock->size = size;
         currentBlock->spaceUsed = 0;
         //	El siguiente bloque no cambia!!
         currentBlock->isFree = 0;
-
+        *result = currentBlock;
         return currentBlock;
       }
     }
@@ -121,8 +121,7 @@ BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
     newBlock->startAddress =
         startAddress + sizeof newBlock->startAddress + sizeof newBlock->size +
         sizeof newBlock->spaceUsed + sizeof newBlock->nextBlock +
-        sizeof newBlock->isFree;
-    //	esto es feo como pecado de fraile pero sirve.
+        sizeof newBlock->isFree;                                          //VER DE CAMBIAR POR SIZEOF BLOCK o agregar otros campos
     newBlock->size = size;
     newBlock->spaceUsed = 0;
     newBlock->nextBlock = NULL;
@@ -139,13 +138,14 @@ void *allocMemoryImpl(MemoryManagerADT const restrict memoryManager,
   } else {
     //  Retorno el puntero al inicio de un nuevo bloque de memoria.
     BlockADT block = NULL;
-    createBlock(memoryManager->startAddress + memoryManager->spaceUsed + 1,
+    memoryManager->firstBlock = createBlock(memoryManager->startAddress + memoryManager->spaceUsed + 1,
                 memoryToAllocate, memoryManager->firstBlock, &block);
     block->isFree = 0;
-    memoryManager->firstBlock = block;
+    //block->nextBlock = memoryManager->firstBlock; //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    //memoryManager->firstBlock = block;
     memoryManager->spaceUsed += memoryToAllocate + sizeof block->startAddress +
                                 sizeof block->size + sizeof block->spaceUsed +
-                                sizeof block->nextBlock + sizeof block->isFree;
+                                sizeof block->nextBlock + sizeof block->isFree;  //VER DE CAMBOIAR POR SIZEOF BLOCK
     ;
     return block->startAddress;
   }
