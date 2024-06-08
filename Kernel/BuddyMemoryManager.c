@@ -181,3 +181,22 @@ void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
     block->nextBlock = manager->freeLists[bsize];
   manager->freeLists[bsize] = block;
 }
+
+
+
+void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory, int * totalMemory, int * allocatedMemory){
+    if(memoryManager == NULL){
+        return;
+    }
+    *freeMemory = 0;
+    *totalMemory = memoryManager->size;
+
+    for(int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++){
+        BlockADT currentBlock = memoryManager->freeLists[i];
+        while (currentBlock != NULL){
+            *freeMemory += currentBlock->size;
+            currentBlock = currentBlock->nextBlock;
+        }
+    }
+    *allocatedMemory = *totalMemory - *freeMemory;
+}

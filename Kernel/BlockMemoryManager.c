@@ -4,18 +4,11 @@
 
 #define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
 
-#define BUDDY 0
-#define BUDDY_MEM_BLOCK_SIZE 32
-
 typedef struct MemoryManagerCDT {
   char *startAddress;
   size_t size;
   size_t spaceUsed;
   BlockADT firstBlock;
-#ifdef BUDDY
-  BlockADT otherFirstBlock;
-  size_t maxMem;
-#endif
 } MemoryManagerCDT;
 
 typedef struct BlockCDT {
@@ -23,10 +16,6 @@ typedef struct BlockCDT {
   size_t size;
   size_t spaceUsed;
   struct BlockCDT *nextBlock;
-#ifdef BUDDY
-  struct BlockCDT *otherNextBlock; //	"The reasons for wanting to do this
-                                   //though, are questionable."
-#endif
   char isFree;
 } BlockCDT;
 
@@ -35,13 +24,16 @@ typedef struct BlockCDT {
 
 void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
                    void *memToFree, BlockADT currentBlock);
-BlockADT createBuddyBlock(int size, BlockADT currentBlock, void *startAddress);
-void initiateBuddySystem(MemoryManagerADT const restrict memoryManager);
 MemoryManagerADT
 createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
                         void *const restrict managedMemory);
 BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
                      BlockADT *result);
+void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory,
+                  int * totalMemory, int * allocatedMemory);
+
+void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock);
+
 
 MemoryManagerADT
 createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
@@ -53,46 +45,6 @@ createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
   memoryManager->firstBlock = NULL;
   return memoryManager;
 }
-
-//void initManagerImpl(MemoryManagerADT manager) { return; }  //??????
-
-#ifdef BUDDY
-void initiateBuddySystem(MemoryManagerADT const restrict memoryManager) {
-  memoryManager->maxMem = 250;
-  memoryManager->firstBlock =
-      createBuddyBlock(memoryManager->maxMem, memoryManager->firstBlock,
-                       memoryManager->startAddress);
-  memoryManager->otherFirstBlock =
-      createBuddyBlock(memoryManager->maxMem, memoryManager->otherFirstBlock,
-                       memoryManager->startAddress);
-}
-#endif
-
-#ifdef BUDDY
-BlockADT createBuddyBlock(int size, BlockADT currentBlock, void *startAddress) {
-  if (size <= BUDDY_MEM_BLOCK_SIZE) {
-    return NULL;
-  }
-  if (currentBlock == NULL) {
-    BlockADT newBlock = (BlockADT)startAddress;
-    newBlock->startAddress = startAddress + sizeof(BlockCDT);
-    //+ sizeof newBlock->startAddress +
-    //	 sizeof newBlock->size + sizeof newBlock->spaceUsed + sizeof
-    //newBlock->nextBlock + sizeof newBlock->isFree + sizeof
-    //newBlock->otherNextBlock;
-    newBlock->size = size;
-    newBlock->spaceUsed = 0;
-    newBlock->isFree = 1;
-    newBlock->nextBlock =
-        createBuddyBlock(size / 2, NULL, (char *)newBlock->startAddress + size);
-    newBlock->otherNextBlock =
-        createBuddyBlock(size / 2, NULL, (char *)newBlock->startAddress + size);
-    return newBlock;
-  } else {
-    return NULL;
-  }
-}
-#endif
 
 BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
                      BlockADT *result) {
@@ -154,4 +106,27 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
   } else {
     freeMemoryRec(memoryManager, memToFree, currentBlock->nextBlock);
   }
+}
+
+void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock){
+    if(currentBlock == NULL){
+        return;
+    }
+    if(currentBlock->isFree){
+        *freeMemory += currentBlock->size;
+    }
+    else{
+        *allocatedMemory += currentBlock->size;
+    }
+    memStateRec(freeMemory, allocatedMemory, currentBlock->nextBlock);
+}
+
+void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory, int * totalMemory, int * allocatedMemory){
+    if(memoryManager == NULL){
+        return;
+    }
+    *freeMemory = 0;
+    *allocatedMemory = 0;
+    *totalMemory = memoryManager->size;
+    memStateRec(freeMemory, allocatedMemory, memoryManager->firstBlock);
 }
