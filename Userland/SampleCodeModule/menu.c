@@ -211,9 +211,9 @@ void drawMenu()
 			}
 			else if (optionMenu.options[4]->isHovered)
 			{ // consola.isHovered
-				char* argv[] = {"consola"}; 
+				char* argv[] = {"consola",(char*)&optionMenu}; 
 				call_createForegroundProcess(runConsole,0,argv,4);
-				runConsole(&optionMenu);
+				//runConsole(&optionMenu);
 				return;
 			}
 			else if (optionMenu.options[5]->isHovered) // restart menu
