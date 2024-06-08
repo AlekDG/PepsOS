@@ -2,6 +2,8 @@
 #include <lib.h>
 #include <stddef.h>
 
+#define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
+
 #define BUDDY 0
 #define BUDDY_MEM_BLOCK_SIZE 32
 
@@ -47,12 +49,12 @@ createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
   MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
   memoryManager->startAddress = managedMemory; //  Donde termina el userspace.
   memoryManager->spaceUsed = 0;
-  memoryManager->size = 100000;
+  memoryManager->size = USER_MEMORY_SIZE;
   memoryManager->firstBlock = NULL;
   return memoryManager;
 }
 
-void initManagerImpl(MemoryManagerADT manager) { return; }
+//void initManagerImpl(MemoryManagerADT manager) { return; }  //??????
 
 #ifdef BUDDY
 void initiateBuddySystem(MemoryManagerADT const restrict memoryManager) {
@@ -98,13 +100,7 @@ BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
     if (currentBlock->isFree == 1) {
       //	Si soy un bloque libre de size suficiente, escribir.
       if (currentBlock->size >= size) {
-        //currentBlock->startAddress =
-        //    startAddress + sizeof currentBlock->startAddress +
-        //    sizeof currentBlock->size + sizeof currentBlock->spaceUsed +
-        //    sizeof currentBlock->nextBlock + sizeof currentBlock->isFree;
-        //currentBlock->size = size;
         currentBlock->spaceUsed = 0;
-        //	El siguiente bloque no cambia!!
         currentBlock->isFree = 0;
         *result = currentBlock;
         return currentBlock;
@@ -116,46 +112,36 @@ BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
 
   }
 
-  else {
+  
     BlockADT newBlock = (BlockADT)startAddress;
     newBlock->startAddress =
-        startAddress + sizeof newBlock->startAddress + sizeof newBlock->size +
-        sizeof newBlock->spaceUsed + sizeof newBlock->nextBlock +
-        sizeof newBlock->isFree;                                          //VER DE CAMBIAR POR SIZEOF BLOCK o agregar otros campos
+        startAddress + sizeof(BlockCDT);
     newBlock->size = size;
     newBlock->spaceUsed = 0;
     newBlock->nextBlock = NULL;
     newBlock->isFree = 0;
     *result = newBlock;
     return newBlock;
-  }
+  
 }
 
 void *allocMemoryImpl(MemoryManagerADT const restrict memoryManager,
                       const size_t memoryToAllocate) {
-  if (memoryManager->spaceUsed + memoryToAllocate > memoryManager->size) {
-    return NULL;
-  } else {
+  if (memoryManager->spaceUsed + memoryToAllocate <= memoryManager->size) {
     //  Retorno el puntero al inicio de un nuevo bloque de memoria.
     BlockADT block = NULL;
     memoryManager->firstBlock = createBlock(memoryManager->startAddress + memoryManager->spaceUsed + 1,
                 memoryToAllocate, memoryManager->firstBlock, &block);
     block->isFree = 0;
-    //block->nextBlock = memoryManager->firstBlock; //AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-    //memoryManager->firstBlock = block;
-    memoryManager->spaceUsed += memoryToAllocate + sizeof block->startAddress +
-                                sizeof block->size + sizeof block->spaceUsed +
-                                sizeof block->nextBlock + sizeof block->isFree;  //VER DE CAMBOIAR POR SIZEOF BLOCK
-    ;
+    memoryManager->spaceUsed += memoryToAllocate + sizeof(BlockCDT);
     return block->startAddress;
   }
+  return NULL;
 }
 
 void freeMemoryImpl(MemoryManagerADT const restrict memoryManager,
                     void *memToFree) {
-  if (memoryManager == NULL || memToFree == NULL) {
-    return;
-  } else {
+  if (memoryManager != NULL && memToFree != NULL) {
     freeMemoryRec(memoryManager, memToFree, memoryManager->firstBlock);
   }
 }

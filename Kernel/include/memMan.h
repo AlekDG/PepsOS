@@ -13,7 +13,7 @@ MemoryManagerADT
 createMemoryManager(void *const restrict memoryForMemoryManager,
                     void *const restrict managedMemory);
 
-void initManager(void);
+//void initManager(void);
 void *allocMemory(size_t size);
 void freeMemory(void *ptr);
 
