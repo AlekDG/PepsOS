@@ -188,7 +188,7 @@ void runConsole()
 		case 0: // omite teclas no asignadas
 			break;
 		case 27: // current letter=esc
-			return;
+			call_exit();
 		case '\b': // borrado de caracter
 			if (bufferSize <= 0)
 			{

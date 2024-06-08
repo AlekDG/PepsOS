@@ -76,9 +76,9 @@ unsigned int call_day();
 unsigned int call_month();
 unsigned int call_year();
 //scheduling
-int call_createProcess(void process(), int argc, char* argv,int priority);
-int call_createBackgroundProcess(void process(), int argc, char* argv,int priority);
-int call_createForegroundProcess(void process(), int argc, char* argv,int priority);
+int call_createProcess(void process(), int argc, char* argv[],int priority);
+int call_createBackgroundProcess(void process(), int argc, char* argv[],int priority);
+int call_createForegroundProcess(void process(), int argc, char* argv[],int priority);
 void call_exit();
 int call_kill(int pid);
 void call_yield();

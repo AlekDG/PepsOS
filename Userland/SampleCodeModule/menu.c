@@ -165,13 +165,15 @@ void drawMenu()
 		case '\n':
 			if (optionMenu.options[0]->isHovered)
 			{ // jugar snake 1p
-			    call_createForegroundProcess(start_game,0,"snake1",4);
+				char* argv[] = {"snake1"}; 
+			    call_createForegroundProcess(start_game,0,argv,4);
 			
 				return;
 			}
 			else if (optionMenu.options[1]->isHovered)
 			{
-				call_createForegroundProcess(start_gameTwo,0,"snake2",4);
+				char* argv[] = {"snake2"}; 
+				call_createForegroundProcess(start_gameTwo,0,argv,4);
 				return;
 			}
 			else if (optionMenu.options[2]->isHovered)
@@ -209,6 +211,8 @@ void drawMenu()
 			}
 			else if (optionMenu.options[4]->isHovered)
 			{ // consola.isHovered
+				char* argv[] = {"consola"}; 
+				call_createForegroundProcess(runConsole,0,argv,4);
 				runConsole(&optionMenu);
 				return;
 			}

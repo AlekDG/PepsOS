@@ -20,7 +20,7 @@ robin). Cuando un proc se bloquea pasa a la lista de bloqueados, al desbloquear
 pasa o al final o al principio de ready y se llama al scheduler
 */
 
-Process *createProcessStruct(newProcess process, int argc, char *argv);
+Process *createProcessStruct(newProcess process, int argc, char *argv[]);
 
 void setPriorityQueuesNull() {
   for (int i = 0; i < MAX_PRIORITY; i++) {
@@ -38,7 +38,8 @@ processTable *createPCB(void) {
   pcb.running = NULL;
   setPriorityQueuesNull();
   pcb.blocked = NULL;
-  pcb.halt = createProcessStruct(haltCpu, 0, "halt");
+  char* haltArgv[] = {"halt"};
+  pcb.halt = createProcessStruct(haltCpu, 0, haltArgv);
   return &pcb;
 }
 
@@ -196,14 +197,23 @@ int unblock(int pid) {
   return 0;
 }
 
-Process *createProcessStruct(newProcess process, int argc, char *argv) {
+int copyArgvOnStack(void *rsp, int argc, char *argv[]) {
+  int charsCopyCount = 0;
+  for(int i = 0; i < argc ; i++){
+    while(argv[i]);
+  }
+  return 0;
+}
+
+Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   int s = PROCESS_STACK_SIZE;
   void *startAdress = allocMemory(s);
+
   void *newProcessStack =
       startAdress +
       PROCESS_STACK_SIZE; // VER DE AGREGAR VERIFICACION ret == NULL
   newProcessStack =
-      prepareStack(newProcessStack, (uint64_t)process, 0x876, 0x678);
+      prepareStack(newProcessStack, (uint64_t)process, argc, argv);
   Process *newProcess = allocMemory(sizeof(Process)); // ACA SAME
   newProcess->pid = nextPid++;
   newProcess->priority = 0;
@@ -214,7 +224,7 @@ Process *createProcessStruct(newProcess process, int argc, char *argv) {
   return newProcess;
 }
 
-int createProcess(newProcess process, int argc, char *argv, int priority) {
+int createProcess(newProcess process, int argc, char *argv[], int priority) {
   Process *newProcess;
   if (0 <= priority && priority < MAX_PRIORITY) {
     newProcess = createProcessStruct(
@@ -310,13 +320,13 @@ void startFirstProcess() {
   setFirstProcess(pcb.running->rsp);
 }
 
-int createBackgroundProcess(newProcess process, int argc, char *argv,
+int createBackgroundProcess(newProcess process, int argc, char *argv[],
                             int priority) {
   // no bloqueo el actual
   return createProcess(process, argc, argv, priority);
 }
 
-int createForegroundProcess(newProcess process, int argc, char *argv,
+int createForegroundProcess(newProcess process, int argc, char *argv[],
                             int priority) {
   // bloqueo el actual
   int pid = createProcess(process, argc, argv, priority);

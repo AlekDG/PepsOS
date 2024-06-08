@@ -52,7 +52,7 @@ typedef struct processTable {
   Process *halt;
 } processTable;
 
-void *prepareStack(void *rsp, uint64_t rip, int argc, char *argv);
+void *prepareStack(void *rsp, uint64_t rip, int argc, char *argv[]);
 int haltCpu();
 
 /**
@@ -84,7 +84,7 @@ int block(int pid);
 // ret 1 si lo paso a ready, 0 si no
 int unblock(int pid);
 
-int createProcess(newProcess process, int argc, char *argv, int priority);
+int createProcess(newProcess process, int argc, char *argv[], int priority);
 
 // retorna 1 si lo mato, 0 si no
 int kill(int pid);
@@ -95,10 +95,10 @@ void setFirstProcess(void *rsp);
 
 void fireTimerInt();
 
-int createBackgroundProcess(newProcess process, int argc, char *argv,
+int createBackgroundProcess(newProcess process, int argc, char *argv[],
                             int priority);
 
-int createForegroundProcess(newProcess process, int argc, char *argv,
+int createForegroundProcess(newProcess process, int argc, char *argv[],
                             int priority);
 
 void exit();
