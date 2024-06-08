@@ -448,7 +448,7 @@ typedef struct processInfo{
   unsigned int prioriy;
   State state;
   processType tipo;
-  processInfo* next;
+  struct processInfo* next;
 } processInfo;
 
 
