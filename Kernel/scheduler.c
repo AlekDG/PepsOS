@@ -3,15 +3,11 @@
  */
 #include <BlockMemoryManager.h>
 #include <lib.h>
+#include <memMan.h>
 #include <scheduler.h>
 #include <stdint.h>
 
-void freeMemory(MemoryManagerADT const restrict memoryManager,
-                void *memToFree); // Hay que ponerlo en el .h del mem manager
-
 static int nextPid = 0;
-
-static MemoryManagerADT *mem;
 
 static processTable pcb;
 
@@ -36,8 +32,7 @@ void setPriorityQueuesNull() {
  * Create a new process table
  * @return a new process table
  */
-processTable *createPCB(MemoryManagerADT *memory) {
-  mem = memory;
+processTable *createPCB(void) {
   pcb.processCount = 0;
   pcb.running = NULL;
   setPriorityQueuesNull();
@@ -202,13 +197,13 @@ int unblock(int pid) {
 
 Process *createProcessStruct(newProcess process, int argc, char *argv) {
   int s = PROCESS_STACK_SIZE;
-  void *startAdress = allocMemory(*mem, s);
+  void *startAdress = allocMemory(s);
   void *newProcessStack =
       startAdress +
       PROCESS_STACK_SIZE; // VER DE AGREGAR VERIFICACION ret == NULL
   newProcessStack =
       prepareStack(newProcessStack, (uint64_t)process, 0x876, 0x678);
-  Process *newProcess = allocMemory(*mem, sizeof(Process)); // ACA SAME
+  Process *newProcess = allocMemory(sizeof(Process)); // ACA SAME
   newProcess->pid = nextPid++;
   newProcess->priority = 0;
   newProcess->state = READY;
@@ -251,16 +246,16 @@ int killBlocked(int pid) {
   Process *aux = pcb.blocked;
   if (aux != NULL && aux->pid == pid) {
     pcb.blocked = aux->next;
-    freeMemory(*mem, aux->memStartAdress);
-    freeMemory(*mem, aux);
+    freeMemory(aux->memStartAdress);
+    freeMemory(aux);
     return 1;
   }
   while (aux != NULL) {
     if (aux->next != NULL && aux->next->pid == pid) {
       Process *toKill = aux->next;
       aux->next = toKill->next;
-      freeMemory(*mem, toKill->memStartAdress);
-      freeMemory(*mem, toKill);
+      freeMemory(toKill->memStartAdress);
+      freeMemory(toKill);
       return 1;
     }
     aux = aux->next;
@@ -275,8 +270,8 @@ int killReady(int pid) {
       pcb.priorityQueue[i].ready = aux->next;
       if (pcb.priorityQueue[i].ready == NULL)
         pcb.priorityQueue[i].lastReady = NULL;
-      freeMemory(*mem, aux->memStartAdress);
-      freeMemory(*mem, aux);
+      freeMemory(aux->memStartAdress);
+      freeMemory(aux);
       return 1;
     }
     while (aux != NULL) {
@@ -286,8 +281,8 @@ int killReady(int pid) {
         if (toKill == pcb.priorityQueue[i].lastReady) {
           pcb.priorityQueue[i].lastReady = aux;
         }
-        freeMemory(*mem, toKill->memStartAdress);
-        freeMemory(*mem, toKill);
+        freeMemory(toKill->memStartAdress);
+        freeMemory(toKill);
         return 1;
       }
       aux = aux->next;
@@ -350,8 +345,8 @@ void *priorityScheduler(void *rsp) {
   Process *running = pcb.running;
   running->rsp = rsp;
   if (running->state == EXITED) {
-    freeMemory(*mem, running->memStartAdress);
-    freeMemory(*mem, running);
+    freeMemory(running->memStartAdress);
+    freeMemory(running);
     pcb.running = pcb.halt; // si encuentro algun prceso ready despues lo cambio
   } else if (running->state == BLOCKED) {
     pcb.running->next = pcb.blocked;

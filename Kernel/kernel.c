@@ -79,21 +79,16 @@ void *initializeKernelBinary() {
   return getStackBase();
 }
 
-static MemoryManagerADT systemMemory = 0x0000000000050000;
 static processTable *systemProcessTable;
 
 int main() {
   load_idt();
   initialState();
-  systemMemory =
-      createMemoryManager(0x0000000000050000, (void *)0x0000000000500000);
-  systemProcessTable = createPCB(&systemMemory);
+  initialize_memory();
+  systemProcessTable = createPCB();
   createProcess(((EntryPoint)sampleCodeModuleAddress), 0, "menu", 0);
   startFirstProcess();
-  // userBuild();
-
   _sti();
-  //((EntryPoint)sampleCodeModuleAddress)();
   while (1)
     ;
   return 0;

@@ -1,5 +1,3 @@
-// MemoryManager.c
-
 // Define which memory manager to use
 #ifdef USE_BUDDY
 #include <BuddyMemoryManager.h>
@@ -7,18 +5,21 @@
 #include <BlockMemoryManager.h>
 #endif
 
+MemoryManagerADT systemMemory;
+
+void initialize_memory(void) {
+  systemMemory =
+      createMemoryManager(0x0000000000050000, (void *)0x0000000000500000);
+}
+
 MemoryManagerADT
 createMemoryManager(void *const restrict memoryForMemoryManager,
                     void *const restrict managedMemory) {
   return createMemoryManagerImpl(memoryForMemoryManager, managedMemory);
 }
 
-void initManager(MemoryManagerADT manager) { initManagerImpl(manager); }
+void initManager(void) { initManagerImpl(systemMemory); }
 
-void *allocMemory(MemoryManagerADT manager, size_t size) {
-  return allocMemoryImpl(manager, size);
-}
+void *allocMemory(size_t size) { return allocMemoryImpl(systemMemory, size); }
 
-void freeMemory(MemoryManagerADT manager, void *ptr) {
-  freeMemoryImpl(manager, ptr);
-}
+void freeMemory(void *ptr) { freeMemoryImpl(systemMemory, ptr); }

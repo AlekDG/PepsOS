@@ -1,5 +1,6 @@
 #include <interrupts.h>
 #include <lib.h>
+#include <memMan.h>
 #include <scheduler.h>
 #include <sem.h>
 
@@ -90,7 +91,7 @@ int sem_dq_proc(int indx) {
   if (sem->first_proc == NULL)
     sem->last_proc = NULL;
   sem->size_list--;
-  // TODO: El fucking free del proceso
+  freeMemory(current_process);
 
   return pid;
 }
@@ -100,8 +101,7 @@ int sem_nq_proc(int index, int pid) {
   if (sem_instance->availability)
     return -1;
   semaphore *sem = &(sem_instance->sem);
-  sem_proc *new_proc = 124132412;
-  // TODO: el fucking malloc del nuevo proceso
+  sem_proc *new_proc = allocMemory(sizeof(sem_proc));
   if (new_proc == NULL)
     return -1;
 

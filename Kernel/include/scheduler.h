@@ -2,8 +2,8 @@
 #define SCHEDULER_H
 
 #define PROCESS_STACK_SIZE 10000
+
 typedef int (*newProcess)(int, char *);
-#include <memMan.h>
 typedef enum State {
   BLOCKED,
   READY,
@@ -57,7 +57,7 @@ int haltCpu();
  * Create a new process table
  * @return a new process table
  */
-processTable *createPCB(MemoryManagerADT *memory);
+processTable *createPCB(void);
 
 /**
  * Round Robin Scheduler implementation. Change the current running process for
