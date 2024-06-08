@@ -80,4 +80,10 @@ int call_createProcess(void process(), int argc, char* argv,int priority);
 int call_createBackgroundProcess(void process(), int argc, char* argv,int priority);
 int call_createForegroundProcess(void process(), int argc, char* argv,int priority);
 void call_exit();
+int call_kill(int pid);
+void call_yield();
+int call_changePriority(int pid, int priority);
+void* call_ps();
+int call_block(int pid);
+int call_unblock(int pid);
 #endif

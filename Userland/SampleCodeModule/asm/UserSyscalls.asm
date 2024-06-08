@@ -48,6 +48,13 @@ global call_createBackgroundProcess
 global call_createForegroundProcess
 global call_exit
 
+GLOBAL call_kill
+GLOBAL call_yield
+GLOBAL call_changePriority
+GLOBAL call_ps 
+GLOBAL call_block
+GLOBAL call_unblock 
+
 %macro call_to_handler 1
     push rbp
     mov rbp, rsp
@@ -172,6 +179,21 @@ call_pipe_write:
     call_to_handler 53
 call_pipe_read:
     call_to_handler 54
+
+call_changePriority:
+    call_to_handler 55
+
+call_ps:
+  call_to_handler 56
+call_kill:
+    call_to_handler 57
+
+call_block:
+    call_to_handler 58
+call_unblock:
+    call_to_handler 59
+call_yield:
+    call_to_handler 60
 call_excepDivZero:
     xor rdx,rdx
     div rdx

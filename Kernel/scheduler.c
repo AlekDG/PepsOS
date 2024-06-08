@@ -439,17 +439,6 @@ int changePriority(int pid, int priority){
   return wasChanged;
 }
 
-typedef struct processInfo{
-  char* name;
-  void *rsp;
-  void *rbp;
-  unsigned int pid;
-  unsigned int parentPid;
-  unsigned int prioriy;
-  State state;
-  processType tipo;
-  struct processInfo* next;
-} processInfo;
 
 
 

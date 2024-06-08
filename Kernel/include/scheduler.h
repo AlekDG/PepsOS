@@ -118,6 +118,24 @@ void yield();
 */
 int changePriority(int pid, int priority);
 
-//AGREGAR PS
+typedef struct processInfo{
+  char* name;
+  void *rsp;
+  void *rbp;
+  unsigned int pid;
+  unsigned int parentPid;
+  unsigned int prioriy;
+  State state;
+  processType tipo;
+  struct processInfo* next;
+} processInfo;
+
+
+/**
+ * Makes an array with the information of each process on the system.
+ * @return An array cointaning the information of the procceses null terminated.
+ * Must be free by calee when its no longer needed
+*/
+processInfo* getAllProcessInfo();
 
 #endif
