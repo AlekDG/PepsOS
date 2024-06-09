@@ -132,6 +132,25 @@ void drawOptionMenuArray(OptionMenu *optionMenu)
 	}
 }
 
+
+void prueba(int argc, char** argv){
+
+	char* prueba[10] = {0};
+	if(prueba[0] == 10){
+		call_yield();
+	}
+	call_drawRectangle(BLACK, 0, 0, call_getWidth(), call_getHeight());
+
+	call_drawStringFormatted(argv[0], WHITE, BLACK, 5);
+	call_drawStringFormatted(argv[1], WHITE, BLACK, 5);
+
+	while(1){
+
+	}
+
+	call_exit();
+}
+
 void drawMenu()
 {
 	int width = call_getWidth();
@@ -165,8 +184,8 @@ void drawMenu()
 		case '\n':
 			if (optionMenu.options[0]->isHovered)
 			{ // jugar snake 1p
-				char* argv[] = {"snake1"}; 
-			    call_createForegroundProcess(start_game,0,argv,4);
+				char* argv[] = {"snake1","pepe"}; 
+			    call_createForegroundProcess(prueba,1,argv,4);
 			
 				return;
 			}
@@ -211,8 +230,8 @@ void drawMenu()
 			}
 			else if (optionMenu.options[4]->isHovered)
 			{ // consola.isHovered
-				char* argv[] = {"consola",(char*)&optionMenu}; 
-				call_createForegroundProcess(runConsole,1,argv,4);
+				char* argv[] = {"consola"}; 
+				call_createForegroundProcess(runConsole,0,argv,4);
 				//runConsole(&optionMenu);
 				return;
 			}
