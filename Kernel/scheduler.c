@@ -403,6 +403,7 @@ void *priorityScheduler(void *rsp) {
 
     } else {
       pcb.running->next = NULL;
+      pcb.running->state = READY;
       if (pcb.priorityQueue[pcb.running->priority].ready == NULL) {
         pcb.priorityQueue[pcb.running->priority].ready = pcb.running;
       }
@@ -414,9 +415,11 @@ void *priorityScheduler(void *rsp) {
       if (pcb.priorityQueue[i].ready == NULL) {
         pcb.priorityQueue[i].lastReady = NULL;
       }
+      
     }
     break;
   }
+  pcb.running->state = RUNNING;
   return pcb.running->rsp;
 }
 

@@ -65,6 +65,8 @@ GLOBAL call_ps
 GLOBAL call_block
 GLOBAL call_unblock 
 
+GLOBAL call_printProcessInfo
+
 %macro call_to_handler 1
     push rbp
     mov rbp, rsp
@@ -206,6 +208,8 @@ call_unblock:
     call_to_handler 59
 call_yield:
     call_to_handler 60
+call_printProcessInfo:
+    call_to_handler 62
 call_excepDivZero:
     xor rdx,rdx
     div rdx

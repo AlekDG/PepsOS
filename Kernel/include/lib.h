@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "../../Shared/include/ps.h"
+
 #define NULL 0
 #define FALSE 0
 #define TRUE 1
@@ -60,4 +62,7 @@ unsigned int string_length(const char *str);
 void string_copy(char *from, char *to);
 int same_string(char *s1, char *s2);
 int fast_log2(int X);
+
+//For printing process information
+void printProcessInfo(processInfo* process);
 #endif

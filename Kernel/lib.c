@@ -1,6 +1,7 @@
 #include <lib.h>
 #include <video.h>
 
+
 #define REG_AMOUNT 10
 
 void *memset(void *destination, int32_t c, uint64_t length) {
@@ -98,6 +99,41 @@ void saveRegsBuffer(uint64_t regs) {
   regBuffer.rflags = *cast++;
   regBuffer.rsp = *cast++;
   regBuffer.ss = *cast;
+}
+
+void printProcessInfo(processInfo* process){
+  //setXBuffer(30);
+  newLine();
+  drawStringDef(process->name);
+  drawStringDef("  ");
+  printInteger(process->pid);
+  drawStringDef("  ");
+  printInteger(process->parentPid);
+  drawStringDef("  ");
+  printInteger(process->prioriy);
+  switch (process->state)
+  {
+  case BLOCKED:
+    drawStringFormatted("BLOCKED",RED,BLACK,2);
+    break;
+    case READY:
+    drawStringFormatted("READY",BRIGHT_BLUE,BLACK,2);
+    break;
+    case RUNNING:
+    drawStringFormatted("RUNNING",BRIGHT_GREEN,BLACK,2);
+    break;
+  }
+  drawStringDef("  ");
+  switch (process->tipo)
+  {
+  case FOREGROUND:
+    drawStringDef("FOREGROUND");
+    break;
+  
+  default:
+    drawStringDef("BACKGROUND");;
+  }
+  newLine();
 }
 
 void printRegs(void) {

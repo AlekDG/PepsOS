@@ -95,4 +95,5 @@ processInfo *call_ps(int *processCount);
 int call_block(int pid);
 int call_unblock(int pid);
 int call_getpid();
+void call_printProcessInfo(processInfo* process);
 #endif
