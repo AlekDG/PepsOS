@@ -40,6 +40,7 @@ GLOBAL call_excepDivZero
 GLOBAL call_excepInvalidOp
 GLOBAL call_free
 GLOBAL call_malloc
+GLOBAL call_mem_state
 
 GLOBAL call_createProcess
 
@@ -159,6 +160,8 @@ call_malloc:
     call_to_handler 39
 call_free:
     call_to_handler 45
+call_mem_state:
+    call_to_handler 61
 call_createProcess:
     call_to_handler 40
 call_getPid:

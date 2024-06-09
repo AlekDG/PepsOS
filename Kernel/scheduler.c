@@ -197,23 +197,30 @@ int unblock(int pid) {
   return 0;
 }
 
-int copyArgvOnStack(void *rsp, int argc, char *argv[]) {
+void copyArgvOnStack(char* rsp, int argc, char *argv[]) {
   int charsCopyCount = 0;
-  for(int i = 0; i < argc ; i++){
-    while(argv[i]);
+  char** newArgv = (void*) rsp;
+  rsp += sizeof(char*) * (argc + 1);
+  for(int i = 0; i <= argc ; i++){
+    int j = 0;
+    newArgv[i] = rsp + charsCopyCount;
+    while(argv[i][j] != NULL){
+      rsp[charsCopyCount++] =  argv[i][j];
+      j++;
+    }
+    rsp[charsCopyCount++] = '\0';
   }
-  return 0;
 }
 
 Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   int s = PROCESS_STACK_SIZE;
   void *startAdress = allocMemory(s);
-
+  copyArgvOnStack((char*) startAdress,argc,argv);
   void *newProcessStack =
-      startAdress +
+      startAdress +  
       PROCESS_STACK_SIZE; // VER DE AGREGAR VERIFICACION ret == NULL
   newProcessStack =
-      prepareStack(newProcessStack, (uint64_t)process, argc, argv);
+      prepareStack(newProcessStack, (uint64_t)process, argc, startAdress);
   Process *newProcess = allocMemory(sizeof(Process)); // ACA SAME
   newProcess->pid = nextPid++;
   newProcess->priority = 0;
