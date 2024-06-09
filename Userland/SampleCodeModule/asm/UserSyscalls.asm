@@ -47,6 +47,15 @@ GLOBAL call_getPid
 global call_createBackgroundProcess
 global call_createForegroundProcess
 global call_exit
+GLOBAL call_sem_create
+GLOBAL call_sem_open
+GLOBAL call_sem_close
+GLOBAL call_sem_post
+GLOBAL call_sem_wait
+GLOBAL call_pipe_close
+GLOBAL call_pipe_open
+GLOBAL call_pipe_read
+GLOBAL call_pipe_write
 
 GLOBAL call_kill
 GLOBAL call_yield
