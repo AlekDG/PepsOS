@@ -396,14 +396,23 @@ void *priorityScheduler(void *rsp) {
         pcb.halt) { // si es halt,no quiero ponerlo en la lista de ready
       pcb.running = pcb.priorityQueue[i].ready;
       pcb.priorityQueue[i].ready = pcb.priorityQueue[i].ready->next;
-      if (pcb.priorityQueue[i].ready == NULL)
+      if (pcb.priorityQueue[i].ready == NULL) {
         pcb.priorityQueue[i].lastReady = NULL;
+      }
+
     } else {
       pcb.running->next = NULL;
-      pcb.priorityQueue[i].lastReady->next = running;
-      pcb.priorityQueue[i].lastReady = running;
+      if (pcb.priorityQueue[pcb.running->priority].ready == NULL) {
+        pcb.priorityQueue[pcb.running->priority].ready = pcb.running;
+      }
+      pcb.priorityQueue[pcb.running->priority].lastReady->next = running;
+      pcb.priorityQueue[pcb.running->priority].lastReady = running;
+
       pcb.running = pcb.priorityQueue[i].ready;
       pcb.priorityQueue[i].ready = pcb.running->next;
+      if (pcb.priorityQueue[i].ready == NULL) {
+        pcb.priorityQueue[i].lastReady = NULL;
+      }
     }
     break;
   }
