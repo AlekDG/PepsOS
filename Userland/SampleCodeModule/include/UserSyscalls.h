@@ -87,4 +87,5 @@ int call_changePriority(int pid, int priority);
 void* call_ps();
 int call_block(int pid);
 int call_unblock(int pid);
+int call_getpid();
 #endif

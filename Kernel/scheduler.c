@@ -4,9 +4,9 @@
 #include <BlockMemoryManager.h>
 #include <lib.h>
 #include <memMan.h>
+#include <pipes.h>
 #include <scheduler.h>
 #include <stdint.h>
-#include <pipes.h>
 
 static int nextPid = 0;
 
@@ -38,7 +38,7 @@ processTable *createPCB(void) {
   pcb.running = NULL;
   setPriorityQueuesNull();
   pcb.blocked = NULL;
-  char* haltArgv[] = {"halt"};
+  char *haltArgv[] = {"halt"};
   pcb.halt = createProcessStruct(haltCpu, 0, haltArgv);
   return &pcb;
 }
@@ -197,15 +197,15 @@ int unblock(int pid) {
   return 0;
 }
 
-void copyArgvOnStack(char* rsp, int argc, char *argv[]) {
+void copyArgvOnStack(char *rsp, int argc, char *argv[]) {
   int charsCopyCount = 0;
-  char** newArgv = (void*) rsp;
-  rsp += sizeof(char*) * (argc + 1);
-  for(int i = 0; i <= argc ; i++){
+  char **newArgv = (void *)rsp;
+  rsp += sizeof(char *) * (argc + 1);
+  for (int i = 0; i <= argc; i++) {
     int j = 0;
     newArgv[i] = rsp + charsCopyCount;
-    while(argv[i][j] != NULL){
-      rsp[charsCopyCount++] =  argv[i][j];
+    while (argv[i][j] != NULL) {
+      rsp[charsCopyCount++] = argv[i][j];
       j++;
     }
     rsp[charsCopyCount++] = '\0';
@@ -215,9 +215,9 @@ void copyArgvOnStack(char* rsp, int argc, char *argv[]) {
 Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   int s = PROCESS_STACK_SIZE;
   void *startAdress = allocMemory(s);
-  copyArgvOnStack((char*) startAdress,argc,argv);
+  copyArgvOnStack((char *)startAdress, argc, argv);
   void *newProcessStack =
-      startAdress +  
+      startAdress +
       PROCESS_STACK_SIZE; // VER DE AGREGAR VERIFICACION ret == NULL
   newProcessStack =
       prepareStack(newProcessStack, (uint64_t)process, argc, startAdress);
@@ -318,6 +318,9 @@ int kill(int pid) {
   if (!wasKilled) {
     wasKilled = killReady(pid);
   }
+  if (wasKilled) {
+    pcb.processCount--;
+  }
   return wasKilled;
 }
 
@@ -393,23 +396,30 @@ void *priorityScheduler(void *rsp) {
         pcb.halt) { // si es halt,no quiero ponerlo en la lista de ready
       pcb.running = pcb.priorityQueue[i].ready;
       pcb.priorityQueue[i].ready = pcb.priorityQueue[i].ready->next;
-      if (pcb.priorityQueue[i].ready == NULL)
+      if (pcb.priorityQueue[i].ready == NULL) {
         pcb.priorityQueue[i].lastReady = NULL;
+      }
+
     } else {
       pcb.running->next = NULL;
-      pcb.priorityQueue[i].lastReady->next = running;
-      pcb.priorityQueue[i].lastReady = running;
+      if (pcb.priorityQueue[pcb.running->priority].ready == NULL) {
+        pcb.priorityQueue[pcb.running->priority].ready = pcb.running;
+      }
+      pcb.priorityQueue[pcb.running->priority].lastReady->next = running;
+      pcb.priorityQueue[pcb.running->priority].lastReady = running;
+
       pcb.running = pcb.priorityQueue[i].ready;
       pcb.priorityQueue[i].ready = pcb.running->next;
+      if (pcb.priorityQueue[i].ready == NULL) {
+        pcb.priorityQueue[i].lastReady = NULL;
+      }
     }
     break;
   }
   return pcb.running->rsp;
 }
 
-
-
-int changeBlockedProcessPriority(int pid, int priority){
+int changeBlockedProcessPriority(int pid, int priority) {
   Process *aux = pcb.blocked;
   while (aux != NULL) {
     if (aux->pid == pid) {
@@ -421,12 +431,42 @@ int changeBlockedProcessPriority(int pid, int priority){
   return 0;
 }
 
-int changeReadyProcessPriority(int pid, int priority){
+int changeReadyProcessPriority(int pid, int priority) {
   for (int i = 0; i < MAX_PRIORITY; i++) {
     Process *aux = pcb.priorityQueue[i].ready;
+    if (aux != NULL && aux->pid == pid) {
+      pcb.priorityQueue[i].ready = aux->next;
+      if (pcb.priorityQueue[i].ready == NULL) {
+        pcb.priorityQueue[i].lastReady = NULL;
+      }
+
+      if (pcb.priorityQueue[priority].ready == NULL) {
+        pcb.priorityQueue[priority].ready = aux;
+        pcb.priorityQueue[priority].lastReady = aux;
+      } else {
+        pcb.priorityQueue[priority].lastReady->next = aux;
+        pcb.priorityQueue[priority].lastReady = aux;
+      }
+      aux->next = NULL;
+      return 1;
+    }
     while (aux != NULL) {
-      if (aux->pid == pid) {
-        aux->priority = priority;
+      if (aux->next != NULL && aux->next->pid == pid) {
+        Process *toChange = aux->next;
+        toChange->priority = priority;
+        aux->next = toChange->next;
+        if (toChange == pcb.priorityQueue[i].lastReady) {
+          pcb.priorityQueue[i].lastReady = aux;
+        }
+
+        if (pcb.priorityQueue[priority].ready == NULL) {
+          pcb.priorityQueue[priority].ready = toChange;
+          pcb.priorityQueue[priority].lastReady = toChange;
+        } else {
+          pcb.priorityQueue[priority].lastReady->next = toChange;
+          pcb.priorityQueue[priority].lastReady = toChange;
+        }
+        toChange->next = NULL;
         return 1;
       }
       aux = aux->next;
@@ -440,62 +480,59 @@ int changeReadyProcessPriority(int pid, int priority){
  * @param pid the process id
  * @param priority the new priority
  * @return 1 if the priority was changed, 0 if not
-*/
-int changePriority(int pid, int priority){
-  if(priority < 0 || priority >= MAX_PRIORITY){
+ */
+int changePriority(int pid, int priority) {
+  if (priority < 0 || priority >= MAX_PRIORITY) {
     return 0;
   }
-  if(pcb.running->pid == pid){
-     pcb.running->priority = priority;
-     return 1;
+  if (pcb.running->pid == pid) {
+    pcb.running->priority = priority;
+    return 1;
   }
-  int wasChanged = changeBlockedProcessPriority(pid,priority);
-  if(!wasChanged){
-    wasChanged = changeReadyProcessPriority(pid,priority);
+  int wasChanged = changeBlockedProcessPriority(pid, priority);
+  if (!wasChanged) {
+    wasChanged = changeReadyProcessPriority(pid, priority);
   }
   return wasChanged;
 }
 
-
-
-
-void copyProcToArray(int* indexCount, processInfo* procs, Process* process){
-    procs[*indexCount].name = process->name;
-    procs[*indexCount].parentPid = process->parentPID;
-    procs[*indexCount].pid = process->pid;
-    procs[*indexCount].prioriy = process->priority;
-    procs[*indexCount].rbp = process->rbp;
-    procs[*indexCount].rsp = process->rsp;
-    procs[*indexCount].state = process->state;
-    procs[*indexCount].tipo = process->tipo;
+void copyProcToArray(int *indexCount, processInfo *procs, Process *process) {
+  procs[*indexCount].name = process->name;
+  procs[*indexCount].parentPid = process->parentPID;
+  procs[*indexCount].pid = process->pid;
+  procs[*indexCount].prioriy = process->priority;
+  procs[*indexCount].rbp = process->rbp;
+  procs[*indexCount].rsp = process->rsp;
+  procs[*indexCount].state = process->state;
+  procs[*indexCount].tipo = process->tipo;
 }
 
-
-void copyListOnArrayFromIndex(int* indexCount, processInfo* procs, Process* list){
-  Process* process = list;
-  while(process != NULL){
-      copyProcToArray(indexCount,procs,process);
-      (*indexCount)++;
-      process = process->next;
-  }  
+void copyListOnArrayFromIndex(int *indexCount, processInfo *procs,
+                              Process *list) {
+  Process *process = list;
+  while (process != NULL) {
+    copyProcToArray(indexCount, procs, process);
+    (*indexCount)++;
+    process = process->next;
+  }
 }
 
 /**
  * Makes an array with the information of each process on the system.
  * @return An array cointaning the information of the procceses null terminated.
  * Must be free by calee when its no longer needed
-*/
-processInfo* getAllProcessInfo(){
-  processInfo* procs = allocMemory(pcb.processCount * sizeof(processInfo));
+ */
+processInfo *getAllProcessInfo() {
+  processInfo *procs = allocMemory(pcb.processCount * sizeof(processInfo));
   int indexCount = 0;
-  
-  copyListOnArrayFromIndex(&indexCount,procs,pcb.blocked); 
 
-  for(int i = 0; i < MAX_PRIORITY; i++){
-    copyListOnArrayFromIndex(&indexCount,procs,pcb.priorityQueue[i].ready);
+  copyListOnArrayFromIndex(&indexCount, procs, pcb.blocked);
+
+  for (int i = 0; i < MAX_PRIORITY; i++) {
+    copyListOnArrayFromIndex(&indexCount, procs, pcb.priorityQueue[i].ready);
   }
 
-  copyProcToArray(&indexCount,procs,pcb.running);
+  copyProcToArray(&indexCount, procs, pcb.running);
 
   return procs;
 }
