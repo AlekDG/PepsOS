@@ -93,6 +93,19 @@ void interpretCommand(char command[])
 	char testdivzero[] = "testdivzero";
 	char testinvalidopcode[] = "testinvalidopcode";
 	char printhelp[] = "help";
+    //  Nuevos Comandos de SO.
+    char memState[] = "mem";
+    char processesState[] = "ps";
+    char processLoop[] = "loop";
+    char processKill[] = "kill";
+    char processNice[] = "nice";
+    char processBlockToggle[] = "block";
+    char ipcCat[] = "cat";
+    char ipclinecount[] = "wc";
+    char ipcFilterVowels[] = "filter";
+    char ipcPhylo[] = "phylo";
+
+
 	if (compareStrings(command, enlargefontsize) == 0)
 	{
 		if (call_getSize() < 4)
