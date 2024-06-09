@@ -4,8 +4,9 @@
 #include <memMan.h>
 #include <moduleLoader.h>
 #include <naiveConsole.h>
+#include <pipes.h>
 #include <scheduler.h>
-#include <sound.h>
+#include <sem.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -86,6 +87,8 @@ int main() {
   initialState();
   initialize_memory();
   systemProcessTable = createPCB();
+  start_sems();
+  initialize_pipes();
   char* menuArgv[] = {"menu"};
   createProcess(((EntryPoint)sampleCodeModuleAddress), 0, menuArgv, 0);
   startFirstProcess();

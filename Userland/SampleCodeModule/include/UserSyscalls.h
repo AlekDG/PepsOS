@@ -3,9 +3,10 @@
 #ifndef USERSYSCALLS
 #define USERSYSCALLS
 
-//Allocate and free memory
+//Allocate, free, and check memory
 void *call_malloc(int size);
 void call_free(void* toFree);
+void call_mem_state(int * freeMemory, int * totalMemory, int * allocatedMemory);
 //Semaphores
 int call_sem_open(int value,char* sem_name);
 int call_sem_close(char* sem_name);
