@@ -1,6 +1,7 @@
 #ifndef PIPES_H
 #define PIPES_H
 
+#define STDIN "STDIN"
 #define SIZE 1024
 #define PIPES_AMOUNT 16
 

@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <lib.h>
+#include <pipes.h>
 
 const unsigned char kbArr[4][128] = {
     {0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
@@ -52,6 +53,9 @@ char hexToChar(uint8_t hex){
 
 void keyAct(void){
 	uint8_t keyHex = getKey();
+    int stdin_pipe=open_pipe(STDIN);
+    write_to_pipe(stdin_pipe,&keyHex);
+    close_pipe(stdin_pipe);
     char keyChar;
     if(keyHex<0x81){
         keyPressed(true);
