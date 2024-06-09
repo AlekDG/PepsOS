@@ -212,7 +212,7 @@ void drawMenu()
 			else if (optionMenu.options[4]->isHovered)
 			{ // consola.isHovered
 				char* argv[] = {"consola",(char*)&optionMenu}; 
-				call_createForegroundProcess(runConsole,0,argv,4);
+				call_createForegroundProcess(runConsole,1,argv,4);
 				//runConsole(&optionMenu);
 				return;
 			}

@@ -215,10 +215,10 @@ Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   void *startAdress = allocMemory(s);
   int argvCopiedChars = copyArgvOnStack((char*) startAdress,argc,argv);
   void *newProcessStack =
-      startAdress +
+      startAdress +  
       PROCESS_STACK_SIZE; // VER DE AGREGAR VERIFICACION ret == NULL
   newProcessStack =
-      prepareStack(newProcessStack, (uint64_t)process, argc, argv);
+      prepareStack(newProcessStack, (uint64_t)process, argc, startAdress);
   Process *newProcess = allocMemory(sizeof(Process)); // ACA SAME
   newProcess->pid = nextPid++;
   newProcess->priority = 0;
