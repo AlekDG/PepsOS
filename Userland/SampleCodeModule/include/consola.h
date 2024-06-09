@@ -6,5 +6,6 @@
 void drawConsole();
 void runConsole();
 void deleteConsole();
+void ps();
 
 #endif

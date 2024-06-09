@@ -2,8 +2,8 @@
 #include <lib.h>
 #include <memMan.h>
 #include <pipes.h>
-#include <sem.h>
 #include <scheduler.h>
+#include <sem.h>
 #include <sound.h>
 #include <time.h>
 #include <video.h>
@@ -173,13 +173,13 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     freeMemory(rsi);
     break;
   case 46:
-    sem_open(rsi,rdx);
+    sem_open(rsi, rdx);
     break;
   case 47:
     sem_close(rsi);
     break;
   case 48:
-    create_sem(rsi,rdx);
+    create_sem(rsi, rdx);
     break;
   case 49:
     sem_post(rsi);
@@ -194,16 +194,16 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     close_pipe(rsi);
     break;
   case 53:
-    write_to_pipe(rsi,rdi);
+    write_to_pipe(rsi, rdi);
     break;
   case 54:
     read_pipe(rsi);
     break;
   case 55:
-    changePriority(rsi,rdx);
+    changePriority(rsi, rdx);
     break;
   case 56:
-    return getAllProcessInfo();
+    return getAllProcessInfo(rsi);
     break;
   case 57:
     return kill(rsi);
@@ -217,9 +217,9 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
   case 60:
     yield();
     break;
-    case 61:
-        memState(rsi, rdx, rcx);
-        break;
+  case 61:
+    memState(rsi, rdx, rcx);
+    break;
   default:
     return 0;
   }

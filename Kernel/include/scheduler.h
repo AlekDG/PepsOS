@@ -1,20 +1,11 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
+#include "../../Shared/include/ps.h"
+
 #define PROCESS_STACK_SIZE 10000
 
 typedef int (*newProcess)(int, char *);
-typedef enum State {
-  BLOCKED,
-  READY,
-  RUNNING,
-  EXITED,
-} State;
-
-typedef enum processType {
-  FOREGROUND,
-  BACKGROUND,
-} processType;
 
 typedef struct process {
   // regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos
@@ -30,7 +21,7 @@ typedef struct process {
   struct process *next;
   int parentPID;
   processType tipo;
-  char* name;
+  char *name;
 
 } Process; // podriamos ver de agregar el tiempo de quantum que corrio por si
            // esta corriendo porque volvio de blocked y no por el timer tick
@@ -115,27 +106,14 @@ void yield();
  * @param pid the process id
  * @param priority the new priority
  * @return 1 if the priority was changed, 0 if not
-*/
+ */
 int changePriority(int pid, int priority);
-
-typedef struct processInfo{
-  char* name;
-  void *rsp;
-  void *rbp;
-  unsigned int pid;
-  unsigned int parentPid;
-  unsigned int prioriy;
-  State state;
-  processType tipo;
-  struct processInfo* next;
-} processInfo;
-
 
 /**
  * Makes an array with the information of each process on the system.
  * @return An array cointaning the information of the procceses null terminated.
  * Must be free by calee when its no longer needed
-*/
-processInfo* getAllProcessInfo();
+ */
+processInfo *getAllProcessInfo(int *count);
 
 #endif

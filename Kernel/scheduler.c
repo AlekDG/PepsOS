@@ -228,6 +228,7 @@ Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   newProcess->rsp = newProcessStack /*+ lo que agregue en prepareStack*/;
   newProcess->next = NULL;
   newProcess->memStartAdress = startAdress;
+  newProcess->name = argv[0];
   return newProcess;
 }
 
@@ -496,22 +497,22 @@ int changePriority(int pid, int priority) {
   return wasChanged;
 }
 
-void copyProcToArray(int *indexCount, processInfo *procs, Process *process) {
-  procs[*indexCount].name = process->name;
-  procs[*indexCount].parentPid = process->parentPID;
-  procs[*indexCount].pid = process->pid;
-  procs[*indexCount].prioriy = process->priority;
-  procs[*indexCount].rbp = process->rbp;
-  procs[*indexCount].rsp = process->rsp;
-  procs[*indexCount].state = process->state;
-  procs[*indexCount].tipo = process->tipo;
+void copyProcToArray(int indexCount, processInfo *procs, Process *process) {
+  procs[indexCount].name = process->name;
+  procs[indexCount].parentPid = process->parentPID;
+  procs[indexCount].pid = process->pid;
+  procs[indexCount].prioriy = process->priority;
+  procs[indexCount].rbp = process->rbp;
+  procs[indexCount].rsp = process->rsp;
+  procs[indexCount].state = process->state;
+  procs[indexCount].tipo = process->tipo;
 }
 
 void copyListOnArrayFromIndex(int *indexCount, processInfo *procs,
                               Process *list) {
   Process *process = list;
   while (process != NULL) {
-    copyProcToArray(indexCount, procs, process);
+    copyProcToArray(*indexCount, procs, process);
     (*indexCount)++;
     process = process->next;
   }
@@ -522,7 +523,7 @@ void copyListOnArrayFromIndex(int *indexCount, processInfo *procs,
  * @return An array cointaning the information of the procceses null terminated.
  * Must be free by calee when its no longer needed
  */
-processInfo *getAllProcessInfo() {
+processInfo *getAllProcessInfo(int *count) {
   processInfo *procs = allocMemory(pcb.processCount * sizeof(processInfo));
   int indexCount = 0;
 
@@ -532,7 +533,7 @@ processInfo *getAllProcessInfo() {
     copyListOnArrayFromIndex(&indexCount, procs, pcb.priorityQueue[i].ready);
   }
 
-  copyProcToArray(&indexCount, procs, pcb.running);
-
+  copyProcToArray(indexCount++, procs, pcb.running);
+  *count = indexCount;
   return procs;
 }

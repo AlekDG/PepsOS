@@ -184,8 +184,8 @@ void drawMenu()
 		case '\n':
 			if (optionMenu.options[0]->isHovered)
 			{ // jugar snake 1p
-				char* argv[] = {"snake1","pepe"}; 
-			    call_createForegroundProcess(prueba,1,argv,4);
+				char* argv[] = {"snake1"}; 
+			    call_createForegroundProcess(ps,1,argv,4);
 			
 				return;
 			}
