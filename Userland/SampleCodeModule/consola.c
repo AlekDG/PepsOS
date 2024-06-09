@@ -23,6 +23,46 @@ void deleteConsole()
 	call_drawRectangle(BLACK, 0, 500, call_getWidth(), call_getHeight() - 500);
 }
 
+
+
+CommandType getCommandType(const char* command) {
+    if (compareStrings(command, ENLARGE_FONT_SIZE_CMD) == 0) {
+        return CMD_ENLARGE_FONT_SIZE;
+    } else if (compareStrings(command, REDUCE_FONT_SIZE_CMD) == 0) {
+        return CMD_DECREASE_FONT_SIZE;
+    } else if (compareStrings(command, TEST_DIV_ZERO_CMD) == 0) {
+        return CMD_TEST_DIV_ZERO;
+    } else if (compareStrings(command, TEST_INVALID_OPCODE_CMD) == 0) {
+        return CMD_TEST_INV_OPCODE;
+    } else if (compareStrings(command, PRINT_HELP_CMD) == 0) {
+        return CMD_PRINT_HELP;
+    } else if(compareStrings(command, MEM_STATE_CMD) == 0){
+        return CMD_PRINT_MEM_STATE;
+    } else if(compareStrings(command, PROCESS_STATE_CMD) == 0){
+        return CMD_PROCESSES_STATE;
+    } else if(compareStrings(command, PROCESS_LOOP_CMD) == 0){
+        return CMD_PROCESS_LOOP;
+    } else if(compareStrings(command, PROCESS_KILL_CMD) == 0){
+        return CMD_PROCESS_KILL;
+    } else if(compareStrings(command, PROCESS_NICE_CMD) == 0){
+        return CMD_PROCESS_NICE;
+    } else if(compareStrings(command, PROCESS_BLOCK_CMD) == 0){
+        return CMD_PROCESS_BLOCK_TOGGLE;
+    } else if(compareStrings(command, IPC_CAT_CMD) == 0){
+        return CMD_IPC_CAT;
+    } else if(compareStrings(command, IPC_LINE_COUNT_CMD) == 0){
+        return CMD_IPC_LINE_COUNT;
+    } else if(compareStrings(command, IPC_FILTER_VOWELS_CMD) == 0){
+        return CMD_IPC_FILTER_VOWELS;
+    } else if(compareStrings(command, IPC_PHYLO_CMD) == 0){
+        return CMD_IPC_PHYLO;
+    }
+    else{
+        return CMD_UNKNOWN;
+    }
+
+}
+
 int compareStrings(char *s1, char *s2)
 {
 	while (*s1 != 0 && *s2 != 0)
@@ -88,88 +128,70 @@ void decreaseFontSize()
 }
 void interpretCommand(char command[])
 {
-	char enlargefontsize[] = "increasefont";
-	char reducefontsize[] = "reducefont";
-	char testdivzero[] = "testdivzero";
-	char testinvalidopcode[] = "testinvalidopcode";
-	char printhelp[] = "help";
-    //  Nuevos Comandos de SO.
-    char memState[] = "mem";
-    char processesState[] = "ps";
-    char processLoop[] = "loop";
-    char processKill[] = "kill";
-    char processNice[] = "nice";
-    char processBlockToggle[] = "block";
-    char ipcCat[] = "cat";
-    char ipclinecount[] = "wc";
-    char ipcFilterVowels[] = "filter";
-    char ipcPhylo[] = "phylo";
+	CommandType cmdType = getCommandType(command);
+    switch (cmdType) {
+        case CMD_ENLARGE_FONT_SIZE:
+            if (call_getSize() < 4)
+            {
+                enlargeFontSize();
+            }
+            else
+            {
+                call_setSize(4);
+            }
+            askForAnyletter();
+            while (1)
+            {
+                int letter = call_getChar();
+                if (letter != 0)
+                {
+                    return;
+                }
+            }
+        case CMD_DECREASE_FONT_SIZE:
+            if (call_getSize() > 1)
+            {
+                decreaseFontSize();
+            }
+            else
+            {
+                call_setSize(1);
+            }
+            askForAnyletter();
+            while (1)
+            {
+                int letter = call_getChar();
+                if (letter != 0)
+                {
+                    return;
+                }
+            }
+        case CMD_TEST_DIV_ZERO:
+            call_excepDivZero();
+            return;
+        case CMD_TEST_INV_OPCODE:
+            call_excepInvalidOp();
+            return;
+        case CMD_PRINT_HELP:
+            printHelp();
+            askForAnyletter();
+            while (1)
+            {
+                int letter = call_getChar();
+                if (letter != 0)
+                {
+                    return;
+                }
+            }
+        case CMD_PRINT_MEM_STATE:
+            //  handler de memstate
+            break;
+        case CMD_UNKNOWN:
+        default:
+            //  UNKNOWN HANDLER
+            break;
+    }
 
-
-	if (compareStrings(command, enlargefontsize) == 0)
-	{
-		if (call_getSize() < 4)
-		{
-			enlargeFontSize();
-		}
-		else
-		{
-			call_setSize(4);
-		}
-		askForAnyletter();
-		while (1)
-		{
-			int letter = call_getChar();
-			if (letter != 0)
-			{
-				return;
-			}
-		}
-	}
-	else if (compareStrings(command, reducefontsize) == 0)
-	{
-		if (call_getSize() > 1)
-		{
-			decreaseFontSize();
-		}
-		else
-		{
-			call_setSize(1);
-		}
-		askForAnyletter();
-		while (1)
-		{
-			int letter = call_getChar();
-			if (letter != 0)
-			{
-				return;
-			}
-		}
-		return;
-	}
-	else if (compareStrings(command, testdivzero) == 0)
-	{
-		call_excepDivZero();
-		return;
-	}
-	else if (compareStrings(command, testinvalidopcode) == 0)
-	{
-		call_excepInvalidOp();
-		return;
-	}
-	else if (compareStrings(command, printhelp) == 0)
-	{ // imprime comandos de ayuda
-		printHelp();
-		askForAnyletter();
-		while (1)
-		{
-			int letter = call_getChar();
-			if (letter != 0)
-			{
-				return;
-			}
-		}
-	}
 }
 void runConsole()
 {
