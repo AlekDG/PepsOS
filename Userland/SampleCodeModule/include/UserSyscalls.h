@@ -96,4 +96,5 @@ int call_block(int pid);
 int call_unblock(int pid);
 int call_getpid();
 void call_printProcessInfo(processInfo* process);
+void call_sleep(int numberOfTicks);
 #endif

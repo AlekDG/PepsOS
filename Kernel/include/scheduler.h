@@ -2,6 +2,7 @@
 #define SCHEDULER_H
 
 #include "../../Shared/include/ps.h"
+#include <stdint.h>
 
 #define PROCESS_STACK_SIZE 10000
 
@@ -114,5 +115,8 @@ int changePriority(int pid, int priority);
  * Must be free by calee when its no longer needed
  */
 processInfo *getAllProcessInfo(int *count);
+
+
+void sleep(int numberOfTicks);
 
 #endif

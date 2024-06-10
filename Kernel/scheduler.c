@@ -7,6 +7,7 @@
 #include <pipes.h>
 #include <scheduler.h>
 #include <stdint.h>
+#include <time.h>
 
 static int nextPid = 0;
 
@@ -484,4 +485,12 @@ processInfo *getAllProcessInfo(int *count) {
   copyProcToArray(indexCount++, procs, pcb.running);
   *count = indexCount;
   return procs;
+}
+
+void sleep(int numberOfTicks){
+  if(numberOfTicks > 0){
+    addProcSleep(pcb.running->pid,numberOfTicks);
+    block(pcb.running->pid);
+  }
+
 }
