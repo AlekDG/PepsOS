@@ -4,7 +4,7 @@
 
 void drawConsole()
 {
-	call_drawRectangle(LIGHT_GRAY, 0, 500, call_getWidth(), call_getHeight() - 500); // justo al final de pepsiman
+	call_drawRectangle(LIGHT_GRAY, 0, 0, call_getWidth(), call_getHeight()); // justo al final de pepsiman
 	call_setFGColor(DARK_GRAY);
 	call_setBGColor(LIGHT_GRAY);
 	int currentsize = call_getSize();
@@ -142,12 +142,12 @@ void askForAnyletter()
 void printHelp()
 {
 	deleteConsole();
-	call_drawRectangle(LIGHT_GRAY, 0, 500, call_getWidth(), call_getHeight() - 500);
+	call_drawRectangle(LIGHT_GRAY, 0, 0, call_getWidth(), call_getHeight());
 	int currentsize = call_getSize();
 	call_setSize(2);
-	char text[] = "->Testear division por cero: testdivzero\n->Testear invalid op code: testinvalidopcode\n->Aumentar tamanio de fuente: increasefontsize\n->Reducir tamanio de fuente: reducefontsize";
+	char text[] = "->Mostrar Procesos: ps\n->Crear proceso loop: loop\n->Matar un proceso: kill (pid)\n->Cambiar prioridad (numero de 0 a 4) de un proceso: nice (pid) (prioridad)\n->Testear division por cero: testdivzero\n->Testear invalid op code: testinvalidopcode\n->Aumentar tamanio de fuente: increasefontsize\n->Reducir tamanio de fuente: reducefontsize";
 	call_setXBuffer(0);
-	call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+	call_setYBuffer( 5);
 	for (int i = 0; text[i] != 0; i++)
 	{
 		call_drawLetterFromChar(text[i]);
@@ -261,6 +261,14 @@ void interpretCommand(char command[])
                 }
             }
             //  handler de memstate
+
+        case CMD_PROCESS_LOOP:
+            char* loopArgv[] = {"loop"};
+            call_createBackgroundProcess(loop,0,loopArgv,0);
+            break;    
+        case CMD_PROCESSES_STATE:
+            char* psArgv[] = {"ps"};
+            call_createForegroundProcess(ps,0,psArgv,4); 
         case CMD_UNKNOWN:
         default:
             //  UNKNOWN HANDLER
@@ -272,7 +280,7 @@ void runConsole()
 {
 	drawConsole();
 	call_setXBuffer(0);
-	call_setYBuffer(2 * (call_getHeight() / 3) + 13);
+	call_setYBuffer(10);
 
 	char internalBuffer[50] = {0}; // tamaño maximo de 50 chars
 	int bufferSize = 0;
@@ -293,7 +301,7 @@ void runConsole()
 				bufferSize--;
 			}
 			call_setXBuffer(0);
-			call_setYBuffer(2 * (call_getHeight() / 3) + 13);
+			call_setYBuffer(10);
 			break;
 		case 0: // omite teclas no asignadas
 			break;
