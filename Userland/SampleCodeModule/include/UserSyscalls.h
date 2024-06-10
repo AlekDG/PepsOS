@@ -98,7 +98,7 @@ int call_changePriority(int pid, int priority);
 processInfo *call_ps(int *processCount);
 int call_block(int pid);
 int call_unblock(int pid);
-int call_getpid();
+int call_getPid();
 void call_printProcessInfo(processInfo* process);
 void call_sleep(int numberOfTicks);
 #endif

@@ -6,4 +6,5 @@ int ticks_elapsed();
 int seconds_elapsed();
 void timer_wait(int ticks);
 void addProcSleep(int pid, int ticks);
+void setSleeped();
 #endif
