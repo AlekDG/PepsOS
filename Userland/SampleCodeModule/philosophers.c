@@ -39,16 +39,15 @@ static void takeForks(int i);
 static void putForks(int i);
 static void test(int i);
 
-
 static const char *philoNames[] = {
-        "Aristoteles", "Kant", "Spinoza", "Marx",
-        "Russell", "Kierkegaard", "Wittgenstein", "Locke",
-        "Hume", "Descartes", "Confucio", "Socrates",
-        "Epicuro", "Platon", "Nietzsche", "Hegel",
-        "Aquinas", "Bunge", "Sartre", "Thoreau",
-        "de Beauvoir", "Foucault", "Leibniz", "Rawls",
-        "Hobbes", "Bentham", "Mill", "Kripke",
-        "Frege", "Popper", "Montesquieu", "Rousseau"};
+        "Montesqueso", "Fridge", "Spinetta", "Gillotina",
+        "Chasquibum", "Triple", "Milldeck", "Key",
+        "Ancla Scantron", "Descartado", "Confundido", "Plato",
+        "Panacea", "Planeta Enano", "El Filosofo Que No Debe Ser Nombrado", "Heidi",
+        "Aquiles", "Bungee", "Sastre", "Espinosa",
+        "de Beaver", "Penduloso", "Leipzig", "Growl",
+        "Calvin", "Arkham", "Witty", "Kindergarde",
+        "Canto", "Teapot", "Artistofanes", "Caramel Marks"};
 
 
 int my_atoi(const char *str) {
