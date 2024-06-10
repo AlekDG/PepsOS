@@ -9,10 +9,7 @@ typedef struct MemoryManagerCDT {
   size_t spaceUsed;
   BlockADT firstBlock;
   BlockADT
-      freeLists[POWER_OF_TWO_MAX_EXPONENT]; //	Array to store free lists of
-                                            //different sizes. Each index
-                                            //corresponds to a list of blocks of
-                                            //size 2^index.
+      freeLists[POWER_OF_TWO_MAX_EXPONENT];
 } MemoryManagerCDT;
 
 typedef struct BlockCDT {
@@ -32,9 +29,9 @@ MemoryManagerADT
 createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
                         void *const restrict managedMemory) {
   MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
-  memoryManager->startAddress = managedMemory; //  Donde termina el userspace.
+  memoryManager->startAddress = managedMemory;
   memoryManager->spaceUsed = 0;
-  memoryManager->size = 100000;
+  memoryManager->size = USER_MEMORY_SIZE;
   memoryManager->firstBlock = NULL;
   return memoryManager;
 }
@@ -65,20 +62,18 @@ void *allocMemoryImpl(MemoryManagerADT manager, int size) {
 
   int blockSize = findPower2(size);
   int bsize;
-  // Search for a free block of the required size or larger
 
   bsize = fast_log2(blockSize);
   if (manager->freeLists[bsize] != NULL) {
-    // Found a free block of the required size or larger
     BlockADT block = manager->freeLists[bsize];
     block->isFree = FALSE;
     manager->freeLists[bsize] = block->nextBlock;
     return block->startAddress;
   }
 
-  // Unable to find a suitable free block, create a new block
 
-  //	SIZE MATTERS
+
+
   BlockADT newBlock =
       (BlockADT)((char *)manager->startAddress + manager->spaceUsed);
   newBlock->startAddress = (void *)newBlock + manager->spaceUsed +
@@ -91,13 +86,11 @@ void *allocMemoryImpl(MemoryManagerADT manager, int size) {
   newBlock->nextBlock = NULL;
   manager->spaceUsed += blockSize;
 
-  // Split the new block into smaller blocks if necessary
-  while (newBlock->size > size * 2) { // Split only if the block size is more
-                                      // than twice the requested size
+  while (newBlock->size > size * 2) {
     newBlock->size /= 2;
     BlockADT buddyBlock =
         (BlockADT)((void *)newBlock + sizeof(BlockCDT) +
-                   newBlock->size); // Calculate buddy block address
+                   newBlock->size);
     buddyBlock->startAddress = (void *)buddyBlock + manager->spaceUsed +
                                sizeof newBlock + sizeof newBlock->startAddress +
                                sizeof newBlock->size + sizeof newBlock->isFree +
@@ -107,12 +100,10 @@ void *allocMemoryImpl(MemoryManagerADT manager, int size) {
     buddyBlock->nextBlock = manager->freeLists[fast_log2(buddyBlock->size)];
     manager->freeLists[fast_log2(buddyBlock->size)]->nextBlock = buddyBlock;
   }
-  // Insert the remaining larger block into the free list
+
   if (manager->freeLists[bsize] == NULL) {
     manager->freeLists[bsize] = newBlock;
   } else {
-    // If there's already a block in the free list of the same size, insert at
-    // the end
     BlockADT currentBlock = manager->freeLists[bsize];
     while (currentBlock->nextBlock != NULL) {
       currentBlock = currentBlock->nextBlock;
@@ -127,13 +118,13 @@ BlockADT findBlock(MemoryManagerADT manager, void *ptr) {
     BlockADT currentBlock = manager->freeLists[i];
     while (currentBlock != NULL) {
       if (currentBlock->startAddress == ptr) {
-        return currentBlock; // Found the block in the free list
+        return currentBlock;
       }
       currentBlock = currentBlock->nextBlock;
     }
   }
 
-  return NULL; // Block not found in any free list
+  return NULL;
 }
 
 void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
@@ -146,7 +137,6 @@ void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
   int bsize = fast_log2(block->size);
   BlockADT buddyBlock;
 
-  // Try to coalesce with buddy blocks
   while (block->size < manager->size) {
     size_t offset = block->startAddress - manager->startAddress;
     size_t buddyAddress =
@@ -154,7 +144,6 @@ void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
     buddyBlock = findBlock(manager, (void *)buddyAddress);
 
     if (buddyBlock && buddyBlock->isFree && buddyBlock->size == block->size) {
-      // Remove buddy block from free list
       BlockADT *freeList = &manager->freeLists[bsize];
       while (*freeList != NULL && *freeList != buddyBlock) {
         freeList = &(*freeList)->nextBlock;
@@ -163,7 +152,6 @@ void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
         *freeList = buddyBlock->nextBlock;
       }
 
-      // Merge blocks
       if (block->startAddress < buddyBlock->startAddress) {
         block->size *= 2;
       } else {
@@ -176,7 +164,6 @@ void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
     }
   }
 
-  // Insert the block back into the free list
   if (buddyBlock != NULL)
     block->nextBlock = manager->freeLists[bsize];
   manager->freeLists[bsize] = block;

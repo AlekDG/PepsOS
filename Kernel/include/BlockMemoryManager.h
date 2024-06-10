@@ -1,4 +1,3 @@
-// BlockMemoryManager.h
 #ifndef BLOCK_MEMORY_MANAGER_H
 #define BLOCK_MEMORY_MANAGER_H
 
@@ -15,4 +14,4 @@ void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long l
 
 void memStateRec(unsigned long long int * freeMemory, unsigned long long int * allocatedMemory, BlockADT currentBlock);
 
-#endif // BLOCK_MEMORY_MANAGER_H
+#endif
