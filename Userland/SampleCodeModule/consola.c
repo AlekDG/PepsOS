@@ -126,6 +126,32 @@ void decreaseFontSize()
 {						    // no actualiza el tamño del menu mientras este en la consola
 	call_setSize(call_getSize() - 1); // es comportamiento esperado
 }
+
+void printMemState(){
+    deleteConsole();
+    call_drawRectangle(LIGHT_GRAY, 0, 500, call_getWidth(), call_getHeight() - 500);
+    int currentsize = call_getSize();
+    call_setSize(2);
+    char text[] = "ESTADO ACTUAL DE MEMORIA (LIBRE, ALOCADA, TOTAL):\n ";
+    call_setXBuffer(0);
+    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; text[i] != 0; i++)
+    {
+        call_drawLetterFromChar(text[i]);
+    }
+    call_setSize(currentsize);
+    /*
+    int freeMemory = 0;
+    int allocatedMemory = 0;
+    int totalMemory = 0;
+    call_mem_state(&freeMemory, &totalMemory, &allocatedMemory);
+    call_printInteger(freeMemory);
+    call_drawLetterFromChar(" ");
+    call_printInteger(allocatedMemory);
+    call_drawLetterFromChar(" ");
+    call_printInteger(totalMemory);
+     */
+}
 void interpretCommand(char command[])
 {
 	CommandType cmdType = getCommandType(command);
@@ -184,6 +210,16 @@ void interpretCommand(char command[])
                 }
             }
         case CMD_PRINT_MEM_STATE:
+            printMemState();
+            askForAnyletter();
+            while (1)
+            {
+                int letter = call_getChar();
+                if (letter != 0)
+                {
+                    return;
+                }
+            }
             //  handler de memstate
             break;
         case CMD_UNKNOWN:
