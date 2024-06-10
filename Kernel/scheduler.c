@@ -23,6 +23,7 @@ pasa o al final o al principio de ready y se llama al scheduler
 
 Process *createProcessStruct(newProcess process, int argc, char *argv[]);
 
+
 void setPriorityQueuesNull() {
   for (int i = 0; i < MAX_PRIORITY; i++) {
     pcb.priorityQueue[i].lastReady = NULL;
@@ -43,6 +44,39 @@ processTable *createPCB(void) {
   pcb.halt = createProcessStruct(haltCpu, 0, haltArgv);
   setSleeped();
   return &pcb;
+}
+
+int decrementKidsCountOnBlockedProcess(int pid){
+  Process *aux = pcb.blocked;
+  while (aux != NULL) {
+    if (aux->pid == pid) {
+      aux->kidsCount--;
+      return 1;
+    }
+    aux = aux->next;
+  }
+  return 0;
+}
+
+int decrementKidsCountOnReadyProcess(int pid){
+  for (int i = 0; i < MAX_PRIORITY; i++) {
+    Process *aux = pcb.priorityQueue[i].ready;
+    while (aux != NULL) {
+      if (aux->pid == pid) {
+        aux->kidsCount--;
+        return 1;
+      }
+      aux = aux->next;
+    }
+  }
+  return 0;
+}
+
+void decrementKidsCount(int pid){
+    int wasDecremented = decrementKidsCountOnBlockedProcess(pid);
+    if(!wasDecremented){
+      decrementKidsCountOnReadyProcess(pid);
+    }
 }
 
 /**
@@ -270,7 +304,7 @@ int kill(int pid) {
     wasKilled = killReady(pid);
   }
   if (wasKilled) {
-    pcb.processCount--;
+    decrementKidsCount(parentPid);
     unblock(parentPid);
   }
   return wasKilled;
@@ -296,19 +330,20 @@ int createForegroundProcess(newProcess process, int argc, char *argv[],
   return pid;
 }
 
+
+
 int wait(){
   if(pcb.running->kidsCount == 0){
     return 0;
   }
   block(pcb.running->pid);
-  pcb.running->kidsCount--;
   return 1;
 }
 
 void exit() {
   pcb.running->state = EXITED;
   unblock(pcb.running->parentPID);
-  pcb.processCount--;
+  decrementKidsCount(pcb.running->parentPID);
   fireTimerInt();
 }
 

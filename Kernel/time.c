@@ -26,6 +26,7 @@ void addProcSleep(int pid, int ticks){
 			aux->ticksLeft += ticks;
 			return;
 		}
+		aux = aux->next;
 		
 	}	
 	procSleep* newSleep = allocMemory(sizeof(procSleep));
