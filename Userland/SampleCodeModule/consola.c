@@ -140,17 +140,17 @@ void printMemState(){
         call_drawLetterFromChar(text[i]);
     }
     call_setSize(currentsize);
-    /*
+
     int freeMemory = 0;
     int allocatedMemory = 0;
     int totalMemory = 0;
     call_mem_state(&freeMemory, &totalMemory, &allocatedMemory);
     call_printInteger(freeMemory);
-    call_drawLetterFromChar(" ");
+    call_drawLetterFromChar("/");
     call_printInteger(allocatedMemory);
-    call_drawLetterFromChar(" ");
+    call_drawLetterFromChar("/");
     call_printInteger(totalMemory);
-     */
+
 }
 void interpretCommand(char command[])
 {

@@ -33,6 +33,8 @@ void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemor
                   int * totalMemory, int * allocatedMemory);
 
 void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock);
+void coalesceFreeBlocks(MemoryManagerADT memoryManager);
+void coalesceFreeBlocksRec(BlockADT currentBlock);
 
 
 MemoryManagerADT
@@ -96,6 +98,7 @@ void freeMemoryImpl(MemoryManagerADT const restrict memoryManager,
   if (memoryManager != NULL && memToFree != NULL) {
     freeMemoryRec(memoryManager, memToFree, memoryManager->firstBlock);
   }
+    coalesceFreeBlocks(memoryManager);
 }
 
 void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
@@ -129,4 +132,25 @@ void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemor
     *allocatedMemory = 0;
     *totalMemory = memoryManager->size;
     memStateRec(freeMemory, allocatedMemory, memoryManager->firstBlock);
+}
+
+void coalesceFreeBlocksRec(BlockADT currentBlock) {
+    if (currentBlock == NULL || currentBlock->nextBlock == NULL) {
+        return;
+    }
+
+    if (currentBlock->isFree && currentBlock->nextBlock->isFree) {
+        currentBlock->size += currentBlock->nextBlock->size + sizeof(BlockCDT);
+        currentBlock->nextBlock = currentBlock->nextBlock->nextBlock;
+        coalesceFreeBlocksRec(currentBlock);
+    } else {
+        coalesceFreeBlocksRec(currentBlock->nextBlock);
+    }
+}
+
+void coalesceFreeBlocks(MemoryManagerADT const restrict memoryManager) {
+    if (memoryManager == NULL) {
+        return;
+    }
+    coalesceFreeBlocksRec(memoryManager->firstBlock);
 }
