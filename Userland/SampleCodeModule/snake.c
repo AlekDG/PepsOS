@@ -146,25 +146,25 @@ void moveSnake(uint8_t value, struct Snake *snake)
 {
       switch (value)
       {
-      case DOWN:
+      case BELOW:
             if (snake->mov != UP)
             {
                   snake->mov = DOWN;
             }
             break;
-      case UP:
+      case ABOVE:
             if (snake->mov != DOWN)
             {
                   snake->mov = UP;
             }
             break;
-      case RIGHT:
+      case R:
             if (snake->mov != LEFT)
             {
                   snake->mov = RIGHT;
             }
             break;
-      case LEFT:
+      case L:
             if (snake->mov != RIGHT)
             {
                   snake->mov = LEFT;

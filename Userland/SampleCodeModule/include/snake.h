@@ -19,10 +19,10 @@
 #define PLAYER_ONE_STARTING_X 50
 #define PLAYER_ONE_STARTING_Y 120
 #define ESCAPE 27
-#define DOWN 0
-#define UP 1
-#define RIGHT 2
-#define LEFT 3
+#define BELOW 0
+#define ABOVE 1
+#define R 2
+#define L 3
 #define SNAKE_DEFAULT_LEN 6
 
 enum Movement
