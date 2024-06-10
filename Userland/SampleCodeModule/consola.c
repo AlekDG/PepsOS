@@ -91,6 +91,42 @@ int compareStrings(char *s1, char *s2)
 	return 0; // ambos son iguales
 }
 
+int strLen(const char *str) {
+    int len = 0;
+    while (str[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+int hexCharToInt(char c) {
+    if (c >= '0' && c <= '9') {
+        return c - '0';
+    } else if (c >= 'a' && c <= 'f') {
+        return c - 'a' + 10;
+    } else if (c >= 'A' && c <= 'F') {
+        return c - 'A' + 10;
+    } else {
+        return -1;
+    }
+}
+
+unsigned long long hexToULL(const char *hexStr) {
+    unsigned long long result = 0;
+    int len = strLen(hexStr);
+
+    for (int i = 0; i < len; i++) {
+        int value = hexCharToInt(hexStr[i]);
+        if (value == -1) {
+            // Invalid character in the hex string
+            return -1;
+        }
+        result = (result << 4) | value;
+    }
+
+    return result;
+}
+
 void askForAnyletter()
 {
 	int currentsize = call_getSize();
@@ -141,15 +177,19 @@ void printMemState(){
     }
     call_setSize(currentsize);
 
-    int freeMemory = 0;
-    int allocatedMemory = 0;
-    int totalMemory = 0;
+    unsigned long long int freeMemory = 0;
+    unsigned long long int allocatedMemory = 0;
+    unsigned long long int totalMemory = 0;
     call_mem_state(&freeMemory, &totalMemory, &allocatedMemory);
-    call_printInteger(freeMemory);
-    call_drawLetterFromChar("/");
-    call_printInteger(allocatedMemory);
-    call_drawLetterFromChar("/");
-    call_printInteger(totalMemory);
+    freeMemory = totalMemory-allocatedMemory;
+    call_print_long_long_int(freeMemory);
+    call_drawLetterFromChar('B');
+    call_drawLetterFromChar('/');
+    call_print_long_long_int(allocatedMemory);
+    call_drawLetterFromChar('B');
+    call_drawLetterFromChar('/');
+    call_print_long_long_int(totalMemory);
+    call_drawLetterFromChar('B');
 
 }
 void interpretCommand(char command[])
@@ -221,7 +261,6 @@ void interpretCommand(char command[])
                 }
             }
             //  handler de memstate
-            break;
         case CMD_UNKNOWN:
         default:
             //  UNKNOWN HANDLER

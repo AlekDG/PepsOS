@@ -184,7 +184,7 @@ void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
 
 
 
-void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory, int * totalMemory, int * allocatedMemory){
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory, unsigned long long int * totalMemory, unsigned long long int * allocatedMemory){
     if(memoryManager == NULL){
         return;
     }

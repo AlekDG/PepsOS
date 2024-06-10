@@ -406,6 +406,27 @@ void printInteger(int num)
 		drawLetterFromChar(buffer[i]);
 }
 
+void print_long_long_int(unsigned long long int num) {
+    char buffer[64];
+    int index = 0;
+
+    if (num == 0) {
+        drawLetterFromChar('0');
+        return;
+    }
+
+    while (num > 0 && index < 64) {
+        int temp = num % 10;
+        buffer[index] = temp + '0';
+        num = num / 10;
+        index++;
+    }
+
+    for (int i = index - 1; i >= 0; i--) {
+        drawLetterFromChar(buffer[i]);
+    }
+}
+
 void printHex(int num)
 {
 	char buffer[8];

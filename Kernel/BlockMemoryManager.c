@@ -6,7 +6,7 @@
 
 typedef struct MemoryManagerCDT {
   char *startAddress;
-  size_t size;
+  unsigned long long int size;
   size_t spaceUsed;
   BlockADT firstBlock;
 } MemoryManagerCDT;
@@ -29,10 +29,10 @@ createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
                         void *const restrict managedMemory);
 BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
                      BlockADT *result);
-void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory,
-                  int * totalMemory, int * allocatedMemory);
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory,
+                  unsigned long long int * totalMemory, unsigned long long int * allocatedMemory);
 
-void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock);
+void memStateRec(unsigned long long int * freeMemory, unsigned long long int * allocatedMemory, BlockADT currentBlock);
 void coalesceFreeBlocks(MemoryManagerADT memoryManager);
 void coalesceFreeBlocksRec(BlockADT currentBlock);
 
@@ -111,7 +111,7 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
   }
 }
 
-void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock){
+void memStateRec(unsigned long long int * freeMemory, unsigned long long int * allocatedMemory, BlockADT currentBlock){
     if(currentBlock == NULL){
         return;
     }
@@ -124,13 +124,11 @@ void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock)
     memStateRec(freeMemory, allocatedMemory, currentBlock->nextBlock);
 }
 
-void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory, int * totalMemory, int * allocatedMemory){
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory, unsigned long long int * totalMemory, unsigned long long int * allocatedMemory){
     if(memoryManager == NULL){
         return;
     }
-    *freeMemory = 0;
-    *allocatedMemory = 0;
-    *totalMemory = memoryManager->size;
+    *totalMemory = memoryManager->size; //0xFFFFFFFFFFFAFFFF, un numero muy grande en base 10
     memStateRec(freeMemory, allocatedMemory, memoryManager->firstBlock);
 }
 

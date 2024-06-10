@@ -28,6 +28,8 @@ GLOBAL call_putpixelResizable
 GLOBAL call_seconds
 GLOBAL call_paintScreen
 GLOBAL call_printInteger
+GLOBAL call_printHex
+GLOBAL call_print_long_long_int
 GLOBAL call_drawLetterFormatted
 GLOBAL call_drawStringFormatted
 GLOBAL call_printIntFormatted
@@ -214,6 +216,10 @@ call_printProcessInfo:
     call_to_handler 62
 call_sleep:
     call_to_handler 63
+call_printHex:
+    call_to_handler 64
+call_print_long_long_int:
+    call_to_handler 65
 call_excepDivZero:
     xor rdx,rdx
     div rdx
