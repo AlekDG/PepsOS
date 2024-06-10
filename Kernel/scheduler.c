@@ -226,6 +226,7 @@ Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   newProcess->priority = 0;
   newProcess->state = READY;
   newProcess->rsp = newProcessStack /*+ lo que agregue en prepareStack*/;
+  newProcess->rbp = newProcessStack;
   newProcess->next = NULL;
   newProcess->memStartAdress = startAdress;
   newProcess->name = argv[0];
@@ -505,7 +506,7 @@ void copyProcToArray(int indexCount, processInfo *procs, Process *process) {
   procs[indexCount].name = process->name;
   procs[indexCount].parentPid = process->parentPID;
   procs[indexCount].pid = process->pid;
-  procs[indexCount].prioriy = process->priority;
+  procs[indexCount].priority = process->priority;
   procs[indexCount].rbp = process->rbp;
   procs[indexCount].rsp = process->rsp;
   procs[indexCount].state = process->state;

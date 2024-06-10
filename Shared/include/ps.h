@@ -19,7 +19,7 @@ typedef struct processInfo {
   void *rbp;
   unsigned int pid;
   unsigned int parentPid;
-  unsigned int prioriy;
+  unsigned int priority;
   State state;
   processType tipo;
 } processInfo;

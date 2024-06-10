@@ -111,7 +111,7 @@ void printProcessInfo(processInfo* process){
   drawStringDef("  ");
   printInteger(process->parentPid);
   drawStringDef("  ");
-  printInteger(process->prioriy);
+  printInteger(process->priority);
   drawStringDef("  ");
   switch (process->state)
   {
