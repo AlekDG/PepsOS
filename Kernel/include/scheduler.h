@@ -36,8 +36,7 @@ typedef struct readyList {
 typedef struct processTable {
   int processCount;
   Process *running;
-  Process *ready;     // sacar cuando se termine de implementar prioridades
-  Process *lastReady; // sacar cuando se termine de implementar prioridades
+
   readyList priorityQueue[MAX_PRIORITY];
   Process *blocked;
   Process *halt;

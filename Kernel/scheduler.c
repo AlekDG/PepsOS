@@ -51,64 +51,7 @@ processTable *createPCB(void) {
  * @param rsp the stack pointer of the current running process
  * @return the new rsp
  */
-void *scheduler(void *rsp) {
-  pcb.running->rsp = rsp;
-  if (pcb.ready == NULL) {
-    if (pcb.running->state != BLOCKED && pcb.running->state != EXITED) {
-      // Si no hay nadie mas en estado ready, sigo con este proceso
-      return rsp;
-    }
-    // como no hay nadie ready, paso pcb.running a la lista de blocked y seteo
-    // como running a proceso que hace halt
-    if (pcb.running->state == EXITED) {
-      // hago free
-      pcb.running = NULL;
-      pcb.running = pcb.halt;
-    } else if (pcb.running != pcb.halt) {
-      pcb.running->next = pcb.blocked;
-      pcb.blocked = pcb.running;
-      pcb.running = pcb.halt;
-    }
-    return pcb.running->rsp;
-  }
 
-  if (pcb.running == pcb.halt) {
-    pcb.running = pcb.ready;
-    pcb.ready = pcb.running->next; // y actualizar last ready
-    if (pcb.ready == NULL)
-      pcb.lastReady = NULL; // no hay readys
-  } else {
-
-    Process *current = pcb.running;
-    if (pcb.running->state == EXITED) {
-      pcb.running = pcb.ready;
-      pcb.ready = pcb.running->next;
-      if (pcb.ready == NULL)
-        pcb.lastReady = NULL;
-      // METER free
-      return pcb.running->rsp;
-    }
-    if (pcb.running->state == BLOCKED) {
-      // paso a blocked y tomo el primero de ready como running
-      pcb.running->next = pcb.blocked;
-      pcb.blocked = pcb.running;
-      pcb.running = pcb.ready;
-      pcb.ready = pcb.ready->next;
-      if (pcb.ready == NULL)
-        pcb.lastReady = NULL;
-      pcb.running->next = NULL;
-    } else {
-      // si estoy aca el proceso running cumplio su quantum -> lo ponemos al
-      // final de la lista de ready y tomamos el primer ready como running
-      current->next = NULL;
-      pcb.lastReady->next = current;
-      pcb.lastReady = current;
-      pcb.running = pcb.ready;
-      pcb.ready = pcb.running->next;
-    }
-  }
-  return pcb.running->rsp;
-}
 
 /**
  * Get current running process pid
@@ -170,8 +113,8 @@ int unblock(int pid) {
       pcb.priorityQueue[aux->priority].lastReady = aux;
 
     } else {
-      pcb.lastReady->next = aux;
-      pcb.lastReady = aux;
+      pcb.priorityQueue[aux->priority].lastReady->next = aux;
+      pcb.priorityQueue[aux->priority].lastReady = aux;
     }
     aux->next = NULL;
     return 1;
@@ -181,13 +124,13 @@ int unblock(int pid) {
       Process *unblocked = aux->next;
       unblocked->state = READY;
       aux->next = unblocked->next;
-      if (pcb.priorityQueue[aux->priority].ready == NULL) {
-        pcb.priorityQueue[aux->priority].ready = unblocked;
-        pcb.priorityQueue[aux->priority].lastReady = unblocked;
+      if (pcb.priorityQueue[unblocked->priority].ready == NULL) {
+        pcb.priorityQueue[unblocked->priority].ready = unblocked;
+        pcb.priorityQueue[unblocked->priority].lastReady = unblocked;
 
       } else {
-        pcb.lastReady->next = unblocked;
-        pcb.lastReady = unblocked;
+        pcb.priorityQueue[unblocked->priority].lastReady->next = unblocked;
+        pcb.priorityQueue[unblocked->priority].lastReady = unblocked;
       }
       unblocked->next = NULL;
       return 1;
