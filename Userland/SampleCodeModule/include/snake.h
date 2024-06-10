@@ -16,6 +16,14 @@
 #define SNAKE_COLOR 0x00A86B
 #define EAT_FREQ 400
 #define END_FREQ 700
+#define PLAYER_ONE_STARTING_X 50
+#define PLAYER_ONE_STARTING_Y 120
+#define ESCAPE 27
+#define DOWN 0
+#define UP 1
+#define RIGHT 2
+#define LEFT 3
+#define SNAKE_DEFAULT_LEN 6
 
 enum Movement
 {
