@@ -31,7 +31,7 @@ createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
   MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
   memoryManager->startAddress = managedMemory;
   memoryManager->spaceUsed = 0;
-  memoryManager->size = 100000;
+  memoryManager->size = USER_MEMORY_SIZE;
   memoryManager->firstBlock = NULL;
   return memoryManager;
 }
