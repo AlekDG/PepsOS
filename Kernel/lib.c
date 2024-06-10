@@ -1,5 +1,6 @@
 #include <lib.h>
 #include <video.h>
+#define SIZE 2
 
 
 #define REG_AMOUNT 10
@@ -102,7 +103,7 @@ void saveRegsBuffer(uint64_t regs) {
 }
 
 void printProcessInfo(processInfo* process){
-  //setXBuffer(30);
+  setSize(SIZE);
   newLine();
   drawStringDef(process->name);
   drawStringDef("  ");
@@ -111,27 +112,28 @@ void printProcessInfo(processInfo* process){
   printInteger(process->parentPid);
   drawStringDef("  ");
   printInteger(process->prioriy);
+  drawStringDef("  ");
   switch (process->state)
   {
   case BLOCKED:
-    drawStringFormatted("BLOCKED",RED,BLACK,2);
+    drawStringFormatted("BLOCKED",RED,BLACK,SIZE);
     break;
     case READY:
-    drawStringFormatted("READY",BRIGHT_BLUE,BLACK,2);
+    drawStringFormatted("READY",BRIGHT_BLUE,BLACK,SIZE);
     break;
     case RUNNING:
-    drawStringFormatted("RUNNING",BRIGHT_GREEN,BLACK,2);
+    drawStringFormatted("RUNNING",BRIGHT_GREEN,BLACK,SIZE);
     break;
   }
   drawStringDef("  ");
   switch (process->tipo)
   {
   case FOREGROUND:
-    drawStringDef("FOREGROUND");
+    drawStringDef("F");
     break;
   
   default:
-    drawStringDef("BACKGROUND");;
+    drawStringDef("B");;
   }
   drawStringDef("  ");
   drawStringDef("0x");
