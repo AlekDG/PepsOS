@@ -4,20 +4,26 @@
 #include <menu.h>
 #include <sound.h>
 
+#define DEFAULT_DIFFICULTY_LEVEL 1
+
+#define PLAYER_TWO_STARTING_X 300
+#define PLAYER_TWO_STARTING_Y 120
+
+
 struct Snake snakeP1;
 struct Snake snakeP2;
 
 uint32_t faceStartingX2;
 uint32_t faceStartingY2;
 
-uint8_t delayTicksTwo = 1; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
+uint8_t delayTicksTwo = DEFAULT_DIFFICULTY_LEVEL; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
 
 void start_gameTwo()
 {
     call_paintScreen(CARAMEL_BROWN);
     draw2pSnake(CARAMEL_BROWN);
-    initializeSnake(&snakeP1, 50, 120, WHITE);
-    initializeSnake(&snakeP2, 300, 120, PURPLE);
+    initializeSnake(&snakeP1, PLAYER_ONE_STARTING_X, PLAYER_ONE_STARTING_Y, WHITE);
+    initializeSnake(&snakeP2, PLAYER_TWO_STARTING_X, PLAYER_TWO_STARTING_Y, PURPLE);
     drawRandomFaceTwo();
 
     uint8_t flagWallP1 = 0;
@@ -67,7 +73,7 @@ void start_gameTwo()
             case '\n':
                 start_gameTwo();
                 return;
-            case 27:
+            case ESCAPE:
                 return;
             default:
                 break;
@@ -86,7 +92,7 @@ void start_gameTwo()
             case '\n':
                 start_gameTwo();
                 return;
-            case 27:
+            case ESCAPE:
                 call_exit();
             default:
                 break;
