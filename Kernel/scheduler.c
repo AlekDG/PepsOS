@@ -175,6 +175,7 @@ Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   newProcess->next = NULL;
   newProcess->memStartAdress = startAdress;
   newProcess->name = argv[0];
+  newProcess->kidsCount = 0;
   return newProcess;
 }
 
@@ -193,6 +194,7 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,proce
 
   if (pcb.running != NULL) {
     newProcess->parentPID = pcb.running->pid;
+    pcb.running->kidsCount++;
   } else {
     // es el primer proceso
     newProcess->parentPID = 0;
@@ -257,8 +259,10 @@ int killReady(int pid) {
 }
 // retorna 1 si lo mato, 0 si no
 int kill(int pid) {
+  int parentPid = pcb.running->parentPID;
   if (pcb.running->pid == pid) {
     pcb.running->state = EXITED;
+    unblock(parentPid);
     fireTimerInt();
   }
   int wasKilled = killBlocked(pid);
@@ -267,6 +271,7 @@ int kill(int pid) {
   }
   if (wasKilled) {
     pcb.processCount--;
+    unblock(parentPid);
   }
   return wasKilled;
 }
@@ -291,11 +296,18 @@ int createForegroundProcess(newProcess process, int argc, char *argv[],
   return pid;
 }
 
+int wait(){
+  if(pcb.running->kidsCount == 0){
+    return 0;
+  }
+  block(pcb.running->pid);
+  pcb.running->kidsCount--;
+  return 1;
+}
+
 void exit() {
   pcb.running->state = EXITED;
-  if (pcb.running->tipo == FOREGROUND) { // desbloquo al padre!
-    unblock(pcb.running->parentPID);
-  }
+  unblock(pcb.running->parentPID);
   pcb.processCount--;
   fireTimerInt();
 }
