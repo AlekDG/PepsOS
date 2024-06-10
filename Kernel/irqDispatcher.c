@@ -200,7 +200,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     read_pipe(rsi);
     break;
   case 55:
-    changePriority(rsi, rdx);
+    return changePriority(rsi, rdx);
     break;
   case 56:
     return getAllProcessInfo(rsi);
