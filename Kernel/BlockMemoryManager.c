@@ -2,11 +2,11 @@
 #include <lib.h>
 #include <stddef.h>
 
-#define USER_MEMORY_SIZE  0xFFFFFFF
+#define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
 
 typedef struct MemoryManagerCDT {
   char *startAddress;
-  size_t size;
+  unsigned long long int size;
   size_t spaceUsed;
   BlockADT firstBlock;
 } MemoryManagerCDT;
@@ -29,10 +29,10 @@ createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
                         void *const restrict managedMemory);
 BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
                      BlockADT *result);
-void memStateImpl(MemoryManagerADT const restrict memoryManager, size_t * freeMemory,
-                  size_t * totalMemory, size_t * allocatedMemory);
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory,
+                  unsigned long long int * totalMemory, unsigned long long int * allocatedMemory);
 
-void memStateRec(size_t * freeMemory, size_t * allocatedMemory, BlockADT currentBlock);
+void memStateRec(unsigned long long int * freeMemory, unsigned long long int * allocatedMemory, BlockADT currentBlock);
 void coalesceFreeBlocks(MemoryManagerADT memoryManager);
 void coalesceFreeBlocksRec(BlockADT currentBlock);
 
@@ -111,7 +111,7 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
   }
 }
 
-void memStateRec(size_t * freeMemory, size_t * allocatedMemory, BlockADT currentBlock){
+void memStateRec(unsigned long long int * freeMemory, unsigned long long int * allocatedMemory, BlockADT currentBlock){
     if(currentBlock == NULL){
         return;
     }
@@ -124,7 +124,7 @@ void memStateRec(size_t * freeMemory, size_t * allocatedMemory, BlockADT current
     memStateRec(freeMemory, allocatedMemory, currentBlock->nextBlock);
 }
 
-void memStateImpl(MemoryManagerADT const restrict memoryManager, size_t * freeMemory, size_t * totalMemory, size_t * allocatedMemory){
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory, unsigned long long int * totalMemory, unsigned long long int * allocatedMemory){
     if(memoryManager == NULL){
         return;
     }

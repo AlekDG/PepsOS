@@ -10,9 +10,9 @@ createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
 void initManagerImpl(MemoryManagerADT manager);
 void *allocMemoryImpl(MemoryManagerADT manager, size_t size);
 void freeMemoryImpl(MemoryManagerADT manager, void *ptr);
-void memStateImpl(MemoryManagerADT const restrict memoryManager, size_t * freeMemory,
-                  size_t * totalMemory, size_t * allocatedMemory);
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory,
+                  unsigned long long int * totalMemory, unsigned long long int * allocatedMemory);
 
-void memStateRec(size_t * freeMemory, size_t * allocatedMemory, BlockADT currentBlock);
+void memStateRec(unsigned long long int * freeMemory, unsigned long long int * allocatedMemory, BlockADT currentBlock);
 
 #endif // BLOCK_MEMORY_MANAGER_H

@@ -47,6 +47,7 @@ void drawRectangleCentered(uint32_t hexColor, uint32_t xStart, uint32_t yStart, 
 void drawLetterFromChar(char letter);
 void printInteger(int num);
 void printHex(int num);
+void print_long_long_int(unsigned long long int num);
 void printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size);
 void drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size);
 void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size);

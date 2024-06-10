@@ -24,6 +24,6 @@ void *allocMemory(size_t size) { return allocMemoryImpl(systemMemory, size); }
 
 void freeMemory(void *ptr) { freeMemoryImpl(systemMemory, ptr); }
 
-void memState(size_t * freeMemory, size_t * totalMemory, size_t * allocatedMemory){
+void memState(unsigned long long int * freeMemory, unsigned long long int * totalMemory, unsigned long long int * allocatedMemory){
     memStateImpl(systemMemory, freeMemory, totalMemory, allocatedMemory);
 }
