@@ -16,6 +16,6 @@ createMemoryManager(void *const restrict memoryForMemoryManager,
 //void initManager(void);
 void *allocMemory(size_t size);
 void freeMemory(void *ptr);
-void memState(int * freeMemory, int * totalMemory, int * allocatedMemory);
+void memState(size_t * freeMemory, size_t * totalMemory, size_t * allocatedMemory);
 
 #endif

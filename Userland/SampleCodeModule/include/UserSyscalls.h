@@ -1,12 +1,14 @@
 #include <stdint.h>
-
+#include <stddef.h>
 #ifndef USERSYSCALLS
 #define USERSYSCALLS
 #include "../../../Shared/include/ps.h"
+#include <menu.h>
+#include <consola.h>
 // Allocate, free, and check memory
 void *call_malloc(int size);
 void call_free(void *toFree);
-void call_mem_state(int *freeMemory, int *totalMemory, int *allocatedMemory);
+void call_mem_state(size_t *freeMemory, size_t *totalMemory, size_t *allocatedMemory);
 // Semaphores
 int call_sem_open(int value, char *sem_name);
 int call_sem_close(char *sem_name);
@@ -66,6 +68,7 @@ void call_putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y,
 unsigned int call_seconds(void);
 // Print various data types
 void call_printInteger(int num);
+void call_printHex(int num);
 void call_printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size);
 void call_drawStringFormatted(char str[], uint32_t fg, uint32_t bg,
                               uint32_t size);

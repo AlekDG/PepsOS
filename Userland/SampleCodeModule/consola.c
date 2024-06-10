@@ -91,6 +91,14 @@ int compareStrings(char *s1, char *s2)
 	return 0; // ambos son iguales
 }
 
+int strLen(const char *str) {
+    int len = 0;
+    while (str[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
 void askForAnyletter()
 {
 	int currentsize = call_getSize();
@@ -141,14 +149,17 @@ void printMemState(){
     }
     call_setSize(currentsize);
 
-    int freeMemory = 0;
-    int allocatedMemory = 0;
-    int totalMemory = 0;
+    size_t freeMemory = 0;
+    size_t allocatedMemory = 0;
+    size_t totalMemory = 0;
     call_mem_state(&freeMemory, &totalMemory, &allocatedMemory);
+    freeMemory = totalMemory-allocatedMemory;
     call_printInteger(freeMemory);
-    call_drawLetterFromChar("/");
+    call_drawLetterFromChar('B');
+    call_drawLetterFromChar('/');
     call_printInteger(allocatedMemory);
-    call_drawLetterFromChar("/");
+    call_drawLetterFromChar('B');
+    call_drawLetterFromChar('/');
     call_printInteger(totalMemory);
 
 }
@@ -221,7 +232,6 @@ void interpretCommand(char command[])
                 }
             }
             //  handler de memstate
-            break;
         case CMD_UNKNOWN:
         default:
             //  UNKNOWN HANDLER

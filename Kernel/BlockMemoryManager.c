@@ -2,7 +2,7 @@
 #include <lib.h>
 #include <stddef.h>
 
-#define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
+#define USER_MEMORY_SIZE  0xFFFFFFF
 
 typedef struct MemoryManagerCDT {
   char *startAddress;
@@ -29,10 +29,10 @@ createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
                         void *const restrict managedMemory);
 BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
                      BlockADT *result);
-void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory,
-                  int * totalMemory, int * allocatedMemory);
+void memStateImpl(MemoryManagerADT const restrict memoryManager, size_t * freeMemory,
+                  size_t * totalMemory, size_t * allocatedMemory);
 
-void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock);
+void memStateRec(size_t * freeMemory, size_t * allocatedMemory, BlockADT currentBlock);
 void coalesceFreeBlocks(MemoryManagerADT memoryManager);
 void coalesceFreeBlocksRec(BlockADT currentBlock);
 
@@ -111,7 +111,7 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
   }
 }
 
-void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock){
+void memStateRec(size_t * freeMemory, size_t * allocatedMemory, BlockADT currentBlock){
     if(currentBlock == NULL){
         return;
     }
@@ -124,13 +124,11 @@ void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock)
     memStateRec(freeMemory, allocatedMemory, currentBlock->nextBlock);
 }
 
-void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory, int * totalMemory, int * allocatedMemory){
+void memStateImpl(MemoryManagerADT const restrict memoryManager, size_t * freeMemory, size_t * totalMemory, size_t * allocatedMemory){
     if(memoryManager == NULL){
         return;
     }
-    *freeMemory = 0;
-    *allocatedMemory = 0;
-    *totalMemory = memoryManager->size;
+    *totalMemory = memoryManager->size; //0xFFFFFFFFFFFAFFFF, un numero muy grande en base 10
     memStateRec(freeMemory, allocatedMemory, memoryManager->firstBlock);
 }
 
