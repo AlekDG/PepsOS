@@ -11,7 +11,7 @@ typedef struct {
 static instance sem_inst[SEM_AMOUNT];
 
 int available_sem(void) {
-  for (int i = 0; i < SEM_AMOUNT; i++) {
+  for (int i = 1; i < SEM_AMOUNT; i++) {
     if (sem_inst[i].availability) {
       sem_inst[i].availability = FALSE;
       return i;
@@ -43,7 +43,7 @@ uint64_t create_sem(uint64_t val, char *id) {
 }
 
 void clear_sem(int index) {
-  if (index <= 0 || index >= SEM_AMOUNT)
+  if (index < 0 || index >= SEM_AMOUNT)
     return;
   while (sem_inst[index].sem.size_list > 0)
     sem_dq_proc(index);
@@ -51,10 +51,10 @@ void clear_sem(int index) {
 }
 
 uint64_t sem_post(int index) {
-  if (index <= 0 || index >= SEM_AMOUNT)
+  if (index < 0 || index >= SEM_AMOUNT)
     return 1;
   semaphore *sem = &(sem_inst[index].sem);
-  if (sem->val = !0)
+  if (sem->val != 0)
     enter_region(&(sem->lock), index);
   sem->val++;
   if (sem->size_list > 0) {
@@ -66,8 +66,8 @@ uint64_t sem_post(int index) {
 }
 
 uint64_t sem_wait(int index) {
-  if (index <= 0 || index >= SEM_AMOUNT)
-    return;
+  if (index < 0 || index >= SEM_AMOUNT)
+    return 1;
   semaphore *sem = &(sem_inst[index].sem);
   enter_region(&(sem->lock), index);
   sem_inst[index].sem.val--;

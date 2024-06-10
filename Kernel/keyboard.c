@@ -32,6 +32,7 @@ const unsigned char kbArr[4][128] = {
 
 bool shift = false;
 bool blockMayus = false;
+bool ctrl = false;
 
 void regCheckSave(uint64_t regs){
     if(getKey()==0x38)
@@ -53,9 +54,6 @@ char hexToChar(uint8_t hex){
 
 void keyAct(void){
 	uint8_t keyHex = getKey();
-    int stdin_pipe=open_pipe(STDIN);
-    write_to_pipe(stdin_pipe,&keyHex);
-    close_pipe(stdin_pipe);
     char keyChar;
     if(keyHex<0x81){
         keyPressed(true);
@@ -66,9 +64,25 @@ void keyAct(void){
             case 0x3A:
                 blockMayus=!blockMayus;
                 break;
+            case 0x1D:
+                ctrl=true;
+                break;
             default:
                 keyChar = hexToChar(keyHex);
+                if(ctrl){
+                    switch(keyChar){
+                        case 0x21:
+                            keyChar=3;
+                            break;
+                        case 0x23:
+                            keyChar=4;
+                            break; 
+                    }
+                }
     		    if(keyChar!=0){
+                    int stdin_pipe=open_pipe(STDIN);
+                    write_to_pipe(stdin_pipe,&keyChar);
+                    close_pipe(stdin_pipe);
 			        addToBuffer(keyChar);
 		        }
         }
@@ -78,6 +92,9 @@ void keyAct(void){
         {
         case 0xAA: case 0xB6:
             shift=false;
+            break;
+        case 0x9D:
+            ctrl=false;
             break;
         default:
             break;

@@ -56,11 +56,11 @@ int create_pipe(char *id) {
   int indx;
   if ((indx = get_free_instance()) != -1) {
     pipe_t *new_pipe = &(pipe_inst[indx].pipe);
-    string_copy(new_pipe->name, id);
+    string_copy(id,new_pipe->name);
     new_pipe->r_indx = 0;
     new_pipe->w_indx = 0;
 
-    string_copy(new_pipe->read_sem_name, id);
+    string_copy(id, new_pipe->read_sem_name);
     new_pipe->read_sem_name[length] = 'R';
     new_pipe->read_sem_name[length + 1] = NULL;
     int sem_read = create_sem(0, new_pipe->read_sem_name);
@@ -72,7 +72,7 @@ int create_pipe(char *id) {
 }
 
 int open_pipe(char *id) {
-  if (!sem_wait(sem_for_pipe_man))
+  if (sem_wait(sem_for_pipe_man))
     return -1;
 
   int indx = get_pipe(id);
@@ -83,13 +83,13 @@ int open_pipe(char *id) {
     return -1;
   }
   pipe_inst[indx].pipe.proc_count++;
-  if (!sem_post(sem_for_pipe_man))
+  if (sem_post(sem_for_pipe_man))
     return -1;
   return indx;
 }
 
 int valid_index(int indx) {
-  return indx < PIPES_AMOUNT && pipe_inst[indx].available == TRUE;
+  return indx < PIPES_AMOUNT && pipe_inst[indx].available == FALSE;
 }
 
 int close_pipe(int index) {
@@ -101,7 +101,7 @@ int close_pipe(int index) {
   int close_read = sem_close(pipe_inst[index].pipe.read_sem_name);
   if (close_read == -1)
     return -1;
-  pipe_inst[index - 1].available = TRUE;
+  pipe_inst[index].available = TRUE;
   if (sem_post(sem_for_pipe_man) == -1)
     return -1;
   return 1;
@@ -110,8 +110,8 @@ int close_pipe(int index) {
 int write_char(int indx, char c) {
   if (!valid_index(indx))
     return -1;
-  pipe_t *pipe_to_write = &pipe_inst[indx - 1].pipe;
-  pipe_to_write->buffer[pipe_to_write->w_indx % SIZE] = 6;
+  pipe_t *pipe_to_write = &pipe_inst[indx].pipe;
+  pipe_to_write->buffer[pipe_to_write->w_indx % SIZE] = c;
   pipe_to_write->w_indx++;
   if (sem_post(pipe_to_write->read_sem) == -1)
     return -1;
@@ -133,7 +133,7 @@ int write_to_pipe(int index, char *string) {
 char read_pipe(int index) {
   if (!valid_index(index))
     return -1;
-  pipe_t *pipe = &pipe_inst[index - 1].pipe;
+  pipe_t *pipe = &pipe_inst[index].pipe;
   if (sem_wait(pipe->read_sem) == -1)
     return -1;
   char c = pipe->buffer[pipe->r_indx % SIZE];

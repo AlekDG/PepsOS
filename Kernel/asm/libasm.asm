@@ -76,20 +76,6 @@ inb:
 	pop rbp
 	ret
 
-userBuild:
-	add rsp, 32
-	mov rax, 0x400000
-    mov [rsp], rax          
-    mov rax, 0x8
-    mov [rsp + 8], rax      
-    mov rax, 0x202
-    mov [rsp + 8*2], rax    
-    call getStackBase       
-    mov [rsp + 8*3], rax    
-    mov rax, 0x0
-    mov [rsp + 8*4], rax    
-	iretq
-
 enter_region:
 	mov rax, lockd
 	xchg rax,[rdi]
