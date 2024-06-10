@@ -6,6 +6,29 @@
 #include <time.h>
 #include <snake.h>
 #include <snake2.h>
+static int p;
+
+void aa(){
+	call_sleep(p);
+	call_exit();
+}
+
+void prueba(){
+	int pids[2];
+	for(int i = 0; i < 10; i++){
+		p = i;
+		char* ar[] = {"aa"};
+		call_createBackgroundProcess(aa,0,ar,i%5);
+	}
+
+	int as = 1;
+	while (as)
+	{
+		as = call_waitKids();
+	}
+	
+	call_exit();
+}
 
 
 void hoverOverOption(Option *option) { option->isHovered = 1; }
@@ -170,7 +193,7 @@ void drawMenu()
 			if (optionMenu.options[0]->isHovered)
 			{ // jugar snake 1p
 				char* argv[] = {"snake1"}; 
-			    call_createForegroundProcess(start_game,0,argv,4);
+			    call_createForegroundProcess(prueba,0,argv,4);
 				return;
 			}
 			else if (optionMenu.options[1]->isHovered)

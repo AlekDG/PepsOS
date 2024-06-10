@@ -1,12 +1,14 @@
 #include <stdint.h>
-
+#include <stddef.h>
 #ifndef USERSYSCALLS
 #define USERSYSCALLS
 #include "../../../Shared/include/ps.h"
+#include <menu.h>
+#include <consola.h>
 // Allocate, free, and check memory
 void *call_malloc(int size);
 void call_free(void *toFree);
-void call_mem_state(int *freeMemory, int *totalMemory, int *allocatedMemory);
+void call_mem_state(unsigned long long int *freeMemory, unsigned long long int *totalMemory, unsigned long long int *allocatedMemory);
 // Semaphores
 int call_sem_open(int value, char *sem_name);
 int call_sem_close(char *sem_name);
@@ -66,6 +68,8 @@ void call_putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y,
 unsigned int call_seconds(void);
 // Print various data types
 void call_printInteger(int num);
+void call_print_long_long_int(unsigned long long int num);
+void call_printHex(int num);
 void call_printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size);
 void call_drawStringFormatted(char str[], uint32_t fg, uint32_t bg,
                               uint32_t size);
@@ -94,7 +98,8 @@ int call_changePriority(int pid, int priority);
 processInfo *call_ps(int *processCount);
 int call_block(int pid);
 int call_unblock(int pid);
-int call_getpid();
+int call_getPid();
 void call_printProcessInfo(processInfo* process);
 void call_sleep(int numberOfTicks);
+int call_waitKids();
 #endif

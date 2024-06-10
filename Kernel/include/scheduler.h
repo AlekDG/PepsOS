@@ -9,23 +9,19 @@
 typedef int (*newProcess)(int, char *);
 
 typedef struct process {
-  // regStruct registros;   //Preguntar si esta bien, porque esto ya lo tenemos
-  // en el stack.
-  void *rsp; // Esto si lo quiero porque tenemos que guardar el puntero al stack
-             // para retomar y poder hacer popState
+  void *rsp; 
   void *rbp;
   void *memStartAdress;
   unsigned int pid;
   State state;
-  int priority; // deberiamos ver si directamente implementamos queue entonces
-                // esta info no dbeeria estar aca
+  int priority;
   struct process *next;
   int parentPID;
   processType tipo;
   char *name;
+  int kidsCount;
 
-} Process; // podriamos ver de agregar el tiempo de quantum que corrio por si
-           // esta corriendo porque volvio de blocked y no por el timer tick
+} Process;
 
 #define MAX_PRIORITY 5
 
@@ -118,5 +114,7 @@ processInfo *getAllProcessInfo(int *count);
 
 
 void sleep(int numberOfTicks);
+
+int wait();
 
 #endif

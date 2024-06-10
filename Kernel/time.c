@@ -12,7 +12,11 @@ typedef struct procSleep{
 	struct procSleep * next;
 }procSleep;
 
-static procSleep* sleeped = NULL;
+static procSleep* sleeped ;
+
+void setSleeped(){
+	sleeped = NULL;
+}
 
 void addProcSleep(int pid, int ticks){
 	procSleep* aux = sleeped;
@@ -20,8 +24,10 @@ void addProcSleep(int pid, int ticks){
 	{
 		if(aux->pid == pid){
 			aux->ticksLeft += ticks;
+			return;
 		}
-		return;
+		aux = aux->next;
+		
 	}	
 	procSleep* newSleep = allocMemory(sizeof(procSleep));
 	newSleep->pid = pid;
@@ -32,7 +38,7 @@ void addProcSleep(int pid, int ticks){
 
 procSleep* checkTimers(procSleep* proc){
 	if(proc == NULL){
-		return;
+		return proc;
 	}
 	proc->ticksLeft--;
 	if(proc->ticksLeft == 0){
@@ -42,6 +48,7 @@ procSleep* checkTimers(procSleep* proc){
 		return aux;
 	}
 	proc->next = checkTimers(proc->next);
+	return proc;
 }
 
 void timer_handler()

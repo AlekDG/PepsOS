@@ -1,4 +1,4 @@
-// Define which memory manager to use
+
 #ifdef USE_BUDDY
 #include <BuddyMemoryManager.h>
 #else
@@ -18,12 +18,12 @@ createMemoryManager(void *const restrict memoryForMemoryManager,
   return createMemoryManagerImpl(memoryForMemoryManager, managedMemory);
 }
 
-//void initManager(void) { initManagerImpl(systemMemory); }
+
 
 void *allocMemory(size_t size) { return allocMemoryImpl(systemMemory, size); }
 
 void freeMemory(void *ptr) { freeMemoryImpl(systemMemory, ptr); }
 
-void memState(int * freeMemory, int * totalMemory, int * allocatedMemory){
+void memState(unsigned long long int * freeMemory, unsigned long long int * totalMemory, unsigned long long int * allocatedMemory){
     memStateImpl(systemMemory, freeMemory, totalMemory, allocatedMemory);
 }

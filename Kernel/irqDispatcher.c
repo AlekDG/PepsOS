@@ -155,7 +155,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     return allocMemory(rsi);
     break;
   case 40:
-    return createProcess(rsi, rdx, rcx, r8,r9);
+    return createProcess(rsi, rdx, rcx, r8, r9);
     break;
   case 41:
     return getPid();
@@ -200,7 +200,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     return read_pipe(rsi);
     break;
   case 55:
-    changePriority(rsi, rdx);
+    return changePriority(rsi, rdx);
     break;
   case 56:
     return getAllProcessInfo(rsi);
@@ -225,6 +225,15 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     break;
   case 63:
     sleep(rsi);
+    break;
+  case 64:
+    printHex(rsi);
+    break;
+  case 65:
+    print_long_long_int(rsi);
+    break;
+  case 66:
+    return wait();
     break;
   default:
     return 0;

@@ -13,7 +13,7 @@ void start_game()
 {
       call_paintScreen(CARAMEL_BROWN);
       drawSnakeInterface(CARAMEL_BROWN);
-      initializeSnake(&snake, 50, 120, SNAKE_COLOR);
+      initializeSnake(&snake, PLAYER_ONE_STARTING_X, PLAYER_ONE_STARTING_Y, SNAKE_COLOR);
       drawRandomFace();
 
       uint8_t flagWall = 0;
@@ -49,7 +49,7 @@ void start_game()
             case '\n':
                   start_game();
                   return;
-            case 27:
+            case ESCAPE:
                   call_exit();
                   return;
             default:
@@ -146,25 +146,25 @@ void moveSnake(uint8_t value, struct Snake *snake)
 {
       switch (value)
       {
-      case 0:
+      case BELOW:
             if (snake->mov != UP)
             {
                   snake->mov = DOWN;
             }
             break;
-      case 1:
+      case ABOVE:
             if (snake->mov != DOWN)
             {
                   snake->mov = UP;
             }
             break;
-      case 2:
+      case R:
             if (snake->mov != LEFT)
             {
                   snake->mov = RIGHT;
             }
             break;
-      case 3:
+      case L:
             if (snake->mov != RIGHT)
             {
                   snake->mov = LEFT;
@@ -189,7 +189,7 @@ void drawSnakeHead(uint32_t x, uint32_t y, struct Snake *snake)
 void initializeSnake(struct Snake *snake, uint16_t startingX, uint16_t startingY, uint32_t snakeColor)
 {
       snake->mov = DOWN;
-      snake->length = 6;
+      snake->length = SNAKE_DEFAULT_LEN;
       snake->color = snakeColor;
 
       for (int i = 0; i < snake->length; i++)

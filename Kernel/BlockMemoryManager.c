@@ -1,12 +1,9 @@
 #include <BlockMemoryManager.h>
 #include <lib.h>
-#include <stddef.h>
-
-#define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
 
 typedef struct MemoryManagerCDT {
   char *startAddress;
-  size_t size;
+  unsigned long long int size;
   size_t spaceUsed;
   BlockADT firstBlock;
 } MemoryManagerCDT;
@@ -19,9 +16,6 @@ typedef struct BlockCDT {
   char isFree;
 } BlockCDT;
 
-//	Deberia haber un MemoryManagerADT global que se llame en todas las
-//funciones. StartAddress tendria que ser donde termina el user space.
-
 void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
                    void *memToFree, BlockADT currentBlock);
 MemoryManagerADT
@@ -29,10 +23,10 @@ createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
                         void *const restrict managedMemory);
 BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
                      BlockADT *result);
-void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory,
-                  int * totalMemory, int * allocatedMemory);
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory,
+                  unsigned long long int * totalMemory, unsigned long long int * allocatedMemory);
 
-void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock);
+void memStateRec(unsigned long long int * freeMemory, unsigned long long int * allocatedMemory, BlockADT currentBlock);
 void coalesceFreeBlocks(MemoryManagerADT memoryManager);
 void coalesceFreeBlocksRec(BlockADT currentBlock);
 
@@ -41,7 +35,7 @@ MemoryManagerADT
 createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
                         void *const restrict managedMemory) {
   MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
-  memoryManager->startAddress = managedMemory; //  Donde termina el userspace.
+  memoryManager->startAddress = managedMemory;
   memoryManager->spaceUsed = 0;
   memoryManager->size = USER_MEMORY_SIZE;
   memoryManager->firstBlock = NULL;
@@ -52,7 +46,6 @@ BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
                      BlockADT *result) {
   if (currentBlock != NULL) {
     if (currentBlock->isFree == 1) {
-      //	Si soy un bloque libre de size suficiente, escribir.
       if (currentBlock->size >= size) {
         currentBlock->spaceUsed = 0;
         currentBlock->isFree = 0;
@@ -82,7 +75,6 @@ BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
 void *allocMemoryImpl(MemoryManagerADT const restrict memoryManager,
                       const size_t memoryToAllocate) {
   if (memoryManager->spaceUsed + memoryToAllocate <= memoryManager->size) {
-    //  Retorno el puntero al inicio de un nuevo bloque de memoria.
     BlockADT block = NULL;
     memoryManager->firstBlock = createBlock(memoryManager->startAddress + memoryManager->spaceUsed + 1,
                 memoryToAllocate, memoryManager->firstBlock, &block);
@@ -111,7 +103,7 @@ void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
   }
 }
 
-void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock){
+void memStateRec(unsigned long long int * freeMemory, unsigned long long int * allocatedMemory, BlockADT currentBlock){
     if(currentBlock == NULL){
         return;
     }
@@ -124,12 +116,10 @@ void memStateRec(int * freeMemory, int * allocatedMemory, BlockADT currentBlock)
     memStateRec(freeMemory, allocatedMemory, currentBlock->nextBlock);
 }
 
-void memStateImpl(MemoryManagerADT const restrict memoryManager, int * freeMemory, int * totalMemory, int * allocatedMemory){
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory, unsigned long long int * totalMemory, unsigned long long int * allocatedMemory){
     if(memoryManager == NULL){
         return;
     }
-    *freeMemory = 0;
-    *allocatedMemory = 0;
     *totalMemory = memoryManager->size;
     memStateRec(freeMemory, allocatedMemory, memoryManager->firstBlock);
 }

@@ -23,6 +23,7 @@ void drawConsole();
 void runConsole();
 void deleteConsole();
 void ps();
+void loop();
 
 
 typedef enum{
