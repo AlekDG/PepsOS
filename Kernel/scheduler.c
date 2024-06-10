@@ -364,8 +364,9 @@ void yield() { fireTimerInt(); }
 /// @brief
 /// @param rsp
 /// @return
-void *priorityScheduler(void *rsp) {
+void *priorityScheduler(void *rsp, void* rbp) {
   Process *running = pcb.running;
+  running->rbp = rbp;
   running->rsp = rsp;
   if (running->state == EXITED) {
     freeMemory(running->memStartAdress);

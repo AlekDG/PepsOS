@@ -133,6 +133,7 @@ _irq00Handler:
 	pushState
 
 	mov rdi, rsp ; pasaje de parametro
+	mov rsi, rbp ;
 	call priorityScheduler
 	mov rsp, rax
 

@@ -133,6 +133,12 @@ void printProcessInfo(processInfo* process){
   default:
     drawStringDef("BACKGROUND");;
   }
+  drawStringDef("  ");
+  drawStringDef("0x");
+  printHex(process->rsp);
+  drawStringDef("  ");
+  drawStringDef("0x");
+  printHex(process->rbp);
   newLine();
 }
 
