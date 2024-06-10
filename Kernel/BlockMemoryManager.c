@@ -1,8 +1,5 @@
 #include <BlockMemoryManager.h>
 #include <lib.h>
-#include <stddef.h>
-
-#define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
 
 typedef struct MemoryManagerCDT {
   char *startAddress;
@@ -18,9 +15,6 @@ typedef struct BlockCDT {
   struct BlockCDT *nextBlock;
   char isFree;
 } BlockCDT;
-
-//	Deberia haber un MemoryManagerADT global que se llame en todas las
-//funciones. StartAddress tendria que ser donde termina el user space.
 
 void freeMemoryRec(MemoryManagerADT const restrict memoryManager,
                    void *memToFree, BlockADT currentBlock);
@@ -41,7 +35,7 @@ MemoryManagerADT
 createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
                         void *const restrict managedMemory) {
   MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
-  memoryManager->startAddress = managedMemory; //  Donde termina el userspace.
+  memoryManager->startAddress = managedMemory;
   memoryManager->spaceUsed = 0;
   memoryManager->size = USER_MEMORY_SIZE;
   memoryManager->firstBlock = NULL;
@@ -52,7 +46,6 @@ BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
                      BlockADT *result) {
   if (currentBlock != NULL) {
     if (currentBlock->isFree == 1) {
-      //	Si soy un bloque libre de size suficiente, escribir.
       if (currentBlock->size >= size) {
         currentBlock->spaceUsed = 0;
         currentBlock->isFree = 0;
@@ -82,7 +75,6 @@ BlockADT createBlock(void *startAddress, size_t size, BlockADT currentBlock,
 void *allocMemoryImpl(MemoryManagerADT const restrict memoryManager,
                       const size_t memoryToAllocate) {
   if (memoryManager->spaceUsed + memoryToAllocate <= memoryManager->size) {
-    //  Retorno el puntero al inicio de un nuevo bloque de memoria.
     BlockADT block = NULL;
     memoryManager->firstBlock = createBlock(memoryManager->startAddress + memoryManager->spaceUsed + 1,
                 memoryToAllocate, memoryManager->firstBlock, &block);
@@ -128,7 +120,7 @@ void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long l
     if(memoryManager == NULL){
         return;
     }
-    *totalMemory = memoryManager->size; //0xFFFFFFFFFFFAFFFF, un numero muy grande en base 10
+    *totalMemory = memoryManager->size;
     memStateRec(freeMemory, allocatedMemory, memoryManager->firstBlock);
 }
 
