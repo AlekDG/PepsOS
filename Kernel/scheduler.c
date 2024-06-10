@@ -41,6 +41,7 @@ processTable *createPCB(void) {
   pcb.blocked = NULL;
   char *haltArgv[] = {"halt"};
   pcb.halt = createProcessStruct(haltCpu, 0, haltArgv);
+  setSleeped();
   return &pcb;
 }
 
