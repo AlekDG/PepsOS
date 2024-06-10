@@ -74,7 +74,7 @@ int block(int pid);
 // ret 1 si lo paso a ready, 0 si no
 int unblock(int pid);
 
-int createProcess(newProcess process, int argc, char *argv[], int priority);
+int createProcess(newProcess process, int argc, char *argv[], int priority, processType tipo);
 
 // retorna 1 si lo mato, 0 si no
 int kill(int pid);

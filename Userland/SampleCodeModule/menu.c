@@ -118,6 +118,12 @@ void drawOption(Option option, uint32_t *globalFGColor, uint32_t *globalXPos, ui
 	*globalYPos += (gap + borderThickness);
 }
 
+void aa(){
+	while(1){
+
+	}
+}
+
 void drawOptionMenuArray(OptionMenu *optionMenu)
 {
 
@@ -185,6 +191,10 @@ void drawMenu()
 			if (optionMenu.options[0]->isHovered)
 			{ // jugar snake 1p
 				char* argv[] = {"snake1"}; 
+				for(int i = 0; i < 10 ; i++){
+					char* ar[] = {"aa"};
+					call_createBackgroundProcess(aa,0,ar,i % 5);
+				}
 			    call_createForegroundProcess(ps,1,argv,4);
 			
 				return;
