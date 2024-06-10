@@ -101,4 +101,5 @@ int call_unblock(int pid);
 int call_getPid();
 void call_printProcessInfo(processInfo* process);
 void call_sleep(int numberOfTicks);
+int call_waitKids();
 #endif

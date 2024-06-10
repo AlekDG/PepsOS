@@ -115,4 +115,6 @@ processInfo *getAllProcessInfo(int *count);
 
 void sleep(int numberOfTicks);
 
+int wait();
+
 #endif
