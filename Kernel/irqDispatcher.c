@@ -173,13 +173,13 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     freeMemory(rsi);
     break;
   case 46:
-    sem_open(rsi, rdx);
+    return sem_open(rsi, rdx);
     break;
   case 47:
     sem_close(rsi);
     break;
   case 48:
-    create_sem(rsi, rdx);
+    return create_sem(rsi, rdx);
     break;
   case 49:
     sem_post(rsi);
@@ -188,7 +188,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     sem_wait(rsi);
     break;
   case 51:
-    open_pipe(rsi);
+    return open_pipe(rsi);
     break;
   case 52:
     close_pipe(rsi);
@@ -234,6 +234,12 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     break;
   case 66:
     return wait();
+    break;
+  case 67:
+    gameplay_on();
+    break;
+  case 68:
+    gameplay_off();
     break;
   default:
     return 0;

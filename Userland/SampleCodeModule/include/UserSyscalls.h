@@ -5,6 +5,9 @@
 #include "../../../Shared/include/ps.h"
 #include <menu.h>
 #include <consola.h>
+
+#define STDIN 0
+
 // Allocate, free, and check memory
 void *call_malloc(int size);
 void call_free(void *toFree);
@@ -66,6 +69,9 @@ void call_putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y,
                             int size);
 // Recieve how many seconds have passed
 unsigned int call_seconds(void);
+//Cursed
+void call_begin_gameplay(void);
+void call_end_gameplay(void);
 // Print various data types
 void call_printInteger(int num);
 void call_print_long_long_int(unsigned long long int num);

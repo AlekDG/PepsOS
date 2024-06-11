@@ -186,20 +186,24 @@ void drawMenu()
 	drawOptionMenuArray(&optionMenu);
 	while (1)
 	{
-		char letter = call_getChar();
-		switch (letter)
-		{
-		case '\n':
-			if (optionMenu.options[0]->isHovered)
-			{ // jugar snake 1p
-				char* argv[] = {"snake1"}; 
-			    call_createForegroundProcess(prueba,0,argv,4);
-				return;
+	char letter = call_pipe_read(STDIN);
+	switch (letter)
+	{
+	case '\n':
+		if (optionMenu.options[0]->isHovered)
+		{ // jugar snake 1p
+		call_begin_gameplay();
+			char* argv[] = {"snake1"}; 
+			call_createForegroundProcess(start_game,0,argv,4);
+			call_end_gameplay();
+			return;
 			}
 			else if (optionMenu.options[1]->isHovered)
 			{
+				call_begin_gameplay();
 				char* argv[] = {"snake2"}; 
 				call_createForegroundProcess(start_gameTwo,0,argv,4);
+				call_end_gameplay();
 				return;
 			}
 			else if (optionMenu.options[2]->isHovered)
@@ -212,28 +216,15 @@ void drawMenu()
 				call_setXBuffer(50);
 				call_drawStringFormatted("->PRESIONE CUALQUIER TECLA PARA CONTINUAR",
 								 WHITE, BLACK, 1);
-				while (1)
-				{
-					int letter = call_getChar();
-					if (letter != 0)
-					{
-						return;
-					}
-				}
+				call_pipe_read(STDIN);
+    			return;
 			}
 			else if (optionMenu.options[3]->isHovered)
 			{
 				call_drawRectangle(BLACK, 0, 0, call_getWidth(), call_getHeight());
 				call_regRead();
-				while (1)
-				{
-					int letter = call_getChar();
-					if (letter != 0)
-					{
-						return;
-					}
-				}
-				return;
+				call_pipe_read(STDIN);
+    			return;
 			}
 			else if (optionMenu.options[4]->isHovered)
 			{ // consola.isHovered

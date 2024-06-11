@@ -302,12 +302,8 @@ void interpretCommand(char command[]) {
       call_setSize(4);
     }
     askForAnyletter();
-    while (1) {
-      int letter = call_getChar();
-      if (letter != 0) {
-        return;
-      }
-    }
+    call_pipe_read(STDIN);
+    return;
   case CMD_DECREASE_FONT_SIZE:
     if (call_getSize() > 1) {
       decreaseFontSize();
@@ -315,12 +311,8 @@ void interpretCommand(char command[]) {
       call_setSize(1);
     }
     askForAnyletter();
-    while (1) {
-      int letter = call_getChar();
-      if (letter != 0) {
-        return;
-      }
-    }
+    call_pipe_read(STDIN);
+    return;
   case CMD_TEST_DIV_ZERO:
     call_excepDivZero();
     return;
@@ -330,21 +322,13 @@ void interpretCommand(char command[]) {
   case CMD_PRINT_HELP:
     printHelp();
     askForAnyletter();
-    while (1) {
-      int letter = call_getChar();
-      if (letter != 0) {
-        return;
-      }
-    }
+    call_pipe_read(STDIN);
+    return;
   case CMD_PRINT_MEM_STATE:
     printMemState();
     askForAnyletter();
-    while (1) {
-      int letter = call_getChar();
-      if (letter != 0) {
-        return;
-      }
-    }
+    call_pipe_read(STDIN);
+    return;
     //  handler de memstate
 
   case CMD_PROCESS_LOOP:
@@ -362,12 +346,8 @@ void interpretCommand(char command[]) {
     } else {
       call_drawStringFormatted("Process not killed", BLACK, LIGHT_GRAY, 2);
     }
-    while (1) {
-      int letter = call_getChar();
-      if (letter != 0) {
-        return;
-      }
-    }
+    call_pipe_read(STDIN);
+    return;
     break;
     case CMD_PROCESS_NICE:
     int wasChanged= call_changePriority(arg1,arg2);
@@ -376,24 +356,16 @@ void interpretCommand(char command[]) {
     } else {
       call_drawStringFormatted("Process priority not changed", BLACK, LIGHT_GRAY, 2);
     }
-    while (1) {
-      int letter = call_getChar();
-      if (letter != 0) {
-        return;
-      }
-    }
+    call_pipe_read(STDIN);
+    return;
     break;
     case CMD_PROCESS_BLOCK_TOGGLE:
     int wasBlock= call_block(arg1);
     if (!wasBlock) {
       call_unblock(arg1);
     } 
-    while (1) {
-      int letter = call_getChar();
-      if (letter != 0) {
-        return;
-      }
-    }
+    call_pipe_read(STDIN);
+    return;
   case CMD_UNKNOWN:
   default:
     //  UNKNOWN HANDLER
@@ -410,8 +382,10 @@ void runConsole() {
   int consoleRunning = 1; // flag de corte de ejecucion
   char currentLetter;
 
+
+
   while (consoleRunning) {
-    currentLetter = call_getChar();
+    currentLetter = call_pipe_read(STDIN);
     switch (currentLetter) {
     case '\n':
       interpretCommand(internalBuffer);

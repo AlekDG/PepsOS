@@ -42,10 +42,6 @@ void ps() {
   }
 
   call_free(processList);
-  while (1) {
-    int letter = call_getChar();
-    if (letter != 0) {
-      call_exit();
-    }
-  }
+  call_pipe_read(STDIN);
+  call_exit();
 }

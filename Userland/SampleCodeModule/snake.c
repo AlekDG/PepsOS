@@ -11,6 +11,7 @@ uint32_t faceStartingY;
 
 void start_game()
 {
+      call_begin_gameplay();
       call_paintScreen(CARAMEL_BROWN);
       drawSnakeInterface(CARAMEL_BROWN);
       initializeSnake(&snake, PLAYER_ONE_STARTING_X, PLAYER_ONE_STARTING_Y, SNAKE_COLOR);
@@ -39,11 +40,11 @@ void start_game()
             }
       }
       playEndingSound();
-
+      call_end_gameplay();
       drawSnakeEndingScreen(snake.length - INITIAL_LENGTH);
       while (1)
       {
-            int letter = call_getChar();
+            int letter = call_pipe_read(STDIN);
             switch (letter)
             {
             case '\n':

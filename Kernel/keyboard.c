@@ -3,6 +3,8 @@
 #include <lib.h>
 #include <pipes.h>
 
+#define STDIN_PIPE 0
+
 const unsigned char kbArr[4][128] = {
     {0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
     'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 0, 'a', 's', 'd',
@@ -33,6 +35,7 @@ const unsigned char kbArr[4][128] = {
 bool shift = false;
 bool blockMayus = false;
 bool ctrl = false;
+bool gameplay = false;
 
 void regCheckSave(uint64_t regs){
     if(getKey()==0x38)
@@ -50,6 +53,14 @@ char hexToChar(uint8_t hex){
     else
         shiftState=0;
     return kbArr[shiftState][hex];
+}
+
+void gameplay_on(){
+    gameplay=true;
+}
+
+void gameplay_off(){
+    gameplay=false;
 }
 
 void keyAct(void){
@@ -79,11 +90,15 @@ void keyAct(void){
                             break; 
                     }
                 }
-    		    if(keyChar!=0){
-                    int stdin_pipe=open_pipe(STDIN);
-                    write_to_pipe(stdin_pipe,&keyChar);
-                    close_pipe(stdin_pipe);
-			        addToBuffer(keyChar);
+    		    if(keyHex<0x53){
+                    if(!gameplay){
+                        char to_write[2];
+                        to_write[0]=keyChar;
+                        to_write[1]='\0';
+                        write_to_pipe(STDIN_PIPE,to_write);
+                    } else {
+			            addToBuffer(keyChar);
+                    }
 		        }
         }
     } else {

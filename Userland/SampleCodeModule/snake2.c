@@ -20,6 +20,7 @@ uint8_t delayTicksTwo = DEFAULT_DIFFICULTY_LEVEL; // Modificarlo segun el grado 
 
 void start_gameTwo()
 {
+    call_begin_gameplay();
     call_paintScreen(CARAMEL_BROWN);
     draw2pSnake(CARAMEL_BROWN);
     initializeSnake(&snakeP1, PLAYER_ONE_STARTING_X, PLAYER_ONE_STARTING_Y, WHITE);
@@ -61,13 +62,13 @@ void start_gameTwo()
         }
     }
     playMegalovania();
-
+    call_end_gameplay();
     if (eaten1 || (!flagSnakeP1 && !flagWallP1 && !eaten2))
     {
         draw2pEnding(1);
         while (1)
         {
-            int letter = call_getChar();
+            int letter = call_pipe_read(STDIN);
             switch (letter)
             {
             case '\n':
@@ -86,7 +87,7 @@ void start_gameTwo()
         draw2pEnding(2);
         while (1)
         {
-            int letter = call_getChar();
+            int letter = call_pipe_read(STDIN);
             switch (letter)
             {
             case '\n':

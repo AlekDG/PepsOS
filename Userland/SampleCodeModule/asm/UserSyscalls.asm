@@ -72,6 +72,8 @@ GLOBAL call_printProcessInfo
 GLOBAL call_sleep
 
 GLOBAL call_waitKids
+GLOBAL call_begin_gameplay
+GLOBAL call_end_gameplay
 
 %macro call_to_handler 1
     push rbp
@@ -222,9 +224,12 @@ call_printHex:
     call_to_handler 64
 call_print_long_long_int:
     call_to_handler 65
-
 call_waitKids:
     call_to_handler 66
+call_begin_gameplay:
+    call_to_handler 67
+call_end_gameplay:
+    call_to_handler 68
 call_excepDivZero:
     xor rdx,rdx
     div rdx
