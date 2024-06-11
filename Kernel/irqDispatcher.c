@@ -242,6 +242,8 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
   case 68:
     gameplay_off();
     break;
+  case 69:
+    //TODO: Se olvidaron de meter lo de la call philosophers aca, gatos
   default:
     return 0;
   }

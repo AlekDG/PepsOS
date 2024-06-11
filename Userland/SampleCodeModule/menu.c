@@ -192,18 +192,14 @@ void drawMenu()
 	case '\n':
 		if (optionMenu.options[0]->isHovered)
 		{ // jugar snake 1p
-		call_begin_gameplay();
 			char* argv[] = {"snake1"}; 
 			call_createForegroundProcess(start_game,0,argv,4);
-			call_end_gameplay();
 			return;
 			}
 			else if (optionMenu.options[1]->isHovered)
 			{
-				call_begin_gameplay();
 				char* argv[] = {"snake2"}; 
 				call_createForegroundProcess(start_gameTwo,0,argv,4);
-				call_end_gameplay();
 				return;
 			}
 			else if (optionMenu.options[2]->isHovered)
