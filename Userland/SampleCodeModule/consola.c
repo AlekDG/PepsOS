@@ -2,6 +2,7 @@
 #include <consola.h>
 #include <menu.h>
 
+
 void drawConsole() {
   call_drawRectangle(LIGHT_GRAY, 0, 0, call_getWidth(),
                      call_getHeight()); // justo al final de pepsiman
@@ -366,6 +367,9 @@ void interpretCommand(char command[]) {
     } 
     call_pipe_read(STDIN);
     return;
+      case CMD_IPC_PHYLO:
+          char * arrPhylo[] = {"phylo"};
+          call_createForegroundProcess(run_Philosophers, 0, arrPhylo, 4);
   case CMD_UNKNOWN:
   default:
     //  UNKNOWN HANDLER

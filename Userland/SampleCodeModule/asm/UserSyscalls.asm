@@ -72,6 +72,8 @@ GLOBAL call_printProcessInfo
 GLOBAL call_sleep
 
 GLOBAL call_waitKids
+GLOBAL call_Philosophers
+
 GLOBAL call_begin_gameplay
 GLOBAL call_end_gameplay
 
@@ -230,6 +232,8 @@ call_begin_gameplay:
     call_to_handler 67
 call_end_gameplay:
     call_to_handler 68
+call_Philosophers:
+    call_to_handler 69
 call_excepDivZero:
     xor rdx,rdx
     div rdx

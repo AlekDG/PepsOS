@@ -126,7 +126,8 @@ char* my_itoa(int num, char *str, int base) {
     return str;
 }
 
-void runPhilosophers(int argc, char **argv) {
+void run_Philosophers(int argc, char **argv) {
+    call_paintScreen(0xFFFFF);
     if (call_sem_create(1, SEM_ID) == -1)
         return -1;
 
@@ -245,17 +246,23 @@ static int philosopher(int argc, char **argv) {
 static int addPhilosopher(int index) {
     call_sem_wait(SEM_ID);
     char philoNumberBuffer[MAX_PHILO_BUFFER] = {0};
-    if (call_sem_create(philoSemaphore(index), 0) == -1)
+    if (call_sem_create(philoSemaphore(index), 0) == -1) {
+        call_sem_post(SEM_ID);
         return -1;
+    }
     my_itoa(index, philoNumberBuffer, 10);
     char *params[] = {"philosopher", philoNumberBuffer, NULL};
-    //philoPids[index] = createProcessWithFds(&philosopher, params, "philosopher", 4, fileDescriptors);
-    call_createProcess(&philosopher, params, "philosopher", 4);
-    if (philoPids[index] != -1)
+    philoPids[index] = call_createBackgroundProcess(&philosopher, params, "philosopher", 4);
+    if (philoPids[index] != -1) {
         qtyPhilosophers++;
-    render();
-    call_sem_post(SEM_ID);
-    return -1 * !(philoPids[index] + 1);
+        render();
+        call_sem_post(SEM_ID);
+        return 0;
+    } else {
+        call_sem_close(philoSemaphore(index));
+        call_sem_post(SEM_ID);
+        return -1;
+    }
 }
 
 static int removePhilosopher(int index) {
@@ -275,13 +282,15 @@ static int removePhilosopher(int index) {
     call_setSize(currentsize);
 
     call_sem_wait(SEM_ID);
-    while (philoStates[left(index)] == EATING && philoStates[right(index)] == EATING) { // Estado invalido para remover
+    if (philoPids[index] == -1) {
         call_sem_post(SEM_ID);
-        call_sem_wait(philoSemaphore(index)); // Bloquearse hasta que el filosofo este comiendo
-        call_sem_wait(SEM_ID);
+        return -1;
     }
     call_kill(philoPids[index]);
-    call_waitKids(philoPids[index]);
+    call_waitKids();
+    philoPids[index] = -1;
+    philoStates[index] = NONE;
+    qtyPhilosophers--;
 
     char leaving[] = "Sale el filosofo: ";
     currentsize = call_getSize();
@@ -299,8 +308,6 @@ static int removePhilosopher(int index) {
 
     call_sem_close(philoSemaphore(index));
     philoPids[index] = -1;
-    philoStates[index] = NONE;
-    qtyPhilosophers--;
     render();
     call_sem_post(SEM_ID);
     return 0;
@@ -314,6 +321,7 @@ static void takeForks(int i) {
     call_sem_wait(philoSemaphore(i));
 }
 
+
 static void putForks(int i) {
     call_sem_wait(SEM_ID);
     philoStates[i] = THINKING;
@@ -326,8 +334,7 @@ static void putForks(int i) {
 static void test(int i) {
     if (philoStates[i] == HUNGRY && philoStates[left(i)] != EATING && philoStates[right(i)] != EATING) {
         philoStates[i] = EATING;
-        call_sem_post(philoSemaphore(i));
         render();
+        call_sem_post(philoSemaphore(i));
     }
 }
-
