@@ -89,8 +89,9 @@ int main() {
   systemProcessTable = createPCB();
   start_sems();
   initialize_pipes();
-  char* menuArgv[] = {"menu"};
-  createProcess(((EntryPoint)sampleCodeModuleAddress), 0, menuArgv, 0, FOREGROUND);
+  char *menuArgv[] = {"menu"};
+  createProcess(((EntryPoint)sampleCodeModuleAddress), 0, menuArgv, 0,
+                FOREGROUND);
   startFirstProcess();
   _sti();
   while (1)

@@ -2,7 +2,6 @@
 #include <video.h>
 #define SIZE 2
 
-
 #define REG_AMOUNT 10
 
 void *memset(void *destination, int32_t c, uint64_t length) {
@@ -102,7 +101,7 @@ void saveRegsBuffer(uint64_t regs) {
   regBuffer.ss = *cast;
 }
 
-void printProcessInfo(processInfo* process){
+void printProcessInfo(processInfo *process) {
   setSize(SIZE);
   newLine();
   drawStringDef(process->name);
@@ -113,27 +112,26 @@ void printProcessInfo(processInfo* process){
   drawStringDef("  ");
   printInteger(process->priority);
   drawStringDef("  ");
-  switch (process->state)
-  {
+  switch (process->state) {
   case BLOCKED:
-    drawStringFormatted("BLOCKED",RED,BLACK,SIZE);
+    drawStringFormatted("BLOCKED", RED, BLACK, SIZE);
     break;
-    case READY:
-    drawStringFormatted("READY",BRIGHT_BLUE,BLACK,SIZE);
+  case READY:
+    drawStringFormatted("READY", BRIGHT_BLUE, BLACK, SIZE);
     break;
-    case RUNNING:
-    drawStringFormatted("RUNNING",BRIGHT_GREEN,BLACK,SIZE);
+  case RUNNING:
+    drawStringFormatted("RUNNING", BRIGHT_GREEN, BLACK, SIZE);
     break;
   }
   drawStringDef("  ");
-  switch (process->tipo)
-  {
+  switch (process->tipo) {
   case FOREGROUND:
     drawStringDef("F");
     break;
-  
+
   default:
-    drawStringDef("B");;
+    drawStringDef("B");
+    ;
   }
   drawStringDef("  ");
   drawStringDef("0x");

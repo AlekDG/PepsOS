@@ -20,7 +20,6 @@
 #define YELLOW 0xFFFF55
 #define WHITE 0xFFFFFF
 
-
 void ps() {
   int processCount;
   processInfo *processList = call_ps(&processCount);
@@ -31,14 +30,17 @@ void ps() {
   call_setFGColor(WHITE);
   call_setBGColor(BLACK);
 
-  call_drawStringFormatted("PS for PepsOS - 2024 All Rights Not Reserved", WHITE, PEPSIBLUE,FONT_SIZE);
-  call_drawLetterFormatted("\n", WHITE, PEPSIBLUE,FONT_SIZE);
+  call_drawStringFormatted("PS for PepsOS - 2024 All Rights Not Reserved",
+                           WHITE, PEPSIBLUE, FONT_SIZE);
+  call_drawLetterFormatted("\n", WHITE, PEPSIBLUE, FONT_SIZE);
   call_drawLetterFromChar('\n');
-  call_drawStringFormatted("NAME - PID - PARENT PID - PRIORITY - STATE - TYPE - RSP - RBP", WHITE , DARK_GRAY , FONT_SIZE);
+  call_drawStringFormatted(
+      "NAME - PID - PARENT PID - PRIORITY - STATE - TYPE - RSP - RBP", WHITE,
+      DARK_GRAY, FONT_SIZE);
   call_setXBuffer(PRINT_INFO_START_POSITION);
   for (int i = 0; i < processCount; i++) {
     // imprimo proceso
-      call_printProcessInfo(&processList[i]);
+    call_printProcessInfo(&processList[i]);
   }
 
   call_free(processList);

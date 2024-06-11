@@ -23,7 +23,6 @@ pasa o al final o al principio de ready y se llama al scheduler
 
 Process *createProcessStruct(newProcess process, int argc, char *argv[]);
 
-
 void setPriorityQueuesNull() {
   for (int i = 0; i < MAX_PRIORITY; i++) {
     pcb.priorityQueue[i].lastReady = NULL;
@@ -46,7 +45,7 @@ processTable *createPCB(void) {
   return &pcb;
 }
 
-int decrementKidsCountOnBlockedProcess(int pid){
+int decrementKidsCountOnBlockedProcess(int pid) {
   Process *aux = pcb.blocked;
   while (aux != NULL) {
     if (aux->pid == pid) {
@@ -58,7 +57,7 @@ int decrementKidsCountOnBlockedProcess(int pid){
   return 0;
 }
 
-int decrementKidsCountOnReadyProcess(int pid){
+int decrementKidsCountOnReadyProcess(int pid) {
   for (int i = 0; i < MAX_PRIORITY; i++) {
     Process *aux = pcb.priorityQueue[i].ready;
     while (aux != NULL) {
@@ -72,11 +71,11 @@ int decrementKidsCountOnReadyProcess(int pid){
   return 0;
 }
 
-void decrementKidsCount(int pid){
-    int wasDecremented = decrementKidsCountOnBlockedProcess(pid);
-    if(!wasDecremented){
-      decrementKidsCountOnReadyProcess(pid);
-    }
+void decrementKidsCount(int pid) {
+  int wasDecremented = decrementKidsCountOnBlockedProcess(pid);
+  if (!wasDecremented) {
+    decrementKidsCountOnReadyProcess(pid);
+  }
 }
 
 /**
@@ -87,7 +86,6 @@ void decrementKidsCount(int pid){
  * @param rsp the stack pointer of the current running process
  * @return the new rsp
  */
-
 
 /**
  * Get current running process pid
@@ -213,7 +211,8 @@ Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   return newProcess;
 }
 
-int createProcess(newProcess process, int argc, char *argv[], int priority,processType tipo) {
+int createProcess(newProcess process, int argc, char *argv[], int priority,
+                  processType tipo) {
   Process *newProcess;
   if (0 <= priority && priority < MAX_PRIORITY) {
     newProcess = createProcessStruct(
@@ -319,21 +318,19 @@ void startFirstProcess() {
 int createBackgroundProcess(newProcess process, int argc, char *argv[],
                             int priority) {
   // no bloqueo el actual
-  return createProcess(process, argc, argv, priority,BACKGROUND);
+  return createProcess(process, argc, argv, priority, BACKGROUND);
 }
 
 int createForegroundProcess(newProcess process, int argc, char *argv[],
                             int priority) {
   // bloqueo el actual
-  int pid = createProcess(process, argc, argv, priority,FOREGROUND);
+  int pid = createProcess(process, argc, argv, priority, FOREGROUND);
   block(pcb.running->pid);
   return pid;
 }
 
-
-
-int wait(){
-  if(pcb.running->kidsCount == 0){
+int wait() {
+  if (pcb.running->kidsCount == 0) {
     return 0;
   }
   block(pcb.running->pid);
@@ -357,7 +354,7 @@ void yield() { fireTimerInt(); }
 /// @brief
 /// @param rsp
 /// @return
-void *priorityScheduler(void *rsp, void* rbp) {
+void *priorityScheduler(void *rsp, void *rbp) {
   Process *running = pcb.running;
   running->rbp = rbp;
   running->rsp = rsp;
@@ -409,7 +406,6 @@ void *priorityScheduler(void *rsp, void* rbp) {
       if (pcb.priorityQueue[i].ready == NULL) {
         pcb.priorityQueue[i].lastReady = NULL;
       }
-      
     }
     break;
   }
@@ -535,10 +531,9 @@ processInfo *getAllProcessInfo(int *count) {
   return procs;
 }
 
-void sleep(int numberOfTicks){
-  if(numberOfTicks > 0){
-    addProcSleep(pcb.running->pid,numberOfTicks);
+void sleep(int numberOfTicks) {
+  if (numberOfTicks > 0) {
+    addProcSleep(pcb.running->pid, numberOfTicks);
     block(pcb.running->pid);
   }
-
 }

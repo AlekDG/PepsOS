@@ -2,7 +2,6 @@
 #include <consola.h>
 #include <menu.h>
 
-
 void drawConsole() {
   call_drawRectangle(LIGHT_GRAY, 0, 0, call_getWidth(),
                      call_getHeight()); // justo al final de pepsiman
@@ -133,7 +132,7 @@ CommandType getCommandType(const char *command, int *arg1, int *arg2) {
   if (isNiceComand(command, arg1, arg2)) {
     return CMD_PROCESS_NICE;
   }
-  if(isBlockCommand(command,arg1)){
+  if (isBlockCommand(command, arg1)) {
     return CMD_PROCESS_BLOCK_TOGGLE;
   }
 
@@ -350,26 +349,28 @@ void interpretCommand(char command[]) {
     call_pipe_read(STDIN);
     return;
     break;
-    case CMD_PROCESS_NICE:
-    int wasChanged= call_changePriority(arg1,arg2);
+  case CMD_PROCESS_NICE:
+    int wasChanged = call_changePriority(arg1, arg2);
     if (wasChanged) {
-      call_drawStringFormatted("Process priority changed", GREEN, LIGHT_GRAY, 2);
+      call_drawStringFormatted("Process priority changed", GREEN, LIGHT_GRAY,
+                               2);
     } else {
-      call_drawStringFormatted("Process priority not changed", BLACK, LIGHT_GRAY, 2);
+      call_drawStringFormatted("Process priority not changed", BLACK,
+                               LIGHT_GRAY, 2);
     }
     call_pipe_read(STDIN);
     return;
     break;
-    case CMD_PROCESS_BLOCK_TOGGLE:
-    int wasBlock= call_block(arg1);
+  case CMD_PROCESS_BLOCK_TOGGLE:
+    int wasBlock = call_block(arg1);
     if (!wasBlock) {
       call_unblock(arg1);
-    } 
+    }
     call_pipe_read(STDIN);
     return;
-      case CMD_IPC_PHYLO:
-          char * arrPhylo[] = {"phylo"};
-          call_createForegroundProcess(run_Philosophers, 0, arrPhylo, 4);
+  case CMD_IPC_PHYLO:
+    char *arrPhylo[] = {"phylo"};
+    call_createForegroundProcess(run_Philosophers, 0, arrPhylo, 4);
   case CMD_UNKNOWN:
   default:
     //  UNKNOWN HANDLER
@@ -385,8 +386,6 @@ void runConsole() {
   int bufferSize = 0;
   int consoleRunning = 1; // flag de corte de ejecucion
   char currentLetter;
-
-
 
   while (consoleRunning) {
     currentLetter = call_pipe_read(STDIN);

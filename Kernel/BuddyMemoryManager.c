@@ -8,8 +8,7 @@ typedef struct MemoryManagerCDT {
   size_t size;
   size_t spaceUsed;
   BlockADT firstBlock;
-  BlockADT
-      freeLists[POWER_OF_TWO_MAX_EXPONENT];
+  BlockADT freeLists[POWER_OF_TWO_MAX_EXPONENT];
 } MemoryManagerCDT;
 
 typedef struct BlockCDT {
@@ -71,9 +70,6 @@ void *allocMemoryImpl(MemoryManagerADT manager, int size) {
     return block->startAddress;
   }
 
-
-
-
   BlockADT newBlock =
       (BlockADT)((char *)manager->startAddress + manager->spaceUsed);
   newBlock->startAddress = (void *)newBlock + manager->spaceUsed +
@@ -89,8 +85,7 @@ void *allocMemoryImpl(MemoryManagerADT manager, int size) {
   while (newBlock->size > size * 2) {
     newBlock->size /= 2;
     BlockADT buddyBlock =
-        (BlockADT)((void *)newBlock + sizeof(BlockCDT) +
-                   newBlock->size);
+        (BlockADT)((void *)newBlock + sizeof(BlockCDT) + newBlock->size);
     buddyBlock->startAddress = (void *)buddyBlock + manager->spaceUsed +
                                sizeof newBlock + sizeof newBlock->startAddress +
                                sizeof newBlock->size + sizeof newBlock->isFree +
@@ -169,21 +164,22 @@ void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
   manager->freeLists[bsize] = block;
 }
 
+void memStateImpl(MemoryManagerADT const restrict memoryManager,
+                  unsigned long long int *freeMemory,
+                  unsigned long long int *totalMemory,
+                  unsigned long long int *allocatedMemory) {
+  if (memoryManager == NULL) {
+    return;
+  }
+  *freeMemory = 0;
+  *totalMemory = memoryManager->size;
 
-
-void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int * freeMemory, unsigned long long int * totalMemory, unsigned long long int * allocatedMemory){
-    if(memoryManager == NULL){
-        return;
+  for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
+    BlockADT currentBlock = memoryManager->freeLists[i];
+    while (currentBlock != NULL) {
+      *freeMemory += currentBlock->size;
+      currentBlock = currentBlock->nextBlock;
     }
-    *freeMemory = 0;
-    *totalMemory = memoryManager->size;
-
-    for(int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++){
-        BlockADT currentBlock = memoryManager->freeLists[i];
-        while (currentBlock != NULL){
-            *freeMemory += currentBlock->size;
-            currentBlock = currentBlock->nextBlock;
-        }
-    }
-    *allocatedMemory = *totalMemory - *freeMemory;
+  }
+  *allocatedMemory = *totalMemory - *freeMemory;
 }

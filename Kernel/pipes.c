@@ -56,7 +56,7 @@ int create_pipe(char *id) {
   int indx;
   if ((indx = get_free_instance()) != -1) {
     pipe_t *new_pipe = &(pipe_inst[indx].pipe);
-    string_copy(id,new_pipe->name);
+    string_copy(id, new_pipe->name);
     new_pipe->r_indx = 0;
     new_pipe->w_indx = 0;
 
