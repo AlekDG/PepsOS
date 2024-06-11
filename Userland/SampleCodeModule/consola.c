@@ -2,6 +2,7 @@
 #include <consola.h>
 #include <menu.h>
 
+
 void drawConsole() {
   call_drawRectangle(LIGHT_GRAY, 0, 0, call_getWidth(),
                      call_getHeight()); // justo al final de pepsiman
@@ -345,8 +346,6 @@ void interpretCommand(char command[]) {
         return;
       }
     }
-    //  handler de memstate
-
   case CMD_PROCESS_LOOP:
     char *loopArgv[] = {"loop"};
     call_createBackgroundProcess(loop, 0, loopArgv, 0);
@@ -394,6 +393,9 @@ void interpretCommand(char command[]) {
         return;
       }
     }
+      case CMD_IPC_PHYLO:
+          char * arrPhylo[] = {"phylo"};
+          call_createForegroundProcess(run_Philosophers, 0, arrPhylo, 4);
   case CMD_UNKNOWN:
   default:
     //  UNKNOWN HANDLER

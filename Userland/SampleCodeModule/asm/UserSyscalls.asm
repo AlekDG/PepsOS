@@ -72,6 +72,8 @@ GLOBAL call_printProcessInfo
 GLOBAL call_sleep
 
 GLOBAL call_waitKids
+GLOBAL call_Philosophers
+
 
 %macro call_to_handler 1
     push rbp
@@ -225,6 +227,8 @@ call_print_long_long_int:
 
 call_waitKids:
     call_to_handler 66
+call_Philosophers:
+    call_to_handler 67
 call_excepDivZero:
     xor rdx,rdx
     div rdx

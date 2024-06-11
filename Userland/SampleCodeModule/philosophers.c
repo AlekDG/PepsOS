@@ -126,7 +126,7 @@ char* my_itoa(int num, char *str, int base) {
     return str;
 }
 
-void runPhilosophers(int argc, char **argv) {
+void run_Philosophers(int argc, char **argv) {
     if (call_sem_create(1, SEM_ID) == -1)
         return -1;
 

@@ -9,5 +9,5 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "UserSyscalls.h"
-
+void run_Philosophers(int argc, char **argv);
 #endif //ARQUITPE_PHILOSOPHERS_H
