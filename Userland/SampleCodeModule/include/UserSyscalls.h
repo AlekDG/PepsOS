@@ -7,6 +7,9 @@
 #include <consola.h>
 
 #define STDIN 0
+#define KILL_SIGNAL 3
+#define EOF 4
+
 
 // Allocate, free, and check memory
 void *call_malloc(int size);
@@ -18,6 +21,7 @@ int call_sem_close(char *sem_name);
 uint64_t call_sem_create(uint64_t starting_value, char *sem_name);
 uint64_t call_sem_post(int sem);
 uint64_t call_sem_wait(int sem);
+int call_get_sem_by_name(char* sem_name);
 // pipes
 int call_pipe_open(char *pipe_name);
 int call_pipe_close(int pipe);

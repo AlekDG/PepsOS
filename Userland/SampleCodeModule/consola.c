@@ -380,8 +380,9 @@ void interpretCommand(char command[]) {
       current_letter = call_pipe_read(STDIN);
       switch (current_letter)
       {
-      case 3:
+      case KILL_SIGNAL:
         //TODO: Tobi checkea que esto termine este comando y no reviente todo: call_kill(call_getPid());
+      case EOF:
         cat_active = 0;
         break;
       case '\n':
