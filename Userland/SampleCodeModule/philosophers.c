@@ -3,7 +3,7 @@ typedef enum { NONE = 0, EATING, HUNGRY, THINKING } PHILOSOPHER_STATE;
 
 #define MAX_QTY 10
 #define MIN_QTY 3
-#define SEM_ID 42
+#define SEM_ID "Name"
 #define MAX_PHILO_BUFFER 3
 
 #define THINK_TIME 2
@@ -127,8 +127,28 @@ char *my_itoa(int num, char *str, int base) {
 
 void run_Philosophers(int argc, char **argv) {
   call_paintScreen(0xFFFFF);
+  call_begin_gameplay();
+
+  char gameplayStarted[] = "Gameplay started.";
+  int currentsize1 = call_getSize();
+  call_setSize(2);
+  call_setXBuffer(0);
+  call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; gameplayStarted[i] != 0; i++) {
+        call_drawLetterFromChar(gameplayStarted[i]);
+    }
+
   if (call_sem_create(1, SEM_ID) == -1)
     return -1;
+    char semCreated[] = "Sem created";
+    int currentsize2 = call_getSize();
+    call_setSize(2);
+    call_setXBuffer(0);
+    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; semCreated[i] != 0; i++) {
+        call_drawLetterFromChar(semCreated[i]);
+    }
+
 
   for (int i = 0; i < MAX_QTY; i++) {
     philoStates[i] = NONE;
@@ -193,6 +213,7 @@ void run_Philosophers(int argc, char **argv) {
     removePhilosopher(i);
   }
   call_sem_close(SEM_ID);
+  call_end_gameplay();
 }
 
 static void render() {
@@ -238,6 +259,15 @@ static int philosopher(int argc, char **argv) {
 }
 
 static int addPhilosopher(int index) {
+    char entering[] = "Adding a philosopher... ";
+    int currentsize = call_getSize();
+    call_setSize(2);
+    call_setXBuffer(0);
+    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; entering[i] != 0; i++) {
+        call_drawLetterFromChar(entering[i]);
+    }
+
   call_sem_wait(SEM_ID);
   char philoNumberBuffer[MAX_PHILO_BUFFER] = {0};
   if (call_sem_create(philoSemaphore(index), 0) == -1) {
