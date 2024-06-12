@@ -26,19 +26,19 @@ int64_t my_unblock(uint64_t pid) {
 }
 
 int64_t my_sem_open(char *sem_id, uint64_t initialValue) {
-  return 0;
+  return call_sem_open(initialValue,sem_id);
 }
 
 int64_t my_sem_wait(char *sem_id) {
-  return 0;
+  return call_sem_wait(call_get_sem_by_name(sem_id));
 }
 
 int64_t my_sem_post(char *sem_id) {
-  return 0;
+  return call_sem_post(call_get_sem_by_name(sem_id));
 }
 
 int64_t my_sem_close(char *sem_id) {
-  return 0;
+  return call_sem_close(sem_id);
 }
 
 int64_t my_yield() {

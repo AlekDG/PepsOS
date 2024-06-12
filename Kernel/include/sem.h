@@ -28,5 +28,6 @@ uint64_t sem_post(int index);
 uint64_t sem_wait(int index);
 int sem_open(int val, char *id);
 int sem_close(char *id);
+int get_sem_indx(char *id);
 
 #endif

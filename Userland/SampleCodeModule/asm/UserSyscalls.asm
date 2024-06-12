@@ -76,6 +76,7 @@ GLOBAL call_new_line
 
 GLOBAL call_begin_gameplay
 GLOBAL call_end_gameplay
+GLOBAL call_get_sem_by_name
 
 %macro call_to_handler 1
     push rbp
@@ -234,6 +235,8 @@ call_end_gameplay:
     call_to_handler 68
 call_new_line:
     call_to_handler 69
+call_get_sem_by_name:
+    call_to_handler 70
 call_excepDivZero:
     xor rdx,rdx
     div rdx

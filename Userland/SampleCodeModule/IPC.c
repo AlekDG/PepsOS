@@ -3,16 +3,6 @@
 
 #define MAX_READ 1024
 
-void cat(int input_pipe) {
-  char *input_string = call_malloc(MAX_READ);
-  int i = 0;
-  input_string[i] = call_pipe_read(input_pipe);
-  for (; i < MAX_READ && input_string[i]; i++) {
-    input_string[i] = call_pipe_read(input_pipe);
-  }
-  // Now what?
-  return;
-}
 int wc(int input_pipe) {
   int i = 0;
   int count = 0;
