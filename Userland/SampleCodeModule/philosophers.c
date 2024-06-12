@@ -20,6 +20,7 @@ typedef enum { NONE = 0, EATING, HUNGRY, THINKING } PHILOSOPHER_STATE;
 #define right(i) (((i) + 1) % qtyPhilosophers)
 #define philoSemaphore(i) (SEM_ID + (i) + 1)
 #define A_LOVELY_COLOR_FOR_DINING 0xFFFFF
+#define SHORT_WAIT 80
 
 #include <UserSyscalls.h>
 
@@ -31,10 +32,10 @@ static uint8_t singleLine = 0;
 static void render();
 static int philosopher(int argc, char **argv);
 static int addPhilosopher(int index, int phsemID);
-static int removePhilosopher(int index);
-static void takeForks(int i);
-static void putForks(int i);
-static void test(int i);
+static int removePhilosopher(int index, int phsemID);
+        static void takeForks(int i, int phsmID, int phID);
+static void putForks(int i, int phsmID, int phID);
+static void test(int i, int phID);
 
 static const char *philoNames[] = {
     "Montesqueso",  "Fridge",        "Spinetta",
@@ -152,40 +153,37 @@ void run_Philosophers(int argc, char **argv) {
             call_drawStringFormatted("Could not add philosopher...\n",
                                      WHITE, BLACK, 2);
 
-
-
-
         }
 
       } else {
         // printf("La mesa esta llena\n");
           call_drawStringFormatted("Table is full...\n",
                                    WHITE, BLACK, 2);
-
-
-
       }
+            call_wait(SHORT_WAIT);
+      call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
       break;
     case COMMAND_REMOVE:
       if (qtyPhilosophers > MIN_QTY)
-        removePhilosopher(qtyPhilosophers - 1);
+        removePhilosopher(qtyPhilosophers - 1, phSemID);
       else {
         // printf("Como minimo debe haber %d filosofos para empezar el
         // banquete\n", MIN_QTY);
           call_drawStringFormatted("Table is too empty...\n",
                                    WHITE, BLACK, 2);
-
-
       }
+            call_wait(SHORT_WAIT);
+            call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
       break;
     case COMMAND_CLEAR:
       singleLine = !singleLine;
+      call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
       break;
     }
   }
 
   for (int i = qtyPhilosophers - 1; i >= 0; i--) {
-    removePhilosopher(i);
+    removePhilosopher(i, phSemID);
   }
   call_sem_close(SEM_ID);
   call_end_gameplay();
@@ -193,27 +191,33 @@ void run_Philosophers(int argc, char **argv) {
 
 static void render() {
   if (singleLine){
-      call_paintScreen(0xFFFFFF);
       call_setXBuffer(0);
       call_setYBuffer(0);
   }
 
   const static char letters[] = {' ', 'E', '.', '.'};
   uint8_t somethingToWrite = 0;
-    call_setXBuffer(0);
-    call_setYBuffer(0);
   for (int i = 0; i < qtyPhilosophers; i++) {
     if (letters[philoStates[i]] != ' ') {
       somethingToWrite = 1;
       // printf("%c%2s", letters[philoStates[i]], "");
+        call_setXBuffer(0);
+        call_setYBuffer(0);
+        call_drawStringFormatted(letters[philoStates[i]] + '\0', WHITE, BLACK, 2);
+        call_drawStringFormatted("\n", WHITE, BLACK, 2);
+        call_drawStringFormatted(' ' + '\0', WHITE, BLACK, 2);
+        call_drawStringFormatted("\n", WHITE, BLACK, 2);
+        call_drawStringFormatted(' ' + '\0', WHITE, BLACK , 2);
+        call_drawStringFormatted("\n", WHITE, BLACK, 2);
 
-      call_drawLetterFromChar(letters[philoStates[i]]);
+      /*call_drawLetterFromChar(letters[philoStates[i]]);
       call_drawLetterFromChar(' ');
-      call_drawLetterFromChar(' ');
+      call_drawLetterFromChar(' ');*/
     }
   }
-  if (somethingToWrite)
-    call_drawLetterFromChar('\n');
+  if (somethingToWrite) {
+      call_drawStringFormatted("\n", BLACK, WHITE, 2);
+  }
 }
 
 static int philosopher(int argc, char **argv) {
@@ -228,9 +232,9 @@ static int philosopher(int argc, char **argv) {
     philoStates[i] = THINKING;
   while (1) {
     call_sleep(THINK_TIME);
-    takeForks(i);
+    takeForks(i, argv[2], argv[3]);
     call_sleep(EAT_TIME);
-    putForks(i);
+    putForks(i, argv[2], argv[3]);
   }
 }
 
@@ -245,13 +249,14 @@ static int addPhilosopher(int index, int phsemID) {
     }*/
   call_sem_wait(phsemID);
   char philoNumberBuffer[MAX_PHILO_BUFFER] = {0};
-  if (call_sem_create(0, philoNames[index]) == -1) {
+    int phId = call_sem_create(0, philoNames[index]);
+  if ( phId == -1) {
     call_sem_post(phsemID);
     return -1;
   }
 
   my_itoa(index, philoNumberBuffer, 10);
-  char *params[] = {"philosopher", philoNumberBuffer, NULL};
+  char *params[] = {"philosopher", philoNumberBuffer,phsemID,phId, NULL};
   philoPids[index] =
       call_createBackgroundProcess(philosopher, 1, params, 4);
 
@@ -267,11 +272,11 @@ static int addPhilosopher(int index, int phsemID) {
   }
 }
 
-static int removePhilosopher(int index) {
+static int removePhilosopher(int index, int phsemID) {
 
-  call_sem_wait(SEM_ID);
+  call_sem_wait(phsemID);
   if (philoPids[index] == -1) {
-    call_sem_post(SEM_ID);
+    call_sem_post(phsemID);
     return -1;
   }
   call_kill(philoPids[index]);
@@ -288,35 +293,35 @@ static int removePhilosopher(int index) {
 
 
 
-    call_sem_close(philoSemaphore(index));
+    call_sem_close(philoNames[index]);
   philoPids[index] = -1;
   render();
-  call_sem_post(SEM_ID);
+  call_sem_post(phsemID);
   return 0;
 }
 
-static void takeForks(int i) {
-  call_sem_wait(SEM_ID);
+static void takeForks(int i, int phsemID, int phID) {
+  call_sem_wait(phsemID);
   philoStates[i] = HUNGRY;
-  test(i);
-  call_sem_post(SEM_ID);
-  call_sem_wait(philoSemaphore(i));
+  test(i, phID);
+  call_sem_post(phsemID);
+  call_sem_wait(phID);
 }
 
-static void putForks(int i) {
-  call_sem_wait(SEM_ID);
+static void putForks(int i, int phsemID, int phID) {
+  call_sem_wait(phsemID);
   philoStates[i] = THINKING;
   render();
-  test(left(i));
-  test(right(i));
-  call_sem_post(SEM_ID);
+  test(left(i), phID);
+  test(right(i), phID);
+  call_sem_post(phsemID);
 }
 
-static void test(int i) {
+static void test(int i, int phID) {
   if (philoStates[i] == HUNGRY && philoStates[left(i)] != EATING &&
       philoStates[right(i)] != EATING) {
     philoStates[i] = EATING;
     render();
-    call_sem_post(philoSemaphore(i));
+    call_sem_post(phID);
   }
 }
