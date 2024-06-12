@@ -1,6 +1,7 @@
 #include <UserSyscalls.h>
 #include <consola.h>
 #include <menu.h>
+#include "philosophers.h"
 
 void drawConsole() {
   call_drawRectangle(LIGHT_GRAY, 0, 0, call_getWidth(),
@@ -410,6 +411,9 @@ void interpretCommand(char command[]) {
       }
     }
     return;
+      case CMD_IPC_PHYLO:
+          char *philoArgv[] = {"phylo"};
+          call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4);
   case CMD_UNKNOWN:
   default:
     //  UNKNOWN HANDLER

@@ -3,7 +3,7 @@ typedef enum { NONE = 0, EATING, HUNGRY, THINKING } PHILOSOPHER_STATE;
 
 #define MAX_QTY 10
 #define MIN_QTY 3
-#define SEM_ID 42
+#define SEM_ID "Question"
 #define MAX_PHILO_BUFFER 3
 
 #define THINK_TIME 2
@@ -29,7 +29,7 @@ static uint8_t singleLine = 0;
 
 static void render();
 static int philosopher(int argc, char **argv);
-static int addPhilosopher(int index);
+static int addPhilosopher(int index, int phsemID);
 static int removePhilosopher(int index);
 static void takeForks(int i);
 static void putForks(int i);
@@ -127,8 +127,29 @@ char *my_itoa(int num, char *str, int base) {
 
 void run_Philosophers(int argc, char **argv) {
   call_paintScreen(0xFFFFF);
-  if (call_sem_create(1, SEM_ID) == -1)
+  call_begin_gameplay();
+
+  char gameplayStarted[] = "Gameplay started.";
+  int currentsize1 = call_getSize();
+  call_setSize(2);
+  call_setXBuffer(0);
+  call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; gameplayStarted[i] != 0; i++) {
+        call_drawLetterFromChar(gameplayStarted[i]);
+    }
+
+  int phSemID = call_sem_create(1, SEM_ID);
+  if (phSemID == -1)
     return -1;
+    char semCreated[] = "Sem created";
+    int currentsize2 = call_getSize();
+    call_setSize(2);
+    call_setXBuffer(0);
+    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; semCreated[i] != 0; i++) {
+        call_drawLetterFromChar(semCreated[i]);
+    }
+
 
   for (int i = 0; i < MAX_QTY; i++) {
     philoStates[i] = NONE;
@@ -136,14 +157,23 @@ void run_Philosophers(int argc, char **argv) {
   }
 
   for (int i = 0; i < MIN_QTY; i++)
-    addPhilosopher(i);
+    addPhilosopher(i, phSemID);
+
+    char added[] = "Philosophers added";
+
+    call_setSize(2);
+    call_setXBuffer(0);
+    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; added[i] != 0; i++) {
+        call_drawLetterFromChar(added[i]);
+    }
 
   char command = '\0';
   while ((command = call_getChar()) != COMMAND_QUIT) {
     switch (command) {
     case COMMAND_ADD:
       if (qtyPhilosophers < MAX_QTY) {
-        if (addPhilosopher(qtyPhilosophers) == -1) {
+        if (addPhilosopher(qtyPhilosophers, phSemID) == -1) {
           // printErr("No se pudo agregar un filosofo\n");
           char couldNotAdd[] = "Could not add philosopher\n";
           int currentsize = call_getSize();
@@ -193,6 +223,7 @@ void run_Philosophers(int argc, char **argv) {
     removePhilosopher(i);
   }
   call_sem_close(SEM_ID);
+  call_end_gameplay();
 }
 
 static void render() {
@@ -237,25 +268,51 @@ static int philosopher(int argc, char **argv) {
   }
 }
 
-static int addPhilosopher(int index) {
-  call_sem_wait(SEM_ID);
+static int addPhilosopher(int index, int phsemID) {
+    char entering[] = "Adding a philosopher... ";
+    int currentsize = call_getSize();
+    call_setSize(2);
+    call_setXBuffer(0);
+    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; entering[i] != 0; i++) {
+        call_drawLetterFromChar(entering[i]);
+    }
+
+  call_sem_wait(phsemID);
   char philoNumberBuffer[MAX_PHILO_BUFFER] = {0};
-  if (call_sem_create(philoSemaphore(index), 0) == -1) {
-    call_sem_post(SEM_ID);
+  if (call_sem_create(0, philoNames[index]) == -1) {
+    call_sem_post(phsemID);
     return -1;
   }
+    char created[] = "New sem created...";
+    call_setSize(2);
+    call_setXBuffer(0);
+    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+    for (int i = 0; created[i] != 0; i++) {
+        call_drawLetterFromChar(created[i]);
+    }
   my_itoa(index, philoNumberBuffer, 10);
   char *params[] = {"philosopher", philoNumberBuffer, NULL};
+  char * phylo[] = {"philosopher"};
   philoPids[index] =
-      call_createBackgroundProcess(&philosopher, params, "philosopher", 4);
+      call_createBackgroundProcess(&philosopher, params, phylo, 4);
+
+  char procmade[] = "New Process created...";
+  call_setSize(2);
+  call_setXBuffer(0);
+  call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
+  for (int i = 0; procmade[i] != 0; i++) {
+      call_drawLetterFromChar(procmade[i]);
+  }
+
   if (philoPids[index] != -1) {
     qtyPhilosophers++;
     render();
-    call_sem_post(SEM_ID);
+    call_sem_post(phsemID);
     return 0;
   } else {
-    call_sem_close(philoSemaphore(index));
-    call_sem_post(SEM_ID);
+    call_sem_close(philoNames[index]);
+    call_sem_post(phsemID);
     return -1;
   }
 }
