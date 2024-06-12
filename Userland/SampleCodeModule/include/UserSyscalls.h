@@ -33,7 +33,7 @@ void call_drawRectangle(uint32_t color, uint32_t offset_x, uint32_t offset_y,
 void call_drawCircle(uint32_t color, uint32_t offset_x, uint32_t offset_y,
                      uint32_t radius);
 void call_drawFace(uint32_t offset_x, uint32_t offset_y, uint32_t size);
-// Get a char from the keyboard
+// Get a char from the keyboard. Non-blocking
 uint8_t call_getChar();
 // Wait a specified number of ticks (1/18th of a second)
 void call_wait(int ticks);
@@ -59,6 +59,7 @@ uint32_t call_getYBuffer();
 uint32_t *call_getFGColorPointer();
 uint32_t *call_getXBufferPointer();
 uint32_t *call_getYBufferPointer();
+void call_new_line();
 // Get and set the color of the text and background
 uint32_t call_getBGColor();
 uint32_t call_getFGColor();
@@ -108,5 +109,4 @@ int call_getPid();
 void call_printProcessInfo(processInfo* process);
 void call_sleep(int numberOfTicks);
 int call_waitKids();
-void run_Philosophers(int argc, char **argv);
 #endif

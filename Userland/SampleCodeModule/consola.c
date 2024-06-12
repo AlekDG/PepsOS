@@ -368,9 +368,47 @@ void interpretCommand(char command[]) {
     }
     call_pipe_read(STDIN);
     return;
-  case CMD_IPC_PHYLO:
-    char *arrPhylo[] = {"phylo"};
-    call_createForegroundProcess(run_Philosophers, 0, arrPhylo, 4);
+  case CMD_IPC_CAT:
+    drawConsole();
+    call_setXBuffer(0);
+    call_setYBuffer(10);
+    char catBuffer[255] = {0};
+    int buffer_size = 1;
+    char current_letter;
+    int cat_active = 1;
+    while(cat_active){
+      current_letter = call_pipe_read(STDIN);
+      switch (current_letter)
+      {
+      case 3:
+        //TODO: Tobi checkea que esto termine este comando y no reviente todo: call_kill(call_getPid());
+        cat_active = 0;
+        break;
+      case '\n':
+        call_new_line();
+        break;
+      case 0:
+        call_exit();
+      case '\b':
+      if (buffer_size <= 0) {
+        buffer_size = 0;
+        break;
+      }
+      call_deleteLetterBuffered();
+      catBuffer[buffer_size--] =
+          0;
+      break;
+    default:
+      if (buffer_size >= 255) {
+        break;
+      }
+      call_drawLetterFromChar(current_letter);
+      catBuffer[buffer_size++] =
+          current_letter;
+      break;
+      }
+    }
+    return;
   case CMD_UNKNOWN:
   default:
     //  UNKNOWN HANDLER
