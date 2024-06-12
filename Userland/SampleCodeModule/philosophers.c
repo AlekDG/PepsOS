@@ -129,27 +129,9 @@ void run_Philosophers(int argc, char **argv) {
   call_paintScreen(0xFFFFF);
   call_begin_gameplay();
 
-  char gameplayStarted[] = "Gameplay started.";
-  int currentsize1 = call_getSize();
-  call_setSize(2);
-  call_setXBuffer(0);
-  call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-    for (int i = 0; gameplayStarted[i] != 0; i++) {
-        call_drawLetterFromChar(gameplayStarted[i]);
-    }
-
   int phSemID = call_sem_create(1, SEM_ID);
   if (phSemID == -1)
     return -1;
-    char semCreated[] = "Sem created";
-    int currentsize2 = call_getSize();
-    call_setSize(2);
-    call_setXBuffer(0);
-    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-    for (int i = 0; semCreated[i] != 0; i++) {
-        call_drawLetterFromChar(semCreated[i]);
-    }
-
 
   for (int i = 0; i < MAX_QTY; i++) {
     philoStates[i] = NONE;
@@ -159,15 +141,6 @@ void run_Philosophers(int argc, char **argv) {
   for (int i = 0; i < MIN_QTY; i++)
     addPhilosopher(i, phSemID);
 
-    char added[] = "Philosophers added";
-
-    call_setSize(2);
-    call_setXBuffer(0);
-    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-    for (int i = 0; added[i] != 0; i++) {
-        call_drawLetterFromChar(added[i]);
-    }
-
   char command = '\0';
   while ((command = call_getChar()) != COMMAND_QUIT) {
     switch (command) {
@@ -175,26 +148,14 @@ void run_Philosophers(int argc, char **argv) {
       if (qtyPhilosophers < MAX_QTY) {
         if (addPhilosopher(qtyPhilosophers, phSemID) == -1) {
           // printErr("No se pudo agregar un filosofo\n");
-          char couldNotAdd[] = "Could not add philosopher\n";
-          int currentsize = call_getSize();
-          call_setSize(2);
-          call_setXBuffer(0);
-          call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-          for (int i = 0; couldNotAdd[i] != 0; i++) {
-            call_drawLetterFromChar(couldNotAdd[i]);
-          }
+            call_drawStringFormatted("Could not add philosopher...\n",
+                                     WHITE, BLACK, 2);
         }
 
       } else {
         // printf("La mesa esta llena\n");
-        char tableFull[] = "Table is full\n";
-        int currentsize = call_getSize();
-        call_setSize(2);
-        call_setXBuffer(0);
-        call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-        for (int i = 0; tableFull[i] != 0; i++) {
-          call_drawLetterFromChar(tableFull[i]);
-        }
+          call_drawStringFormatted("Table is full...\n",
+                                   WHITE, BLACK, 2);
       }
       break;
     case COMMAND_REMOVE:
@@ -203,14 +164,8 @@ void run_Philosophers(int argc, char **argv) {
       else {
         // printf("Como minimo debe haber %d filosofos para empezar el
         // banquete\n", MIN_QTY);
-        char tableEmpty[] = "Table is too empty, need more philosophers\n";
-        int currentsize = call_getSize();
-        call_setSize(2);
-        call_setXBuffer(0);
-        call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-        for (int i = 0; tableEmpty[i] != 0; i++) {
-          call_drawLetterFromChar(tableEmpty[i]);
-        }
+          call_drawStringFormatted("Table is too empty...\n",
+                                   WHITE, BLACK, 2);
       }
       break;
     case COMMAND_CLEAR:
@@ -231,6 +186,8 @@ static void render() {
     call_paintScreen(0xFFFFFF);
   const static char letters[] = {' ', 'E', '.', '.'};
   uint8_t somethingToWrite = 0;
+    call_setXBuffer(0);
+    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
   for (int i = 0; i < qtyPhilosophers; i++) {
     if (letters[philoStates[i]] != ' ') {
       somethingToWrite = 1;
@@ -247,18 +204,11 @@ static void render() {
 
 static int philosopher(int argc, char **argv) {
   int i = my_atoi(argv[1]);
-  char entering[] = "Entra el filosofo: ";
-  int currentsize = call_getSize();
-  call_setSize(2);
-  call_setXBuffer(0);
-  call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-  for (int i = 0; entering[i] != 0; i++) {
-    call_drawLetterFromChar(entering[i]);
-  }
-  for (int k = 0; philoNames[i][k] != 0; k++) {
-    call_drawLetterFromChar(philoNames[i][k]);
-  }
-  call_setSize(currentsize);
+    call_drawStringFormatted("Entra el filosofo ",
+                             WHITE, BLACK, 2);
+
+    call_drawStringFormatted(philoNames[i], WHITE, BLACK, 2);
+    call_drawStringFormatted("\n", WHITE, BLACK, 2);
   philoStates[i] = THINKING;
   while (1) {
     call_sleep(THINK_TIME);
@@ -269,41 +219,25 @@ static int philosopher(int argc, char **argv) {
 }
 
 static int addPhilosopher(int index, int phsemID) {
-    char entering[] = "Adding a philosopher... ";
+   /* char entering[] = "Adding a philosopher... ";
     int currentsize = call_getSize();
     call_setSize(2);
     call_setXBuffer(0);
     call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
     for (int i = 0; entering[i] != 0; i++) {
         call_drawLetterFromChar(entering[i]);
-    }
-
+    }*/
   call_sem_wait(phsemID);
   char philoNumberBuffer[MAX_PHILO_BUFFER] = {0};
   if (call_sem_create(0, philoNames[index]) == -1) {
     call_sem_post(phsemID);
     return -1;
   }
-    char created[] = "New sem created...";
-    call_setSize(2);
-    call_setXBuffer(0);
-    call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-    for (int i = 0; created[i] != 0; i++) {
-        call_drawLetterFromChar(created[i]);
-    }
+
   my_itoa(index, philoNumberBuffer, 10);
   char *params[] = {"philosopher", philoNumberBuffer, NULL};
-  char * phylo[] = {"philosopher"};
   philoPids[index] =
-      call_createBackgroundProcess(philosopher, params, phylo, 4);
-
-  char procmade[] = "New Process created...";
-  call_setSize(2);
-  call_setXBuffer(0);
-  call_setYBuffer(2 * (call_getHeight() / 3) + 13 * call_getSize());
-  for (int i = 0; procmade[i] != 0; i++) {
-      call_drawLetterFromChar(procmade[i]);
-  }
+      call_createBackgroundProcess(philosopher, 1, params, 4);
 
   if (philoPids[index] != -1) {
     qtyPhilosophers++;
