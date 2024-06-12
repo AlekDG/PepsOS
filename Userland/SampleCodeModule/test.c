@@ -20,6 +20,7 @@ void test(){
 
     call_drawStringFormatted("FINISH CATEDRA TESTS :\n",WHITE,BLACK,2);
     call_sleep(5);
+    test_mm(1, "test_mm");
     call_exit();
 }
 

@@ -295,7 +295,7 @@ static int addPhilosopher(int index, int phsemID) {
   char *params[] = {"philosopher", philoNumberBuffer, NULL};
   char * phylo[] = {"philosopher"};
   philoPids[index] =
-      call_createBackgroundProcess(&philosopher, params, phylo, 4);
+      call_createBackgroundProcess(philosopher, params, phylo, 4);
 
   char procmade[] = "New Process created...";
   call_setSize(2);
