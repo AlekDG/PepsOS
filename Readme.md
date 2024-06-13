@@ -26,6 +26,6 @@ From the PepsOS project directory run:
 
   user@linux:$ ./run.sh
 
-Author: Alejo Padula Morillo
-Collaborators: Tobias Pugliano, Joaquin Locioli, Julian Bogado, Nicanor Porto
-Built on top of the x64BareBones project by Rodrigo Rearden and Augusto Nizzo
+- Author: Alejo Padula Morillo
+- Collaborators: Tobias Pugliano, Joaquin Locioli, Julian Bogado, Nicanor Porto
+- Built on top of the x64BareBones project by Rodrigo Rearden and Augusto Nizzo
