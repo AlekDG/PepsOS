@@ -4,6 +4,7 @@ PepsOS is the future of Operating Systems built for the AMD64 architecture.
 The final goal of the project is to provide a simple feature-complete operating systems with all the development tools anyone could realistically need on minimum hardware.
 
 Environment setup:
+
 1- Install the following packages before building the Toolchain and Kernel:
 
 nasm qemu gcc make
