@@ -243,10 +243,11 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,
   return newProcess->pid;
 }
 
-int killBlocked(int pid) {
+int killBlocked(int pid , int * parent) {
   Process *aux = pcb.blocked;
   if (aux != NULL && aux->pid == pid) {
     pcb.blocked = aux->next;
+    *parent = aux->parentPID;
     freeMemory(aux->memStartAdress);
     freeMemory(aux);
     return 1;
@@ -255,6 +256,7 @@ int killBlocked(int pid) {
     if (aux->next != NULL && aux->next->pid == pid) {
       Process *toKill = aux->next;
       aux->next = toKill->next;
+      *parent = toKill->parentPID;
       freeMemory(toKill->memStartAdress);
       freeMemory(toKill);
       return 1;
@@ -264,13 +266,14 @@ int killBlocked(int pid) {
   return 0;
 }
 
-int killReady(int pid) {
+int killReady(int pid, int* parent) {
   for (int i = 0; i < MAX_PRIORITY; i++) {
     Process *aux = pcb.priorityQueue[i].ready;
     if (aux != NULL && aux->pid == pid) {
       pcb.priorityQueue[i].ready = aux->next;
       if (pcb.priorityQueue[i].ready == NULL)
         pcb.priorityQueue[i].lastReady = NULL;
+      *parent = aux->parentPID;
       freeMemory(aux->memStartAdress);
       freeMemory(aux);
       return 1;
@@ -282,6 +285,7 @@ int killReady(int pid) {
         if (toKill == pcb.priorityQueue[i].lastReady) {
           pcb.priorityQueue[i].lastReady = aux;
         }
+        *parent = toKill->parentPID;
         freeMemory(toKill->memStartAdress);
         freeMemory(toKill);
         return 1;
@@ -293,15 +297,15 @@ int killReady(int pid) {
 }
 // retorna 1 si lo mato, 0 si no
 int kill(int pid) {
-  int parentPid = pcb.running->parentPID;
+  int parentPid ;
   if (pcb.running->pid == pid) {
     pcb.running->state = EXITED;
-    unblock(parentPid);
+    unblock(pcb.running->parentPID);
     fireTimerInt();
   }
-  int wasKilled = killBlocked(pid);
+  int wasKilled = killBlocked(pid, &parentPid);
   if (!wasKilled) {
-    wasKilled = killReady(pid);
+    wasKilled = killReady(pid,&parentPid);
   }
   if (wasKilled) {
     decrementKidsCount(parentPid);
