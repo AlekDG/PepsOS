@@ -263,8 +263,10 @@ static int addPhilosopher(int index, int phsemID) {
 
 
 static void takeForks(int i, int phsemID, int phID) {
+
+    call_printInteger(call_get_sem_by_name("Montesqueso"));
+    call_sem_wait(call_get_sem_by_name("Montesqueso"));
     call_drawStringFormatted("test\n", WHITE, BLACK, 2);
-    call_sem_wait(phsemID);
     philoStates[i] = HUNGRY;
     test(i, phID);
     call_sem_post(phsemID);
