@@ -106,11 +106,11 @@ void interpretCommand(char command[]) {
 
   case CMD_PROCESS_LOOP:
     char *loopArgv[] = {"loop"};
-    call_createBackgroundProcess(loop, 0, loopArgv, 0);
+    call_createBackgroundProcess(loop, 0, loopArgv, 0, STDIN);
     break;
   case CMD_PROCESSES_STATE:
     char *psArgv[] = {"ps"};
-    call_createForegroundProcess(ps, 0, psArgv, 4);
+    call_createForegroundProcess(ps, 0, psArgv, 4, STDIN);
     break;
   case CMD_PROCESS_KILL:
     int wasKilled = call_kill(satoi(arg1));
@@ -183,7 +183,7 @@ void interpretCommand(char command[]) {
     return;
   case CMD_IPC_PHYLO:
     char *philoArgv[] = {"phylo"};
-    call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4);
+    call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4, STDIN);
   case CMD_UNKNOWN:
   default:
     //  UNKNOWN HANDLER

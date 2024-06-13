@@ -212,7 +212,7 @@ Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
 }
 
 int createProcess(newProcess process, int argc, char *argv[], int priority,
-                  processType tipo) {
+                  processType tipo, int processStdin) {
   Process *newProcess;
   if (0 <= priority && priority < MAX_PRIORITY) {
     newProcess = createProcessStruct(
@@ -221,6 +221,7 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,
         tipo; // AGREGAR COMO ARGUMENTO, ESTO ES PARA DEBUG RAPIDO
     pcb.processCount++;
     newProcess->priority = priority;
+    newProcess->processStdin = processStdin;
   } else {
     return -1; // ERROR
   }
@@ -316,15 +317,16 @@ void startFirstProcess() {
 }
 
 int createBackgroundProcess(newProcess process, int argc, char *argv[],
-                            int priority) {
+                            int priority, int processStdin) {
   // no bloqueo el actual
-  return createProcess(process, argc, argv, priority, BACKGROUND);
+  return createProcess(process, argc, argv, priority, BACKGROUND, processStdin);
 }
 
 int createForegroundProcess(newProcess process, int argc, char *argv[],
-                            int priority) {
+                            int priority, int processStdin) {
   // bloqueo el actual
-  int pid = createProcess(process, argc, argv, priority, FOREGROUND);
+  int pid =
+      createProcess(process, argc, argv, priority, FOREGROUND, processStdin);
   block(pcb.running->pid);
   return pid;
 }
@@ -537,3 +539,5 @@ void sleep(int numberOfTicks) {
     block(pcb.running->pid);
   }
 }
+
+int getRunningProcessStdin() { return pcb.running->processStdin; }

@@ -6,7 +6,7 @@ int64_t my_getpid() {
 }
 
 int64_t my_create_process(void process(), uint64_t argc, char *argv[]) {
-  return call_createBackgroundProcess(process,argc,argv,0);
+  return call_createBackgroundProcess(process,argc,argv,0,0);
 }
 
 int64_t my_nice(uint64_t pid, uint64_t newPrio) {

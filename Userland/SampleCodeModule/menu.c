@@ -8,27 +8,6 @@
 #include <time.h>
 static int p;
 
-void aa() {
-  call_sleep(p);
-  call_exit();
-}
-
-void prueba() {
-  int pids[2];
-  for (int i = 0; i < 10; i++) {
-    p = i;
-    char *ar[] = {"aa"};
-    call_createBackgroundProcess(aa, 0, ar, i % 5);
-  }
-
-  int as = 1;
-  while (as) {
-    as = call_waitKids();
-  }
-
-  call_exit();
-}
-
 void hoverOverOption(Option *option) { option->isHovered = 1; }
 void deactivateHover(Option *option) { option->isHovered = 0; }
 
@@ -176,11 +155,11 @@ void drawMenu() {
     case '\n':
       if (optionMenu.options[0]->isHovered) { // jugar snake 1p
         char *argv[] = {"snake1"};
-        call_createForegroundProcess(start_game, 0, argv, 4);
+        call_createForegroundProcess(start_game, 0, argv, 4, STDIN);
         return;
       } else if (optionMenu.options[1]->isHovered) {
         char *argv[] = {"snake2"};
-        call_createForegroundProcess(start_gameTwo, 0, argv, 4);
+        call_createForegroundProcess(start_gameTwo, 0, argv, 4, STDIN);
         return;
       } else if (optionMenu.options[2]->isHovered) {
         char aux[8];
@@ -200,7 +179,7 @@ void drawMenu() {
         return;
       } else if (optionMenu.options[4]->isHovered) { // consola.isHovered
         char *argv[] = {"consola"};
-        call_createForegroundProcess(runConsole, 0, argv, 4);
+        call_createForegroundProcess(runConsole, 0, argv, 4, STDIN);
         // runConsole(&optionMenu);
         return;
       } else if (optionMenu.options[5]->isHovered) // restart menu

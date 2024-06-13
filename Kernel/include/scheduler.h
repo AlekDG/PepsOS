@@ -9,7 +9,7 @@
 typedef int (*newProcess)(int, char *);
 
 typedef struct process {
-  void *rsp; 
+  void *rsp;
   void *rbp;
   void *memStartAdress;
   unsigned int pid;
@@ -20,7 +20,7 @@ typedef struct process {
   processType tipo;
   char *name;
   int kidsCount;
-
+  int processStdin;
 } Process;
 
 #define MAX_PRIORITY 5
@@ -71,7 +71,8 @@ int block(int pid);
 // ret 1 si lo paso a ready, 0 si no
 int unblock(int pid);
 
-int createProcess(newProcess process, int argc, char *argv[], int priority, processType tipo);
+int createProcess(newProcess process, int argc, char *argv[], int priority,
+                  processType tipo, int processStdin);
 
 // retorna 1 si lo mato, 0 si no
 int kill(int pid);
@@ -83,10 +84,10 @@ void setFirstProcess(void *rsp);
 void fireTimerInt();
 
 int createBackgroundProcess(newProcess process, int argc, char *argv[],
-                            int priority);
+                            int priority, int processStdin);
 
 int createForegroundProcess(newProcess process, int argc, char *argv[],
-                            int priority);
+                            int priority, int processStdin);
 
 void exit();
 
@@ -112,9 +113,10 @@ int changePriority(int pid, int priority);
  */
 processInfo *getAllProcessInfo(int *count);
 
-
 void sleep(int numberOfTicks);
 
 int wait();
+
+int getRunningProcessStdin();
 
 #endif

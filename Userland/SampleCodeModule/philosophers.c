@@ -242,7 +242,7 @@ static int addPhilosopher(int index, int phsemID) {
 
     my_itoa(index, philoNumberBuffer, 10);
     char *params[] = {"philosopher", philoNumberBuffer, phsemID, phId, NULL};
-    philoPids[index] = call_createBackgroundProcess(philosopher, 1, params, 4);
+    philoPids[index] = call_createBackgroundProcess(philosopher, 1, params, 4,0);
 
     if (philoPids[index] != -1) {
         qtyPhilosophers++;

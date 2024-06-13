@@ -13,6 +13,8 @@
 #include <time.h>
 #include <video.h>
 
+
+
 extern uint8_t text;
 extern uint8_t rodata;
 extern uint8_t data;
@@ -91,7 +93,7 @@ int main() {
   initialize_pipes();
   char *menuArgv[] = {"menu"};
   createProcess(((EntryPoint)sampleCodeModuleAddress), 0, menuArgv, 0,
-                FOREGROUND);
+                FOREGROUND, 0);
   startFirstProcess();
   _sti();
   while (1)

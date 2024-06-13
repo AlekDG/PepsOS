@@ -154,17 +154,17 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
   case 39:
     return allocMemory(rsi);
     break;
-  case 40:
+  /*case 40:
     return createProcess(rsi, rdx, rcx, r8, r9);
-    break;
+    break;*/                                        //TODO: DELETE
   case 41:
     return getPid();
     break;
   case 42:
-    return createBackgroundProcess(rsi, rdx, rcx, r8);
+    return createBackgroundProcess(rsi, rdx, rcx, r8, r9);
     break;
   case 43:
-    return createForegroundProcess(rsi, rdx, rcx, r8);
+    return createForegroundProcess(rsi, rdx, rcx, r8, r9);
     break;
   case 44:
     exit();
