@@ -146,9 +146,8 @@ void run_Philosophers(int argc, char **argv) {
         }
         call_wait(SHORT_WAIT);
     }
-
     char command = '\0';
-    while ((command = call_getChar()) != COMMAND_QUIT) {
+    while ((command = (char) call_getChar()) != COMMAND_QUIT) {
         switch (command) {
             case COMMAND_ADD:
                 if (qtyPhilosophers < MAX_PHILOS) {
@@ -176,7 +175,7 @@ void run_Philosophers(int argc, char **argv) {
                 break;
 
         }
-       // render();
+       render();
     }
 
     for (int i = qtyPhilosophers - 1; i >= 0; i--) {
@@ -215,13 +214,15 @@ static int philosopher(int argc, char **argv) {
     call_drawStringFormatted(philoNames[i], WHITE, BLACK, 2);
     call_drawStringFormatted("\n", WHITE, BLACK, 2);
 
-
     philoStates[i] = THINKING;
+
+    int semId = my_atoi(argv[2]);
+    int phId = my_atoi(argv[3]);
   while (1) {
     call_sleep(THINK_TIME);
-    takeForks(i, argv[2], argv[3]);
+    takeForks(i, semId, phId);
     call_sleep(EAT_TIME);
-    putForks(i, argv[2], argv[3]);
+    putForks(i, semId, phId);
   }
 }
 
@@ -233,17 +234,21 @@ static int addPhilosopher(int index, int phsemID) {
     call_drawStringFormatted("\n", WHITE, BLACK, 2);
 
     char philoNumberBuffer[MAX_PHILO_BUFFER] = {0};
-    int phId = call_sem_create(0, philoNames[index]);
+    char * semIdStr = {0};
+    semIdStr = my_itoa(phsemID, semIdStr, 10);
+    int phId = call_sem_create(1, philoNames[index]);
+
     if (phId == -1) {
         call_drawStringFormatted("No se pudo crear el semaforo...\n", WHITE, BLACK, 2);
         call_sem_post(phsemID);
         return -1;
     }
-
+    char  * phIdStr = {0};
+    phIdStr = my_itoa(phId, phIdStr, 10);
     my_itoa(index, philoNumberBuffer, 10);
-    char *params[] = {"philosopher", philoNumberBuffer, phsemID, phId, NULL};
-    philoPids[index] = call_createBackgroundProcess(philosopher, 1, params, 4,0);
-
+    char *params[] = {"philosopher", philoNumberBuffer, semIdStr, phIdStr, NULL};
+    philoPids[index] = call_createBackgroundProcess(philosopher, 4, params, 4,0);
+    call_wait(320);
     if (philoPids[index] != -1) {
         qtyPhilosophers++;
         call_sem_post(phsemID);
@@ -258,6 +263,8 @@ static int addPhilosopher(int index, int phsemID) {
 
 
 static void takeForks(int i, int phsemID, int phID) {
+    call_drawStringFormatted("test\n", WHITE, BLACK, 2);
+    call_printInteger(call_get_sem_by_name("Montesqueso"));
     call_sem_wait(phsemID);
     philoStates[i] = HUNGRY;
     test(i, phID);
