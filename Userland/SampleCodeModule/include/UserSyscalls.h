@@ -1,27 +1,27 @@
-#include <stdint.h>
-#include <stddef.h>
 #ifndef USERSYSCALLS
 #define USERSYSCALLS
 #include "../../../Shared/include/ps.h"
-#include <menu.h>
 #include <consola.h>
+#include <menu.h>
+#include <stdint.h>
 
 #define STDIN 0
 #define KILL_SIGNAL 3
 #define EOF 4
 
-
 // Allocate, free, and check memory
 void *call_malloc(int size);
 void call_free(void *toFree);
-void call_mem_state(unsigned long long int *freeMemory, unsigned long long int *totalMemory, unsigned long long int *allocatedMemory);
+void call_mem_state(unsigned long long int *freeMemory,
+                    unsigned long long int *totalMemory,
+                    unsigned long long int *allocatedMemory);
 // Semaphores
 int call_sem_open(int value, char *sem_name);
 int call_sem_close(char *sem_name);
 uint64_t call_sem_create(uint64_t starting_value, char *sem_name);
 uint64_t call_sem_post(int sem);
 uint64_t call_sem_wait(int sem);
-int call_get_sem_by_name(char* sem_name);
+int call_get_sem_by_name(char *sem_name);
 // pipes
 int call_pipe_open(char *pipe_name);
 int call_pipe_close(int pipe);
@@ -74,7 +74,7 @@ void call_putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y,
                             int size);
 // Recieve how many seconds have passed
 unsigned int call_seconds(void);
-//Cursed
+// Cursed
 void call_begin_gameplay(void);
 void call_end_gameplay(void);
 // Print various data types
@@ -110,7 +110,7 @@ processInfo *call_ps(int *processCount);
 int call_block(int pid);
 int call_unblock(int pid);
 int call_getPid();
-void call_printProcessInfo(processInfo* process);
+void call_printProcessInfo(processInfo *process);
 void call_sleep(int numberOfTicks);
 int call_waitKids();
 #endif

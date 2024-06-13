@@ -28,29 +28,6 @@ uint8_t memcheck(void *start, uint8_t value, uint32_t size) {
   return 1;
 }
 
-// Parameters
-int64_t satoi(char *str) {
-  uint64_t i = 0;
-  int64_t res = 0;
-  int8_t sign = 1;
-
-  if (!str)
-    return 0;
-
-  if (str[i] == '-') {
-    i++;
-    sign = -1;
-  }
-
-  for (; str[i] != '\0'; ++i) {
-    if (str[i] < '0' || str[i] > '9')
-      return 0;
-    res = res * 10 + str[i] - '0';
-  }
-
-  return res * sign;
-}
-
 // Dummies
 void bussy_wait(uint64_t n) {
   uint64_t i;

@@ -1,5 +1,5 @@
-
-typedef enum { NONE = 0, EATING, HUNGRY, THINKING } PHILOSOPHER_STATE;
+#include <UserSyscalls.h>
+#include <user_lib.h>
 
 #define MAX_PHILOS 10
 #define MIN_PHILOS 3
@@ -20,7 +20,7 @@ typedef enum { NONE = 0, EATING, HUNGRY, THINKING } PHILOSOPHER_STATE;
 #define A_LOVELY_COLOR_FOR_DINING 0xFFFFF
 #define SHORT_WAIT 800
 
-#include <UserSyscalls.h>
+typedef enum { NONE = 0, EATING, HUNGRY, THINKING } PHILOSOPHER_STATE;
 
 static uint8_t qtyPhilosophers = 0;
 static PHILOSOPHER_STATE philoStates[MAX_PHILOS];

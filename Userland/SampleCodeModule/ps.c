@@ -1,5 +1,6 @@
 #include <UserSyscalls.h>
-#define NULL 0
+#include <user_lib.h>
+
 #define START_POSITION 50
 #define PRINT_INFO_START_POSITION 60
 #define FONT_SIZE 2
