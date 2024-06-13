@@ -2,6 +2,9 @@
 #define PIPES_H
 
 #define STDIN "STDIN"
+#define STDOUT "STDOUT"
+#define STDIN_PIPE 0
+#define STDOUT_PIPE 1
 #define SIZE 1024
 #define PIPES_AMOUNT 16
 

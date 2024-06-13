@@ -1,5 +1,6 @@
 #include <UserSyscalls.h>
 #include <consola.h>
+#include <IPC.h>
 #include <menu.h>
 #include <philosophers.h>
 #include <user_lib.h>
@@ -107,14 +108,14 @@ void interpretCommand(char command[]) {
     return;
   case CMD_PROCESS_LOOP:
     char *loopArgv[] = {"loop"};
-    call_createBackgroundProcess(loop, 0, loopArgv, 0, STDIN);
+    call_createBackgroundProcess(loop, 0, loopArgv, 0, NULL);
     break;
   case CMD_PROCESSES_STATE:
     char *psArgv[] = {"ps"};
     if(bgFlag(arg1))
-      call_createBackgroundProcess(ps, 0, psArgv, 3, STDIN);
+      call_createBackgroundProcess(ps, 0, psArgv, 3, NULL);
     else
-      call_createForegroundProcess(ps, 0, psArgv, 4, STDIN);
+      call_createForegroundProcess(ps, 0, psArgv, 4, NULL);
     break;
   case CMD_PROCESS_KILL:
     int wasKilled = call_kill(satoi(arg1));
@@ -148,16 +149,16 @@ void interpretCommand(char command[]) {
   case CMD_IPC_CAT:
     char *catArgv[] = {"cat"};
     if(bgFlag(arg1))
-      call_createBackgroundProcess(cat,0,catArgv,3,STDIN);
+      call_createBackgroundProcess(cat,0,catArgv,3,NULL);
     else 
-      call_createForegroundProcess(cat,0,catArgv,4,STDIN);
+      call_createForegroundProcess(cat,0,catArgv,4,NULL);
     return;
   case CMD_IPC_PHYLO:
     char *philoArgv[] = {"phylo"};
     if(bgFlag(arg1))
-      call_createBackgroundProcess(run_Philosophers, 0, philoArgv, 3, STDIN);
+      call_createBackgroundProcess(run_Philosophers, 0, philoArgv, 3, NULL);
     else
-      call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4, STDIN);
+      call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4, NULL);
   case CMD_UNKNOWN:
   default:
     break;

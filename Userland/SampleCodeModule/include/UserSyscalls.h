@@ -98,9 +98,9 @@ unsigned int call_month();
 unsigned int call_year();
 // scheduling
 int call_createBackgroundProcess(void process(), int argc, char *argv[],
-                                 int priority, int processStdin);
+                                 int priority, int *rw_pipes);
 int call_createForegroundProcess(void process(), int argc, char *argv[],
-                                 int priority, int processStdin);
+                                 int priority, int *rw_pipes);
 void call_exit();
 int call_kill(int pid);
 void call_yield();

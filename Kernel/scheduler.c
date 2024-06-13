@@ -212,7 +212,7 @@ Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
 }
 
 int createProcess(newProcess process, int argc, char *argv[], int priority,
-                  processType tipo, int processStdin) {
+                  processType tipo, int *rw_pipes) {
   Process *newProcess;
   if (0 <= priority && priority < MAX_PRIORITY) {
     newProcess = createProcessStruct(
@@ -221,7 +221,13 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,
         tipo; // AGREGAR COMO ARGUMENTO, ESTO ES PARA DEBUG RAPIDO
     pcb.processCount++;
     newProcess->priority = priority;
-    newProcess->processStdin = processStdin;
+    if(rw_pipes==0){
+      newProcess->in_pipe = STDIN_PIPE;
+      newProcess->in_pipe = STDOUT_PIPE;
+    } else {    
+      newProcess->in_pipe = rw_pipes[0];
+      newProcess->out_pipe = rw_pipes[1];
+    }
   } else {
     return -1; // ERROR
   }
@@ -321,16 +327,16 @@ void startFirstProcess() {
 }
 
 int createBackgroundProcess(newProcess process, int argc, char *argv[],
-                            int priority, int processStdin) {
+                            int priority, int *rw_pipes) {
   // no bloqueo el actual
-  return createProcess(process, argc, argv, priority, BACKGROUND, processStdin);
+  return createProcess(process, argc, argv, priority, BACKGROUND, rw_pipes);
 }
 
 int createForegroundProcess(newProcess process, int argc, char *argv[],
-                            int priority, int processStdin) {
+                            int priority, int *rw_pipes) {
   // bloqueo el actual
   int pid =
-      createProcess(process, argc, argv, priority, FOREGROUND, processStdin);
+      createProcess(process, argc, argv, priority, FOREGROUND, rw_pipes);
   block(pcb.running->pid);
   return pid;
 }
@@ -544,4 +550,9 @@ void sleep(int numberOfTicks) {
   }
 }
 
-int getRunningProcessStdin() { return pcb.running->processStdin; }
+int *getRunningProcessStdin() { 
+  int toRet[2];
+  toRet[0]=pcb.running->in_pipe;
+  toRet[1]=pcb.running->out_pipe;
+  return toRet; 
+}

@@ -17,7 +17,6 @@
 #define IPC_LINE_COUNT_CMD "wc"
 #define IPC_FILTER_VOWELS_CMD "filter"
 #define IPC_PHYLO_CMD "phylo"
-#define STDIN 0
 
 void drawConsole();
 void runConsole();

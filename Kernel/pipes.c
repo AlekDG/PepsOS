@@ -27,6 +27,7 @@ int initialize_pipes(void) {
   for (int i = 0; i < PIPES_AMOUNT; i++)
     pipe_inst[i].available = TRUE;
   create_pipe(STDIN);
+  create_pipe(STDOUT);
   return 0;
 }
 
