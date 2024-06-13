@@ -90,10 +90,10 @@ void keyAct(void) {
       keyChar = hexToChar(keyHex);
       if (ctrl) {
         switch (keyChar) {
-        case 0x21:
+        case 0x2E:
           keyChar = 3;
           break;
-        case 0x23:
+        case 0x20:
           keyChar = 4;
           break;
         }
