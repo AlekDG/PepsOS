@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #define STDIN 0
+#define STDOUT 1
 #define KILL_SIGNAL 3
 #define EOF 4
 
