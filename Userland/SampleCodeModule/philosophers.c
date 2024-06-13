@@ -236,7 +236,7 @@ static int addPhilosopher(int index, int phsemID) {
     char philoNumberBuffer[MAX_PHILO_BUFFER] = {0};
     char * semIdStr = {0};
     semIdStr = my_itoa(phsemID, semIdStr, 10);
-    int phId = call_sem_create(0, philoNames[index]);
+    int phId = call_sem_create(1, philoNames[index]);
 
     if (phId == -1) {
         call_drawStringFormatted("No se pudo crear el semaforo...\n", WHITE, BLACK, 2);
@@ -263,10 +263,9 @@ static int addPhilosopher(int index, int phsemID) {
 
 
 static void takeForks(int i, int phsemID, int phID) {
-
-    call_printInteger(call_get_sem_by_name("Montesqueso"));
-    call_sem_wait(call_get_sem_by_name("Montesqueso"));
     call_drawStringFormatted("test\n", WHITE, BLACK, 2);
+    call_printInteger(call_get_sem_by_name("Montesqueso"));
+    call_sem_wait(phsemID);
     philoStates[i] = HUNGRY;
     test(i, phID);
     call_sem_post(phsemID);
