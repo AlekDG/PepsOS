@@ -62,6 +62,9 @@ void enlargeFontSize();
 void decreaseFontSize();
 void printHelp();
 void printMemState();
+void cat();
+int bgFlag(char* arg);
+int isPipe(char* arg);
 
 void interpretCommand(char command[]) {
   char arg1[ARG_LENGTH] = {0};
@@ -102,15 +105,16 @@ void interpretCommand(char command[]) {
     askForAnyletter();
     call_pipe_read(STDIN);
     return;
-    //  handler de memstate
-
   case CMD_PROCESS_LOOP:
     char *loopArgv[] = {"loop"};
     call_createBackgroundProcess(loop, 0, loopArgv, 0, STDIN);
     break;
   case CMD_PROCESSES_STATE:
     char *psArgv[] = {"ps"};
-    call_createForegroundProcess(ps, 0, psArgv, 4, STDIN);
+    if(bgFlag(arg1))
+      call_createBackgroundProcess(ps, 0, psArgv, 3, STDIN);
+    else
+      call_createForegroundProcess(ps, 0, psArgv, 4, STDIN);
     break;
   case CMD_PROCESS_KILL:
     int wasKilled = call_kill(satoi(arg1));
@@ -142,53 +146,30 @@ void interpretCommand(char command[]) {
     call_pipe_read(STDIN);
     return;
   case CMD_IPC_CAT:
-    drawConsole();
-    call_setXBuffer(0);
-    call_setYBuffer(10);
-    char catBuffer[255] = {0};
-    int buffer_size = 1;
-    char current_letter;
-    int cat_active = 1;
-    while (cat_active) {
-      current_letter = call_pipe_read(STDIN);
-      switch (current_letter) {
-      case KILL_SIGNAL:
-        // TODO: Tobi checkea que esto termine este comando y no reviente todo:
-        // call_kill(call_getPid());
-      case EOF:
-        cat_active = 0;
-        break;
-      case '\n':
-        call_new_line();
-        break;
-      case 0:
-        call_exit();
-      case '\b':
-        if (buffer_size <= 0) {
-          buffer_size = 0;
-          break;
-        }
-        call_deleteLetterBuffered();
-        catBuffer[buffer_size--] = 0;
-        break;
-      default:
-        if (buffer_size >= 255) {
-          break;
-        }
-        call_drawLetterFromChar(current_letter);
-        catBuffer[buffer_size++] = current_letter;
-        break;
-      }
-    }
+    char *catArgv[] = {"cat"};
+    if(bgFlag(arg1))
+      call_createBackgroundProcess(cat,0,catArgv,3,STDIN);
+    else 
+      call_createForegroundProcess(cat,0,catArgv,4,STDIN);
     return;
   case CMD_IPC_PHYLO:
     char *philoArgv[] = {"phylo"};
-    call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4, STDIN);
+    if(bgFlag(arg1))
+      call_createBackgroundProcess(run_Philosophers, 0, philoArgv, 3, STDIN);
+    else
+      call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4, STDIN);
   case CMD_UNKNOWN:
   default:
-    //  UNKNOWN HANDLER
     break;
   }
+}
+
+int bgFlag(char*arg){
+  return arg[0]=='&'&&arg[1]==NULL;
+}
+
+int isPipe(char*arg){
+  return arg[0]=='|'&&arg[1]==NULL;
 }
 
 int isBlockCommand(char *command, char *arg1) {
@@ -340,4 +321,43 @@ void printMemState() {
   call_drawLetterFromChar('/');
   call_print_long_long_int(totalMemory);
   call_drawLetterFromChar('B');
+}
+
+void cat(){
+  drawConsole();
+  call_setXBuffer(0);
+  call_setYBuffer(10);
+  char catBuffer[255] = {0};
+  int buffer_size = 1;
+  char current_letter;
+  int cat_active = 1;
+  while (cat_active) {
+    current_letter = call_pipe_read(STDIN);
+    switch (current_letter) {
+    case KILL_SIGNAL:
+      call_kill(call_getPid());
+    case EOF:
+      cat_active = 0;
+      break;
+    case '\n':
+      call_new_line();
+      break;
+    case 0:
+       call_exit();
+    case '\b':
+      if (buffer_size <= 0) {
+        buffer_size = 0;
+        break;
+      }
+      call_deleteLetterBuffered();
+      catBuffer[buffer_size--] = 0;
+      break;
+    default:
+      if (buffer_size >= 255) 
+        break;
+      call_drawLetterFromChar(current_letter);
+      catBuffer[buffer_size++] = current_letter;
+      break;
+    }
+  }
 }
