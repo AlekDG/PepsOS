@@ -87,9 +87,8 @@ void keyAct(void) {
       ctrl = true;
       break;
     default:
-      keyChar = hexToChar(keyHex);
       if (ctrl) {
-        switch (keyChar) {
+        switch (keyHex) {
         case 0x2E:
           keyChar = 3;
           break;
@@ -97,7 +96,8 @@ void keyAct(void) {
           keyChar = 4;
           break;
         }
-      }
+      } else 
+        keyChar = hexToChar(keyHex);
       if (keyHex < 0x53) {
         if (!gameplay) {
           char to_write[2];
