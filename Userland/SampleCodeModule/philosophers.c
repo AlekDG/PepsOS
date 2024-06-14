@@ -27,11 +27,15 @@ static PHILOSOPHER_STATE philoStates[MAX_PHILOS];
 static int16_t philoPids[MAX_PHILOS];
 static int forks[MAX_PHILOS];
 static int stateLock;
+int namesCursor = 0;
+int needToPaintTheScreen = 0;
+int yPos = 0;
+int xPos = 0;
 
 // Philosopher names
 static char *philoNames[] = {
         "Montesqueso",  "Fridge",        "Spinetta",
-        "Gillotina",    "Chasquibum",    "Triple",
+        "Guillotina",    "Chasquibum",    "Triple",
         "Milldeck",     "Key",           "Ancla Scantron",
         "Descartado",   "Confundido",    "Plato",
         "Panacea",      "Planeta Enano", "El Filosofo Que No Debe Ser Nombrado",
@@ -110,11 +114,13 @@ char *my_itoa(int num, char *str, int base) {
 }
 
 void philosopher(int argc, char **argv) {
+    call_setXBuffer(0);
+    call_setYBuffer(0);
     int i = my_atoi(argv[0]);
-    call_drawStringFormatted("Philosopher ", WHITE, BLACK, 2);
+    /*call_drawStringFormatted("Philosopher ", WHITE, BLACK, 2);
     call_drawStringFormatted(philoNames[i], WHITE, BLACK, 2);
-    call_drawStringFormatted(" entered\n", WHITE, BLACK, 2);
-
+    call_drawStringFormatted(" entered\n", WHITE, BLACK, 2);*/
+    call_wait(20);
     philoStates[i] = THINKING;
 
     while (1) {
@@ -132,10 +138,14 @@ void philosopher(int argc, char **argv) {
 }
 
 void startPhilosopher(int index) {
-    call_drawStringFormatted("Adding philosopher: ", WHITE, BLACK, 2);
+    call_setXBuffer(0);
+    call_setYBuffer(0);
+    call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
+    call_drawStringFormatted("Agregando Filosofo: ", WHITE, BLACK, 2);
     call_drawStringFormatted(philoNames[index], WHITE, BLACK, 2);
     call_drawStringFormatted("\n", WHITE, BLACK, 2);
-
+    needToPaintTheScreen = 1;
+    call_wait(20);
     char philoIndexStr[MAX_PHILO_BUFFER];
     my_itoa(index, philoIndexStr, 10);
 
@@ -157,10 +167,14 @@ void initializePhilosophers() {
 }
 
 void stopPhilosopher(int index) {
-    call_drawStringFormatted("Removing philosopher: ", WHITE, BLACK, 2);
+    call_setXBuffer(0);
+    call_setYBuffer(0);
+    call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
+    call_drawStringFormatted("Removiendo Filosofo: ", WHITE, BLACK, 2);
     call_drawStringFormatted(philoNames[index], WHITE, BLACK, 2);
     call_drawStringFormatted("\n", WHITE, BLACK, 2);
-
+    call_wait(20);
+    needToPaintTheScreen = 1;
     if (philoPids[index] != -1) {
         call_kill(philoPids[index]);
         philoPids[index] = -1;
@@ -173,7 +187,7 @@ void run_Philosophers(int argc, char **argv) {
 
     int semID = call_sem_create(1, SEM_ID);
     if (semID == -1) {
-        call_drawStringFormatted("Failed to create semaphore...\n", WHITE, BLACK, 2);
+        call_drawStringFormatted("Fallo la creacion del semaforo...\n", WHITE, BLACK, 2);
         return;
     }
 
@@ -187,7 +201,11 @@ void run_Philosophers(int argc, char **argv) {
                     startPhilosopher(qtyPhilosophers);
                     qtyPhilosophers++;
                 } else {
-                    call_drawStringFormatted("Table full!\n", WHITE, BLACK, 2);
+                    xPos = 0;
+                    yPos = 0;
+                    call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
+                    call_drawStringFormatted("La mesa esta llena!\n", WHITE, BLACK, 2);
+
                 }
                 renderPhilosophers();
                 break;
@@ -196,7 +214,10 @@ void run_Philosophers(int argc, char **argv) {
                     stopPhilosopher(qtyPhilosophers - 1);
                     qtyPhilosophers--;
                 } else {
-                    call_drawStringFormatted("Table too empty!\n", WHITE, BLACK, 2);
+                    xPos = 0;
+                    yPos = 0;
+                    call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
+                    call_drawStringFormatted("La mesa esta muy vacia!\n", WHITE, BLACK, 2);
                 }
                 renderPhilosophers();
                 break;
@@ -223,7 +244,7 @@ void takeForks(int i) {
 void putForks(int i) {
     call_sem_post(forks[i]);
     call_sem_post(forks[right(i)]);
-
+    renderPhilosophers();
     call_sem_wait(stateLock);
     philoStates[i] = THINKING;
     testPhilo(left(i));
@@ -240,17 +261,26 @@ void testPhilo(int i) {
 
 void renderPhilosophers() {
     const static char letters[] = {'.', 'E', '.', '.'};
-    int yPos = 0;
-    call_wait(10);
-    call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
-
+    call_wait(20);
+    if(needToPaintTheScreen){
+        call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
+        needToPaintTheScreen = 0;
+        yPos = 0;
+    }
+    if(yPos > 400){
+        yPos = 0;
+        call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
+    }
+    xPos = 0;
     for (int i = 0; i < qtyPhilosophers; i++) {
-        call_setXBuffer(0);
+        xPos+=16;
+        call_setXBuffer(xPos);
         call_setYBuffer(yPos);
         char stateChar = letters[philoStates[i]];
-        call_drawStringFormatted(&stateChar, WHITE, BLACK, 2);
-        yPos += 16; // Move to the next line based on font size
-        call_drawStringFormatted("  ", WHITE, BLACK, 2);
+        call_drawStringFormatted(&stateChar, BLACK, A_LOVELY_COLOR_FOR_DINING, 2);
+        call_drawStringFormatted("  ", WHITE, A_LOVELY_COLOR_FOR_DINING, 2);
     }
+    yPos += 32; // Move to the next line based on font size
+    xPos = 0;
 }
 
