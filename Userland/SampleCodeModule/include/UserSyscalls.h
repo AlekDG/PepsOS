@@ -10,6 +10,9 @@
 #define KILL_SIGNAL 3
 #define EOF 4
 
+//Read and Write from pipes. defaults to STDIN and STDOUT
+void call_system_read(char* output,int length);
+void call_system_write(char* string);
 // Allocate, free, and check memory
 void *call_malloc(int size);
 void call_free(void *toFree);
@@ -65,6 +68,8 @@ uint32_t *call_getFGColorPointer();
 uint32_t *call_getXBufferPointer();
 uint32_t *call_getYBufferPointer();
 void call_new_line();
+void call_console_color();
+void call_reset_color();
 // Get and set the color of the text and background
 uint32_t call_getBGColor();
 uint32_t call_getFGColor();

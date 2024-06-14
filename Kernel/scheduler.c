@@ -221,10 +221,10 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,
         tipo; // AGREGAR COMO ARGUMENTO, ESTO ES PARA DEBUG RAPIDO
     pcb.processCount++;
     newProcess->priority = priority;
-    if(rw_pipes==0){
+    if (rw_pipes == 0) {
       newProcess->in_pipe = STDIN_PIPE;
       newProcess->in_pipe = STDOUT_PIPE;
-    } else {    
+    } else {
       newProcess->in_pipe = rw_pipes[0];
       newProcess->out_pipe = rw_pipes[1];
     }
@@ -249,7 +249,7 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,
   return newProcess->pid;
 }
 
-int killBlocked(int pid , int * parent) {
+int killBlocked(int pid, int *parent) {
   Process *aux = pcb.blocked;
   if (aux != NULL && aux->pid == pid) {
     pcb.blocked = aux->next;
@@ -272,7 +272,7 @@ int killBlocked(int pid , int * parent) {
   return 0;
 }
 
-int killReady(int pid, int* parent) {
+int killReady(int pid, int *parent) {
   for (int i = 0; i < MAX_PRIORITY; i++) {
     Process *aux = pcb.priorityQueue[i].ready;
     if (aux != NULL && aux->pid == pid) {
@@ -303,7 +303,7 @@ int killReady(int pid, int* parent) {
 }
 // retorna 1 si lo mato, 0 si no
 int kill(int pid) {
-  int parentPid ;
+  int parentPid;
   if (pcb.running->pid == pid) {
     pcb.running->state = EXITED;
     unblock(pcb.running->parentPID);
@@ -311,7 +311,7 @@ int kill(int pid) {
   }
   int wasKilled = killBlocked(pid, &parentPid);
   if (!wasKilled) {
-    wasKilled = killReady(pid,&parentPid);
+    wasKilled = killReady(pid, &parentPid);
   }
   if (wasKilled) {
     decrementKidsCount(parentPid);
@@ -335,8 +335,7 @@ int createBackgroundProcess(newProcess process, int argc, char *argv[],
 int createForegroundProcess(newProcess process, int argc, char *argv[],
                             int priority, int *rw_pipes) {
   // bloqueo el actual
-  int pid =
-      createProcess(process, argc, argv, priority, FOREGROUND, rw_pipes);
+  int pid = createProcess(process, argc, argv, priority, FOREGROUND, rw_pipes);
   block(pcb.running->pid);
   return pid;
 }
@@ -550,9 +549,13 @@ void sleep(int numberOfTicks) {
   }
 }
 
-int *getRunningProcessStdin() { 
+int *getRunningProcessStdin() {
   int toRet[2];
-  toRet[0]=pcb.running->in_pipe;
-  toRet[1]=pcb.running->out_pipe;
-  return toRet; 
+  toRet[0] = pcb.running->in_pipe;
+  toRet[1] = pcb.running->out_pipe;
+  return toRet;
 }
+
+Process *get_current_proc(){return &(pcb.running);}
+
+int currentProcType(){return pcb.running->tipo==FOREGROUND;}

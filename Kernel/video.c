@@ -72,6 +72,16 @@ void initialState() {
   globalYPos = 0;
 }
 
+void consolePalatte() {
+  globalBGColor = LIGHT_GRAY;
+  globalFGColor = DARK_GRAY;
+}
+
+void colorReset() {
+  globalFGColor = 0x0000FF;
+  globalBGColor = 0xFFFFFF;
+}
+
 int getSize() { return globalSize; }
 uint32_t getFGColor() { return globalFGColor; }
 uint32_t getBGColor() { return globalBGColor; }
@@ -112,8 +122,9 @@ void paintScreen(uint32_t hexColor) {
 }
 
 void clear(void) {
-  paintScreen(BLACK);
-  initialState();
+  paintScreen(globalBGColor);
+  globalXPos = 0;
+  globalYPos = 0;
 }
 
 void drawRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart,
@@ -236,7 +247,7 @@ void write(char string[], uint32_t x_offset, uint32_t y_offset) {
 void moveBuffer() {
   if (globalXPos + (globalSize * 8) >= width) {
     if (globalYPos + (globalSize * 13) >= height) {
-      globalYPos = height; // estoy al final, no hace nada
+      clear(); // estoy al final, limpio la pantalla
     } else {
       globalYPos += (globalSize * 13);
       globalXPos = 0;

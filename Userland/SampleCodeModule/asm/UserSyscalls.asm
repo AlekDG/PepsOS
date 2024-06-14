@@ -76,6 +76,10 @@ GLOBAL call_new_line
 GLOBAL call_begin_gameplay
 GLOBAL call_end_gameplay
 GLOBAL call_get_sem_by_name
+GLOBAL call_system_write:
+GLOBAL call_system_read:
+GLOBAL call_reset_color:
+GLOBAL call_console_color:
 
 %macro call_to_handler 1
     push rbp
@@ -234,6 +238,14 @@ call_new_line:
     call_to_handler 69
 call_get_sem_by_name:
     call_to_handler 70
+call_system_write:
+    call_to_handler 71
+call_system_read:
+    call_to_handler 72
+call_reset_color:
+    call_to_handler 73
+call_console_color:
+    call_to_handler 74
 call_excepDivZero:
     xor rdx,rdx
     div rdx

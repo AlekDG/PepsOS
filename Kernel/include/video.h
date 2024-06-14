@@ -57,4 +57,6 @@ void newLine();
 int *getXBufferPointer();
 int *getYBufferPointer();
 uint32_t *getFGColorPointer();
+void colorReset();
+void consolePalatte();
 #endif

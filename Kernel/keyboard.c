@@ -1,3 +1,4 @@
+#include <keyboard.h>
 #include <lib.h>
 #include <pipes.h>
 #include <stdbool.h>
@@ -90,10 +91,10 @@ void keyAct(void) {
       if (ctrl) {
         switch (keyHex) {
         case 0x2E:
-          keyChar = 3;
+          keyChar = KILL_SIGNAL;
           break;
         case 0x20:
-          keyChar = 4;
+          keyChar = EOF;
           break;
         }
       } else 

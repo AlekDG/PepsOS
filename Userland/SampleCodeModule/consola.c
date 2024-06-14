@@ -339,12 +339,11 @@ void cat(){
       call_kill(call_getPid());
     case EOF:
       cat_active = 0;
+      call_exit();
       break;
     case '\n':
       call_new_line();
       break;
-    case 0:
-       call_exit();
     case '\b':
       if (buffer_size <= 0) {
         buffer_size = 0;

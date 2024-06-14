@@ -120,4 +120,8 @@ int wait();
 
 int *getRunningProcessPipes();
 
+Process* get_current_proc();
+//1 for Foreground, 0 for background
+int currentProcType();
+
 #endif

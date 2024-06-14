@@ -6,6 +6,7 @@
 #include <snake2.h>
 #include <stdint.h>
 #include <time.h>
+#include <user_lib.h>
 static int p;
 
 void hoverOverOption(Option *option) { option->isHovered = 1; }
