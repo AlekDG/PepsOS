@@ -23,7 +23,7 @@ void irqDispatcher(uint64_t irq, uint64_t rdi, uint64_t rsi, uint64_t rdx,
   interruption[1] = &int_21;
   interruption[96] = (InterruptHandler)int_80;
 
-  if (irq >= 0 && irq < 256 && interruption[irq] != 0) {
+  if (irq < 256 && interruption[irq] != 0) {
     InterruptHandler handler = interruption[irq];
     handler(rdi, rsi, rdx, rcx, r8, r9);
     return;

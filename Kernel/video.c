@@ -191,9 +191,9 @@ void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size) {
   uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
   uint64_t offset = (x * (VBE_mode_info->bpp / 8)) + (y * VBE_mode_info->pitch);
 
-  uint16_t myWidth = (uint16_t *)VBE_mode_info->width;
-  uint16_t myHeight = (uint16_t *)VBE_mode_info->height;
-  uint16_t myPitch = (uint16_t *)VBE_mode_info->pitch;
+  uint16_t myWidth = (uint16_t )VBE_mode_info->width;
+  uint16_t myHeight = (uint16_t )VBE_mode_info->height;
+  uint16_t myPitch = (uint16_t )VBE_mode_info->pitch;
 
   // dibujo un cuadrado de tamaño size*size ---> cuando size=1 es equivalente a
   // hacer putpixel

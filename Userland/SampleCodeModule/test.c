@@ -4,11 +4,8 @@
 
 void test(){
     call_clear();
-    //call_drawStringFormatted("TEST PROC :\n",WHITE,BLACK,2);
-    test_processes(0,"hola");
-    //    call_setXBuffer(0);
-    //call_setYBuffer(0);
-    //call_drawStringFormatted("OK :\n",WHITE,BLACK,2);
+    char * psTest[] = {"hola"};
+    test_processes(0,psTest);
     call_sleep(5);
     
     call_drawRectangle(BLACK,0,0,call_getWidth(), call_getHeight());
@@ -19,7 +16,8 @@ void test(){
 
     call_drawStringFormatted("FINISH CATEDRA TESTS :\n",WHITE,BLACK,2);
     call_sleep(5);
-    test_mm(1, "test_mm");
+    char * mmTest[] = {"128"};
+    test_mm(1, mmTest);
     call_exit();
 }
 
