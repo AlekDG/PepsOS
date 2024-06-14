@@ -1,10 +1,9 @@
+#include <io.h>
 #include <UserSyscalls.h>
 #include <test.h>
 
 void test(){
-    call_drawRectangle(BLACK,0,0,call_getWidth(), call_getHeight());
-    call_setXBuffer(0);
-    call_setYBuffer(0);
+    call_clear();
     //call_drawStringFormatted("TEST PROC :\n",WHITE,BLACK,2);
     test_processes(0,"hola");
     //    call_setXBuffer(0);

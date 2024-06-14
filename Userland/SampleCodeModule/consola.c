@@ -1,6 +1,7 @@
 #include <UserSyscalls.h>
 #include <consola.h>
 #include <IPC.h>
+#include <io.h>
 #include <menu.h>
 #include <philosophers.h>
 #include <user_lib.h>
@@ -11,6 +12,7 @@ void deleteConsole();
 void interpretCommand(char command[]);
 
 void runConsole() {
+  call_set_color(DARK_GRAY,LIGHT_GRAY);
   drawConsole();
   call_setXBuffer(0);
   call_setYBuffer(10);

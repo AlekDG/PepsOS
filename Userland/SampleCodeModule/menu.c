@@ -1,5 +1,6 @@
 #include <UserSyscalls.h>
 #include <consola.h>
+#include <io.h>
 #include <menu.h>
 #include <pepsiman.h>
 #include <snake.h>
@@ -125,9 +126,9 @@ void drawOptionMenuArray(OptionMenu *optionMenu) {
 }
 
 void drawMenu() {
-  int width = call_getWidth();
-  int height = call_getHeight();
-  call_drawRectangle(BLACK, 0, 0, width, height);
+  call_reset_color();
+  call_clear();
+  uint32_t width = call_getWidth();
   drawPepsiman(width - 500, 0, 5);
   drawPepsos(width - 460, 500, 3);
 

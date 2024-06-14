@@ -1,5 +1,5 @@
 GLOBAL call_regRead
-GLOBAL call_clearScrean
+GLOBAL call_clear
 GLOBAL call_drawRectangle
 GLOBAL call_drawCircle
 GLOBAL call_drawFace
@@ -43,8 +43,6 @@ GLOBAL call_excepInvalidOp
 GLOBAL call_free
 GLOBAL call_malloc
 GLOBAL call_mem_state
-
-
 GLOBAL call_getPid
 global call_createBackgroundProcess
 global call_createForegroundProcess
@@ -79,7 +77,7 @@ GLOBAL call_get_sem_by_name
 GLOBAL call_system_write:
 GLOBAL call_system_read:
 GLOBAL call_reset_color:
-GLOBAL call_console_color:
+GLOBAL call_set_color:
 
 %macro call_to_handler 1
     push rbp
@@ -98,7 +96,7 @@ GLOBAL call_console_color:
 
 call_regRead:
     call_to_handler 1
-call_clearScrean:
+call_clear:
     call_to_handler 2
 call_drawRectangle:
     call_to_handler 3
@@ -244,7 +242,7 @@ call_system_read:
     call_to_handler 72
 call_reset_color:
     call_to_handler 73
-call_console_color:
+call_set_color:
     call_to_handler 74
 call_excepDivZero:
     xor rdx,rdx

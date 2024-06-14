@@ -68,8 +68,9 @@ uint32_t *call_getFGColorPointer();
 uint32_t *call_getXBufferPointer();
 uint32_t *call_getYBufferPointer();
 void call_new_line();
-void call_console_color();
+void call_set_color(uint32_t fg,uint32_t bg);
 void call_reset_color();
+void call_clear();
 // Get and set the color of the text and background
 uint32_t call_getBGColor();
 uint32_t call_getFGColor();

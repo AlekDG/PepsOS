@@ -65,21 +65,16 @@ int globalYPos;
 void initialState() {
   height = VBE_mode_info->height;
   width = VBE_mode_info->width;
-  globalFGColor = 0x0000FF;
-  globalBGColor = 0xFFFFFF;
+  globalFGColor = PEPSIBLUE;
+  globalBGColor = BLACK;
   globalSize = 2;
   globalXPos = 0;
   globalYPos = 0;
 }
 
-void consolePalatte() {
-  globalBGColor = LIGHT_GRAY;
-  globalFGColor = DARK_GRAY;
-}
-
 void colorReset() {
-  globalFGColor = 0x0000FF;
-  globalBGColor = 0xFFFFFF;
+  globalFGColor = PEPSIBLUE;
+  globalBGColor = BLACK;
 }
 
 int getSize() { return globalSize; }
@@ -119,6 +114,11 @@ void paintScreen(uint32_t hexColor) {
       putpixel(hexColor, x, y);
     }
   }
+}
+
+void setColor(uint32_t fg,uint32_t bg){
+  globalBGColor = bg;
+  globalFGColor = fg;
 }
 
 void clear(void) {
