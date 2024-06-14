@@ -1,6 +1,7 @@
 #include <test_util.h>
 #include <UserSyscalls.h>
 #include <string.h>
+#include <user_lib.h>
 
 #define MAX_BLOCKS 128
 
@@ -10,7 +11,6 @@ typedef struct MM_rq {
 } mm_rq;
 
 uint64_t test_mm(uint64_t argc, char *argv[]) {
-
   mm_rq mm_rqs[MAX_BLOCKS];
   uint8_t rq;
   uint32_t total;
@@ -19,7 +19,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
   if (argc != 1)
     return -1;
 
-  if ((max_memory = satoi(argv[0])) <= 0)
+  if ((max_memory = hexToULL(argv[0])) <= 0)
     return -1;
 
   while (1) {
@@ -36,7 +36,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
         rq++;
       }
     }
-
+      call_print_long_long_int(max_memory);
     // Set
     uint32_t i;
     for (i = 0; i < rq; i++)
@@ -56,5 +56,6 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
         call_free(mm_rqs[i].address);
+      call_drawStringFormatted("MM TEST OK\n", BLACK, WHITE, 2);
   }
 }

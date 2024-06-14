@@ -17,6 +17,7 @@
 #define IPC_LINE_COUNT_CMD "wc"
 #define IPC_FILTER_VOWELS_CMD "filter"
 #define IPC_PHYLO_CMD "phylo"
+#define TEST_MM_CMD "testmm"
 
 void drawConsole();
 void runConsole();
@@ -40,6 +41,7 @@ typedef enum {
   CMD_IPC_LINE_COUNT,
   CMD_IPC_FILTER_VOWELS,
   CMD_IPC_PHYLO,
+  CMD_TEST_MM,
   CMD_UNKNOWN
 } CommandType;
 #endif

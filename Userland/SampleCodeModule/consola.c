@@ -4,6 +4,7 @@
 #include <menu.h>
 #include <philosophers.h>
 #include <user_lib.h>
+#include <test.h>
 
 void drawConsole();
 void deleteConsole();
@@ -159,6 +160,14 @@ void interpretCommand(char command[]) {
       call_createBackgroundProcess(run_Philosophers, 0, philoArgv, 3, NULL);
     else
       call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4, NULL);
+    return;
+    case CMD_TEST_MM:
+        char * mmArgv[] = {"testmm", "0xFFFFF"};
+        if(bgFlag(arg1))
+              call_createBackgroundProcess(test_mm, 1, mmArgv, 3, NULL);
+          else
+              call_createForegroundProcess(test_mm, 1, mmArgv, 4, NULL);
+        return;
   case CMD_UNKNOWN:
   default:
     break;
@@ -237,7 +246,10 @@ CommandType getCommandType(const char *command, char *arg1, char *arg2) {
     return CMD_IPC_FILTER_VOWELS;
   } else if (compareStrings(command, IPC_PHYLO_CMD) == 0) {
     return CMD_IPC_PHYLO;
-  } else {
+  } else if(compareStrings(command, TEST_MM_CMD) == 0){
+      return CMD_TEST_MM;
+  }
+  else {
     return CMD_UNKNOWN;
   }
 }
@@ -281,7 +293,7 @@ void printHelp() {
       "kill (pid)\n->Cambiar prioridad (numero de 0 a 4) de un proceso: nice "
       "(pid) (prioridad)\n->Testear division por cero: testdivzero\n->Testear "
       "invalid op code: testinvalidopcode\n->Aumentar tamanio de fuente: "
-      "increasefontsize\n->Reducir tamanio de fuente: reducefontsize";
+      "increasefontsize\n->Reducir tamanio de fuente: reducefontsize\n->Estado de la memoria: mem\n->Juego de los filosofos:phylo\n";
   call_setXBuffer(0);
   call_setYBuffer(5);
   for (int i = 0; text[i] != 0; i++) {
