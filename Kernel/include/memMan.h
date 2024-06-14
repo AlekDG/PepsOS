@@ -4,6 +4,7 @@
 
 #define STARTING_ADRESS 0x50000
 #define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
+#define BLOCK_MAX_SIZE 4294967295 //    biggest number that fits in a size_t
 
 typedef struct MemoryManagerCDT *MemoryManagerADT;
 typedef struct BlockCDT *BlockADT;

@@ -18,7 +18,10 @@ createMemoryManager(void *const restrict memoryForMemoryManager,
   return createMemoryManagerImpl(memoryForMemoryManager, managedMemory);
 }
 
-void *allocMemory(size_t size) { return allocMemoryImpl(systemMemory, size); }
+void *allocMemory(size_t size) {
+    if(size > BLOCK_MAX_SIZE)
+        return NULL;
+    return allocMemoryImpl(systemMemory, size); }
 
 void freeMemory(void *ptr) { freeMemoryImpl(systemMemory, ptr); }
 
