@@ -49,7 +49,7 @@ bool blockMayus = false;
 bool ctrl = false;
 bool gameplay = false;
 
-void regCheckSave(uint64_t regs) {
+void regCheckSave(uint64_t * regs) {
   if (getKey() == 0x38)
     saveRegsBuffer(regs);
 }
