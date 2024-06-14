@@ -4,6 +4,7 @@
 #include <user_lib.h>
 
 #define MAX_BLOCKS 128
+#define A_USEFUL_COEFFICIENT 10000
 
 typedef struct MM_rq {
   void *address;
@@ -30,13 +31,13 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     // Request as many blocks as we can
     while (rq < MAX_BLOCKS && total < max_memory) {
       mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
-      mm_rqs[rq].address = call_malloc((size_t)mm_rqs[rq].size);
+      mm_rqs[rq].address = call_malloc((size_t)mm_rqs[rq].size/A_USEFUL_COEFFICIENT);
         call_print_long_long_int(mm_rqs[rq].size);
         call_drawStringFormatted("\n", BLACK, WHITE, 2);
 
         if (mm_rqs[rq].address) {
             total += mm_rqs[rq].size;
-            call_printInteger(mm_rqs[rq].address);
+            call_printHex(mm_rqs[rq].address);
             call_drawStringFormatted(" ", BLACK, WHITE, 2);
             call_print_long_long_int(total);
             call_drawStringFormatted("\n", BLACK, WHITE, 2);
@@ -46,8 +47,10 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
             call_drawStringFormatted("Allocation failed - Block too large or not enough space\n", RED, WHITE, 2);
             //break;
         }
-
-        call_wait(20);
+        call_setXBuffer(0);
+        call_setYBuffer(0);
+        call_paintScreen(LIGHT_GRAY);
+        call_wait(5);
     }
     // Set
       call_drawStringFormatted("Setting memory...\n", BLACK, WHITE, 2);
