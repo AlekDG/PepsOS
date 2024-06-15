@@ -30,8 +30,8 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
 
     // Request as many blocks as we can
     while (rq < MAX_BLOCKS && total < max_memory) {
-      mm_rqs[rq].size = GetUniform(max_memory - total - 1) + 1;
-      mm_rqs[rq].address = call_malloc((size_t)mm_rqs[rq].size/A_USEFUL_COEFFICIENT);
+      mm_rqs[rq].size = GetUniform(max_memory - total - 1)/A_USEFUL_COEFFICIENT + 1;
+      mm_rqs[rq].address = call_malloc((size_t)mm_rqs[rq].size);
         call_print_long_long_int(mm_rqs[rq].size);
         call_drawStringFormatted("\n", BLACK, WHITE, 2);
 
