@@ -197,7 +197,7 @@ void interpretCommand(char command[]) {
       call_createForegroundProcess(run_Philosophers, 0, philoArgv, 4, NULL);
     return;
     case CMD_TEST_MM:
-        char * mmArgv[] = {"testmm", "0xFFFFF"};
+        char * mmArgv[] = {"testmm", arg1};
         if(bgFlag(arg1))
               call_createBackgroundProcess(test_mm, 1, mmArgv, 3, NULL);
           else
