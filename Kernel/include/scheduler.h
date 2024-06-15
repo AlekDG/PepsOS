@@ -125,6 +125,6 @@ Process *get_current_proc();
 int currentProcType();
 
 void createProcessWithPipes(newProcess *processes, int *argcs, char **argvs[],
-                            int **pipes)
+                            int **pipes);
 
 #endif
