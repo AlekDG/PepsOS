@@ -152,9 +152,9 @@ void interpretCommand(char command[]) {
   case CMD_PROCESS_KILL:
     int wasKilled = call_kill(satoi(arg1));
     if (wasKilled) {
-      call_drawStringFormatted("Process killed", RED, LIGHT_GRAY, 2);
+      call_drawStringFormatted("\nProcess killed", RED, LIGHT_GRAY, 2);
     } else {
-      print_f("Process not killed");
+      print_f("\nProcess not killed");
     }
     call_pipe_read(STDIN);
     return;
@@ -162,10 +162,10 @@ void interpretCommand(char command[]) {
   case CMD_PROCESS_NICE:
     int wasChanged = call_changePriority(satoi(arg1), satoi(arg2));
     if (wasChanged) {
-      call_drawStringFormatted("Process priority changed", GREEN, LIGHT_GRAY,
+      call_drawStringFormatted("\nProcess priority changed", GREEN, LIGHT_GRAY,
                                2);
     } else {
-      call_drawStringFormatted("Process priority not changed", BLACK,
+      call_drawStringFormatted("\nProcess priority not changed", BLACK,
                                LIGHT_GRAY, 2);
     }
     call_pipe_read(STDIN);
