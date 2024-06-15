@@ -104,8 +104,7 @@ void interpretCommand(char command[]) {
       int *fds[]= {fd1,fd2};
       int argc[]= {0,0};
       char **argv[]={argv1,argv2};
-      void **func={func1,func2};
-      call_createProcessesWithPipe(func,argc,argv,fds);
+      call_createProcessesWithPipe(func1,func2,argc,argv,fds);
     }
     return;
   case CMD_ENLARGE_FONT_SIZE:

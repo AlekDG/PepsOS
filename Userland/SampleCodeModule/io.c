@@ -21,10 +21,10 @@ void print_f_int(int num) {
     num = num / 10;
     index++;
   }
-  int j=0;
-  // Reverse the hexadecimal array
+  int j=0; 
   for (int i = index - 1; i >= 0; i--)
     buffer2[j++]=buffer[i];
+  buffer[0]=0;
   call_system_write(buffer2);
 }
 

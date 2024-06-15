@@ -124,7 +124,7 @@ Process *get_current_proc();
 // 1 for Foreground, 0 for background
 int currentProcType();
 
-void createProcessWithPipes(newProcess *processes, int *argcs, char **argvs[],
+void createProcessWithPipes(newProcess processes1, newProcess processes2, int *argcs, char **argvs[],
                             int **pipes);
 
 #endif

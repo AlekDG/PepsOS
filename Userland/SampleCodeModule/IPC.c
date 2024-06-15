@@ -5,19 +5,18 @@
 #define MAX_READ 1024
 
 void wc() {
-  int i = 0;
   int count = 1;
   char aux = get_char();
-  for (; i < MAX_READ && aux; i++) {
+  for (int i = 0; aux != EOF && aux; i++) {
+    if (aux == '\n'){
+      char text[] = "Text is ";
+      print_f(text);
+      print_f_int(count++);
+      char text2[] = " Lines long\n";
+      print_f(text2);
+      }
     aux = get_char();
-    if (aux == '\n')
-      count++;
   }
-  char text[] = "Text is ";
-  print_f(text);
-  print_f_int(count);
-  char text2[] = " Lines long";
-  print_f(text2);
   call_exit();
 }
 // Only meant to be used in is_a_vowel so we assume that c is at least 65
@@ -35,16 +34,12 @@ int is_a_vowel(char c) {
 }
 
 void filter() {
-  char *output_string = call_malloc(MAX_READ);
-  int i = 0;
-  int j = 0;
   char aux = get_char();
-  for (; i < MAX_READ && aux; i++) {
-    aux = get_char();
+  for (int i = 0; aux && aux!=EOF; i++) {
     if (is_a_vowel(aux))
-      output_string[j++] = aux;
+      put_char(aux);;
+    aux = get_char();
   }
-  print_f(output_string);
   call_exit();
 }
 

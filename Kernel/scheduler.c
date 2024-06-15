@@ -560,9 +560,9 @@ Process *get_current_proc() { return pcb.running; }
 
 int currentProcType() { return pcb.running->tipo == FOREGROUND; }
 
-void createProcessWithPipes(newProcess *processes, int *argcs, char **argvs[],
+void createProcessWithPipes(newProcess processes1, newProcess processes2, int *argcs, char **argvs[],
                             int **pipes) {
-  createProcess(processes[0], argcs[0], argvs[0], 0, FOREGROUND, pipes[0]);
-  createProcess(processes[1], argcs[1], argvs[1], 0, FOREGROUND, pipes[1]);
+  createProcess(processes1, argcs[0], argvs[0], 0, FOREGROUND, pipes[0]);
+  createProcess(processes2, argcs[1], argvs[1], 0, FOREGROUND, pipes[1]);
   block(pcb.running->pid);
 }

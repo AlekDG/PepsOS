@@ -119,6 +119,6 @@ int call_getPid();
 void call_printProcessInfo(processInfo *process);
 void call_sleep(int numberOfTicks);
 int call_waitKids();
-void call_createProcessesWithPipe(void **processes, int *argcs, char **argvs[],
+void call_createProcessesWithPipe(void process1(),void process2(), int *argcs, char **argvs[],
                                   int **pipes);
 #endif
