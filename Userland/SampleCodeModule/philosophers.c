@@ -187,6 +187,9 @@ void stopPhilosopher(int index) {
 
 void run_Philosophers(int argc, char **argv) {
     call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
+    call_drawStringFormatted("EL PROBLEMA DE LOS FILOSOFOS COMENSALES\n", WHITE, BLACK, 2);
+    call_drawStringFormatted("Para agregar un filosofo presione A.\nPara remover uno, R.\nQ para salir.\n", WHITE, BLACK, 2);
+    call_wait(SHORT_WAIT*3);
     call_begin_gameplay();
     int semID = call_sem_create(1, SEM_ID);
     if (semID == -1) {
@@ -230,6 +233,7 @@ void run_Philosophers(int argc, char **argv) {
                 break;
         }
 
+
     }
 
     for (int i = qtyPhilosophers - 1; i >= 0; i--) {
@@ -237,7 +241,12 @@ void run_Philosophers(int argc, char **argv) {
     }
     call_sem_close(SEM_ID);
     call_sem_close("StateLock");
+    call_paintScreen(A_LOVELY_COLOR_FOR_DINING);
+    call_setYBuffer(0);
+    call_setXBuffer(0);
+    call_drawStringFormatted("La cena ha finalizado.\n", WHITE, BLACK, 2);
     call_end_gameplay();
+    return;
 }
 
 void takeForks(int i) {
