@@ -64,12 +64,46 @@ void printHelp();
 void printMemState();
 int bgFlag(char* arg);
 int isPipe(char* arg);
+void *getFunctionPtr(CommandType cmd,char* argv){
+  switch (cmd)
+  {
+  case CMD_IPC_CAT:
+    stringCopyNaive("cat",argv);
+    return cat;
+  case CMD_IPC_FILTER_VOWELS:
+    stringCopyNaive("flt",argv);
+    return filter;
+  case CMD_IPC_LINE_COUNT:
+    stringCopyNaive("wc",argv);
+    return wc;
+  default:
+    return NULL;
+  }
+}
 
 void interpretCommand(char command[]) {
   char arg1[ARG_LENGTH] = {0};
   char arg2[ARG_LENGTH] = {0};
   CommandType cmdType = getCommandType(command, arg1, arg2);
   switch (cmdType) {
+  case CMD_PIPED_PAIR:
+    if(arg2==NULL)
+      return;
+    CommandType cmd1 = getCommandType(command,NULL,NULL);
+    CommandType cmd2 = getCommandType(arg2,NULL,NULL);
+    char argv1[4] = {0};
+    char argv2[4] = {0};
+    void *func1=getFunctionPtr(cmd1,argv1);
+    void *func2=getFunctionPtr(cmd2,argv2);
+    if(!(func1==NULL||func2==NULL)){
+      int shared_pipe = call_pipe_open("NewPipe");
+      int *fds[]= {{STDIN,shared_pipe},{shared_pipe,STDOUT}};
+      int argc[]= {0,0};
+      char **argv[]={argv1,argv2};
+      void **func={func1,func2};
+      call_createProcessesWithPipe(func,argc,argv,fds);
+    }
+    return;
   case CMD_ENLARGE_FONT_SIZE:
     if (call_getSize() < 4) {
       enlargeFontSize();
@@ -208,7 +242,9 @@ int isNiceComand(char *command, char *arg1, char *arg2) {
 
 CommandType getCommandType(const char *command, char *arg1, char *arg2) {
   stringTokenizer(command, arg1, arg2, ' ');
-  if (isKillCommand(command, arg1)) {
+  if(isPipe(arg1)){
+    return CMD_PIPED_PAIR;
+  }else if (isKillCommand(command, arg1)) {
     return CMD_PROCESS_KILL;
   } else if (isNiceComand(command, arg1, arg2)) {
     return CMD_PROCESS_NICE;

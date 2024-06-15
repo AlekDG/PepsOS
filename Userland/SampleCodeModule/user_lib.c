@@ -53,6 +53,12 @@ void stringTokenizer(char *string, char *s1, char *s2, char token) {
   return;
 }
 
+void stringCopyNaive(char *from,char *to){
+  int i=0;
+  while(from[i])
+    to[i]=from[i++];
+}
+
 int strLen(const char *str) {
   int len = 0;
   while (str[len] != '\0') {

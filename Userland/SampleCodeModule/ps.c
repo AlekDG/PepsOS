@@ -28,8 +28,7 @@ void ps() {
   call_setXBuffer(START_POSITION);
   call_setYBuffer(START_POSITION);
   call_setSize(FONT_SIZE);
-  call_setFGColor(WHITE);
-  call_setBGColor(BLACK);
+  call_set_color(WHITE,BLACK);
 
   call_drawStringFormatted("PS for PepsOS - 2024 All Rights Not Reserved",
                            WHITE, PEPSIBLUE, FONT_SIZE);
@@ -46,5 +45,6 @@ void ps() {
 
   call_free(processList);
   call_pipe_read(STDIN);
+  call_set_color(DARK_GRAY,LIGHT_GRAY);
   call_exit();
 }

@@ -42,6 +42,7 @@ typedef enum {
   CMD_IPC_FILTER_VOWELS,
   CMD_IPC_PHYLO,
   CMD_TEST_MM,
+  CMD_PIPED_PAIR,
   CMD_UNKNOWN
 } CommandType;
 #endif
