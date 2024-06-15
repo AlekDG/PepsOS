@@ -18,7 +18,7 @@
 
 #define left(i) (((i) + qtyPhilosophers - 1) % qtyPhilosophers)
 #define right(i) (((i) + 1) % qtyPhilosophers)
-#define A_LOVELY_COLOR_FOR_DINING 0xFFFFF
+#define A_LOVELY_COLOR_FOR_DINING PEPSIBLUE
 #define SHORT_WAIT 40
 
 typedef enum { NONE = 0, EATING, HUNGRY, THINKING } PHILOSOPHER_STATE;
