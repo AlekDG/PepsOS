@@ -18,9 +18,13 @@
 #define YELLOW 0xFFFF55
 #define WHITE 0xFFFFFF
 
+#define EOF 4
+
 void print_error(char* string);
 void print_f(char* string);
+void print_f_int(int num);
 char get_char();
+void put_char(char c);
 
 
 #endif

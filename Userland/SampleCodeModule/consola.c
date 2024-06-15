@@ -7,27 +7,23 @@
 #include <user_lib.h>
 #include <test.h>
 
-void drawConsole();
 void deleteConsole();
 void interpretCommand(char command[]);
 
 void runConsole() {
   call_set_color(DARK_GRAY,LIGHT_GRAY);
-  drawConsole();
-  call_setXBuffer(0);
-  call_setYBuffer(10);
-
+  call_clear();
   char internalBuffer[50] = {0}; // tamaño maximo de 50 chars
   int bufferSize = 0;
   int consoleRunning = 1; // flag de corte de ejecucion
   char currentLetter;
 
   while (consoleRunning) {
-    currentLetter = call_pipe_read(STDIN);
+    currentLetter = get_char();
     switch (currentLetter) {
     case '\n':
       interpretCommand(internalBuffer);
-      drawConsole();
+      call_clear();
       while (bufferSize > 0) {
         internalBuffer[bufferSize - 1] = 0;
         bufferSize--;
@@ -66,7 +62,6 @@ void enlargeFontSize();
 void decreaseFontSize();
 void printHelp();
 void printMemState();
-void cat();
 int bgFlag(char* arg);
 int isPipe(char* arg);
 
@@ -125,7 +120,7 @@ void interpretCommand(char command[]) {
     if (wasKilled) {
       call_drawStringFormatted("Process killed", RED, LIGHT_GRAY, 2);
     } else {
-      call_drawStringFormatted("Process not killed", BLACK, LIGHT_GRAY, 2);
+      print_f("Process not killed");
     }
     call_pipe_read(STDIN);
     return;
@@ -151,6 +146,7 @@ void interpretCommand(char command[]) {
     return;
   case CMD_IPC_CAT:
     char *catArgv[] = {"cat"};
+    call_clear();
     if(bgFlag(arg1))
       call_createBackgroundProcess(cat,0,catArgv,3,NULL);
     else 
@@ -286,8 +282,7 @@ void askForAnyletter() {
 }
 
 void printHelp() {
-  deleteConsole();
-  call_drawRectangle(LIGHT_GRAY, 0, 0, call_getWidth(), call_getHeight());
+  call_clear();
   int currentsize = call_getSize();
   call_setSize(2);
   char text[] =
@@ -310,9 +305,7 @@ void decreaseFontSize() { // no actualiza el tamño del menu mientras este en la
 }
 
 void printMemState() {
-  deleteConsole();
-  call_drawRectangle(LIGHT_GRAY, 0, 500, call_getWidth(),
-                     call_getHeight() - 500);
+  call_clear();
   int currentsize = call_getSize();
   call_setSize(2);
   char text[] = "ESTADO ACTUAL DE MEMORIA (LIBRE, ALOCADA, TOTAL):\n ";
@@ -336,42 +329,4 @@ void printMemState() {
   call_drawLetterFromChar('/');
   call_print_long_long_int(totalMemory);
   call_drawLetterFromChar('B');
-}
-
-void cat(){
-  drawConsole();
-  call_setXBuffer(0);
-  call_setYBuffer(10);
-  char catBuffer[255] = {0};
-  int buffer_size = 1;
-  char current_letter;
-  int cat_active = 1;
-  while (cat_active) {
-    current_letter = call_pipe_read(STDIN);
-    switch (current_letter) {
-    case KILL_SIGNAL:
-      call_kill(call_getPid());
-    case EOF:
-      cat_active = 0;
-      call_exit();
-      break;
-    case '\n':
-      call_new_line();
-      break;
-    case '\b':
-      if (buffer_size <= 0) {
-        buffer_size = 0;
-        break;
-      }
-      call_deleteLetterBuffered();
-      catBuffer[buffer_size--] = 0;
-      break;
-    default:
-      if (buffer_size >= 255) 
-        break;
-      call_drawLetterFromChar(current_letter);
-      catBuffer[buffer_size++] = current_letter;
-      break;
-    }
-  }
 }

@@ -101,10 +101,12 @@ void keyAct(void) {
         keyChar = hexToChar(keyHex);
       if (keyHex < 0x53) {
         if (!gameplay) {
-          char to_write[2];
-          to_write[0] = keyChar;
-          to_write[1] = '\0';
-          write_to_pipe(STDIN_PIPE, to_write);
+          if(!(keyChar<21&&keyChar>16)){
+            char to_write[2];
+            to_write[0] = keyChar;
+            to_write[1] = '\0';
+            write_to_pipe(STDIN_PIPE, to_write);
+          }
         } else {
           addToBuffer(keyChar);
         }

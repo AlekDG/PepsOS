@@ -223,7 +223,7 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,
     newProcess->priority = priority;
     if (rw_pipes == 0) {
       newProcess->in_pipe = STDIN_PIPE;
-      newProcess->in_pipe = STDOUT_PIPE;
+      newProcess->out_pipe = STDOUT_PIPE;
     } else {
       newProcess->in_pipe = rw_pipes[0];
       newProcess->out_pipe = rw_pipes[1];
@@ -556,6 +556,6 @@ int *getRunningProcessStdin() {
   return toRet;
 }
 
-Process *get_current_proc(){return &(pcb.running);}
+Process *get_current_proc(){return pcb.running;}
 
 int currentProcType(){return pcb.running->tipo==FOREGROUND;}

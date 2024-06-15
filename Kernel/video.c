@@ -124,7 +124,7 @@ void setColor(uint32_t fg,uint32_t bg){
 void clear(void) {
   paintScreen(globalBGColor);
   globalXPos = 0;
-  globalYPos = 0;
+  globalYPos = 10;
 }
 
 void drawRectangle(uint32_t hexColor, uint32_t xStart, uint32_t yStart,
@@ -286,7 +286,10 @@ void drawLetterFromChar(char letter) {
   else if (letter == '\n') {
     newLine();
     return;
-  }
+  } else if (letter == '\b'){
+    deleteLetterBuffered();
+    return;
+  } 
   uint8_t buffer[13][8] = {0};
   getLetter(letter, buffer);
   drawLetterResizable(buffer, globalXPos, globalYPos);
