@@ -91,13 +91,17 @@ void interpretCommand(char command[]) {
       return;
     CommandType cmd1 = getCommandType(command,NULL,NULL);
     CommandType cmd2 = getCommandType(arg2,NULL,NULL);
-    char argv1[4] = {0};
-    char argv2[4] = {0};
-    void *func1=getFunctionPtr(cmd1,argv1);
-    void *func2=getFunctionPtr(cmd2,argv2);
+    char argc[4] = {0};
+    char arg22[4] = {0};
+    char *argv1[] = {argc};
+    char *argv2[] = {arg22};
+    void *func1=getFunctionPtr(cmd1,argc);
+    void *func2=getFunctionPtr(cmd2,arg22);
     if(!(func1==NULL||func2==NULL)){
       int shared_pipe = call_pipe_open("NewPipe");
-      int *fds[]= {{STDIN,shared_pipe},{shared_pipe,STDOUT}};
+      int fd1[] = {STDIN,shared_pipe};
+      int fd2[] = {shared_pipe,STDOUT};
+      int *fds[]= {fd1,fd2};
       int argc[]= {0,0};
       char **argv[]={argv1,argv2};
       void **func={func1,func2};
