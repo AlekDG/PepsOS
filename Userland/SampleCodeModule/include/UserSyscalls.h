@@ -10,9 +10,9 @@
 #define KILL_SIGNAL 3
 #define EOF 4
 
-//Read and Write from pipes. defaults to STDIN and STDOUT
-void call_system_read(char* output,int length);
-void call_system_write(char* string);
+// Read and Write from pipes. defaults to STDIN and STDOUT
+void call_system_read(char *output, int length);
+void call_system_write(char *string);
 // Allocate, free, and check memory
 void *call_malloc(int size);
 void call_free(void *toFree);
@@ -68,7 +68,7 @@ uint32_t *call_getFGColorPointer();
 uint32_t *call_getXBufferPointer();
 uint32_t *call_getYBufferPointer();
 void call_new_line();
-void call_set_color(uint32_t fg,uint32_t bg);
+void call_set_color(uint32_t fg, uint32_t bg);
 void call_reset_color();
 void call_clear();
 // Get and set the color of the text and background
@@ -119,4 +119,6 @@ int call_getPid();
 void call_printProcessInfo(processInfo *process);
 void call_sleep(int numberOfTicks);
 int call_waitKids();
+void call_createProcessesWithPipe(void **processes, int *argcs, char **argvs[],
+                                  int **pipes);
 #endif

@@ -69,6 +69,8 @@ GLOBAL call_printProcessInfo
 GLOBAL call_sleep
 
 GLOBAL call_waitKids
+
+GLOBAL call_createProcessesWithPipe
 GLOBAL call_new_line
 
 GLOBAL call_begin_gameplay
@@ -78,6 +80,7 @@ GLOBAL call_system_write:
 GLOBAL call_system_read:
 GLOBAL call_reset_color:
 GLOBAL call_set_color:
+
 
 %macro call_to_handler 1
     push rbp
@@ -244,6 +247,9 @@ call_reset_color:
     call_to_handler 73
 call_set_color:
     call_to_handler 74
+
+call_createProcessesWithPipe:
+    call_to_handler 75
 call_excepDivZero:
     xor rdx,rdx
     div rdx

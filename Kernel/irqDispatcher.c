@@ -30,8 +30,8 @@ void irqDispatcher(uint64_t irq, uint64_t rdi, uint64_t rsi, uint64_t rdx,
   }
 }
 
-void system_write(char* string);
-void system_read(char* retAddress,int length);
+void system_write(char *string);
+void system_read(char *retAddress, int length);
 
 void int_20() { timer_handler(); }
 
@@ -257,33 +257,36 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     colorReset();
     break;
   case 74:
-    setColor(rsi,rdx);
+    setColor(rsi, rdx);
     break;
+  case 75:
+    createProcessWithPipes(rsi, rdx, rcx, r8);
   default:
     return 0;
   }
   return 0;
 }
 
-void system_write(char* string){
+void system_write(char *string) {
   Process *current_proc = get_current_proc();
-  if(current_proc->out_pipe == STDOUT_PIPE&&currentProcType()){
+  if (current_proc->out_pipe == STDOUT_PIPE && currentProcType()) {
     drawStringDef(string);
   } else {
     write_to_pipe(current_proc->out_pipe, string);
   }
 }
 
-void system_read(char* retAddress,int length){
+void system_read(char *retAddress, int length) {
   Process *current_proc = get_current_proc();
-  int indx=0;
-  if(current_proc->in_pipe == STDIN_PIPE&&currentProcType()){
-    do{
-    retAddress[indx++] = read_pipe(STDIN_PIPE);
-    } while (retAddress[indx]!=NULL&&retAddress[indx]!=EOF&&indx<length);
+  int indx = 0;
+  if (current_proc->in_pipe == STDIN_PIPE && currentProcType()) {
+    do {
+      retAddress[indx++] = read_pipe(STDIN_PIPE);
+    } while (retAddress[indx] != NULL && retAddress[indx] != EOF &&
+             indx < length);
   } else {
-    while(indx<length){
-      retAddress[indx++]=read_pipe(current_proc->in_pipe);
+    while (indx < length) {
+      retAddress[indx++] = read_pipe(current_proc->in_pipe);
     }
   }
   return;
