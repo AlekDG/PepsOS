@@ -38,11 +38,9 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
         if (mm_rqs[rq].address) {
             total += mm_rqs[rq].size;
             call_printHex(mm_rqs[rq].address);
-            call_drawStringFormatted(" ", BLACK, WHITE, 2);
-            call_print_long_long_int(total);
-            call_drawStringFormatted("\n", BLACK, WHITE, 2);
             rq++;
-            call_drawStringFormatted("request ok\n", BLACK, WHITE, 2);
+            call_drawStringFormatted("\nrequest ok\n", BLACK, WHITE, 2);
+            call_wait(10);
         } else {
             call_drawStringFormatted("Allocation failed - Block too large or not enough space\n", RED, WHITE, 2);
             //break;

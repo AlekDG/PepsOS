@@ -245,7 +245,9 @@ void run_Philosophers(int argc, char **argv) {
     call_setYBuffer(0);
     call_setXBuffer(0);
     call_drawStringFormatted("La cena ha finalizado.\n", WHITE, BLACK, 2);
+    call_wait(SHORT_WAIT*2);
     call_end_gameplay();
+    call_exit();
     return;
 }
 
