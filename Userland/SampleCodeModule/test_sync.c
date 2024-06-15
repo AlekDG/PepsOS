@@ -1,6 +1,6 @@
 #include <testSyscall.h>
 #include <test_util.h>
-#include <stdint.h>
+
 #include <user_lib.h>
 
 #define SEM_ID "sem"

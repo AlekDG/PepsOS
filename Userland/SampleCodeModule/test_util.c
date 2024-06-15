@@ -1,4 +1,4 @@
-#include <stdint.h>
+
 #include <testSyscall.h>
 
 // Random

@@ -122,6 +122,9 @@ void printProcessInfo(processInfo *process) {
   case RUNNING:
     drawStringFormatted("RUNNING", BRIGHT_GREEN, BLACK, SIZE);
     break;
+      case EXITED:
+          drawStringFormatted("EXITED", BRIGHT_RED, BLACK, SIZE);
+          break;
   }
   drawStringDef("  ");
   switch (process->tipo) {
@@ -131,7 +134,6 @@ void printProcessInfo(processInfo *process) {
 
   default:
     drawStringDef("B");
-    ;
   }
   drawStringDef("  ");
   drawStringDef("0x");
@@ -274,7 +276,7 @@ int fast_log2(int X) {
   int log2 = 0;
   // Use bit shifting to find the position of the highest set bit
   if (X >> 32) {
-    X >>= 32;
+    X >>= 32; //    Este warning impactaria la portabilidad, pero no lo vamos a portear.
     log2 += 32;
   }
   if (X >> 16) {

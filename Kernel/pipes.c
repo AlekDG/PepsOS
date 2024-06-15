@@ -21,6 +21,28 @@ typedef struct {
 int sem_for_pipe_man;
 instance pipe_inst[PIPES_AMOUNT];
 
+int create_pipe(char *id) {
+    int length = string_length(id);
+    if (length <= 0 || length >= NAME_LENGTH - 1)
+        return -1;
+    int indx;
+    if ((indx = get_free_instance()) != -1) {
+        pipe_t *new_pipe = &(pipe_inst[indx].pipe);
+        string_copy(id, new_pipe->name);
+        new_pipe->r_indx = 0;
+        new_pipe->w_indx = 0;
+
+        string_copy(id, new_pipe->read_sem_name);
+        new_pipe->read_sem_name[length] = 'R';
+        new_pipe->read_sem_name[length + 1] = NULL;
+        int sem_read = create_sem(0, new_pipe->read_sem_name);
+        if (sem_read == -1)
+            return -1;
+        new_pipe->read_sem = sem_read;
+    }
+    return indx;
+}
+
 int initialize_pipes(void) {
   if ((sem_for_pipe_man = create_sem(1, "Pipe Manager")) == -1)
     return -1;
@@ -50,27 +72,7 @@ int get_free_instance() {
   return -1;
 }
 
-int create_pipe(char *id) {
-  int length = string_length(id);
-  if (length <= 0 || length >= NAME_LENGTH - 1)
-    return -1;
-  int indx;
-  if ((indx = get_free_instance()) != -1) {
-    pipe_t *new_pipe = &(pipe_inst[indx].pipe);
-    string_copy(id, new_pipe->name);
-    new_pipe->r_indx = 0;
-    new_pipe->w_indx = 0;
 
-    string_copy(id, new_pipe->read_sem_name);
-    new_pipe->read_sem_name[length] = 'R';
-    new_pipe->read_sem_name[length + 1] = NULL;
-    int sem_read = create_sem(0, new_pipe->read_sem_name);
-    if (sem_read == -1)
-      return -1;
-    new_pipe->read_sem = sem_read;
-  }
-  return indx;
-}
 
 int open_pipe(char *id) {
   if (sem_wait(sem_for_pipe_man))

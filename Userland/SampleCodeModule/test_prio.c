@@ -1,6 +1,5 @@
 #include <testSyscall.h>
 #include <test_util.h>
-#include <stdint.h>
 
 #define MINOR_WAIT                                                             \
   1000000 // TODO: Change this value to prevent a process from flooding the

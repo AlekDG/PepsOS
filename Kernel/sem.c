@@ -28,7 +28,7 @@ void start_sems(void) {
 
 uint64_t create_sem(uint64_t val, char *id) {
   int indx = available_sem();
-  if (indx == -1 || *id == NULL || string_length(id) >= NAME_LENGTH)
+  if (indx == -1 || id == NULL || string_length(id) >= NAME_LENGTH)
     return -1;
   semaphore *sem = &(sem_inst[indx].sem);
   if (!val)

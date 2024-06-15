@@ -7,10 +7,7 @@
 #include <pipes.h>
 #include <scheduler.h>
 #include <sem.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include <string.h>
-#include <time.h>
 #include <video.h>
 
 
@@ -98,5 +95,4 @@ int main() {
   _sti();
   while (1)
     ;
-  return 0;
 }

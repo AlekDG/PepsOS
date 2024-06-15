@@ -1,9 +1,9 @@
 #include <defs.h>
 #include <idtLoader.h>
 #include <interrupts.h>
-#include <stdint.h>
 
-#pragma pack(push) /* Push de la alineación actual */
+
+#pragma pack(push) /* Push de la alineación actual. Warning inevitable porque el stack termina vacio */
 #pragma pack(1)    /* Alinear las siguiente estructuras a 1 byte */
 
 /* Descriptor de interrupcion */
@@ -43,3 +43,4 @@ static void setup_IDT_entry(int index, uint64_t offset) {
   idt[index].cero = 0;
   idt[index].other_cero = (uint64_t)0;
 }
+
