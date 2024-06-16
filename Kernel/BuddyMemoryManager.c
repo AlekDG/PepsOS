@@ -37,9 +37,18 @@ void initManagerImpl(MemoryManagerADT manager) {
   manager->firstBlock->size = manager->size;
   manager->firstBlock->isFree = TRUE;
   manager->firstBlock->nextBlock = NULL;
-
+  int maxBlocks = log2_fast_long(USER_MEMORY_SIZE);
+  int blockSize = 1;
   for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
-    manager->freeLists[i] = NULL;
+      for(int j = 0; j < maxBlocks; j++){
+          BlockADT newBlock = (BlockADT) manager->startAddress + manager->spaceUsed;
+          newBlock->startAddress = manager->startAddress + manager->spaceUsed + sizeof (BlockCDT);
+          newBlock->size = blockSize;
+          newBlock->isFree = TRUE;
+          manager->spaceUsed += blockSize;
+          newBlock->nextBlock = manager->freeLists[i];
+      }
+
   }
 }
 

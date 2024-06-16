@@ -300,3 +300,18 @@ int fast_log2(int X) {
   }
   return log2;
 }
+
+int log2_fast_long(unsigned long long int n) {
+    if (n <= 0) {
+        return -1; // or handle error as appropriate
+    }
+
+    int log = 0;
+
+    // Shift n right until it becomes zero, counting shifts
+    while (n >>= 1) {
+        log++;
+    }
+
+    return log;
+}

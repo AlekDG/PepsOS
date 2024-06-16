@@ -62,6 +62,7 @@ unsigned int string_length(const char *str);
 void string_copy(char *from, char *to);
 int same_string(char *s1, char *s2);
 int fast_log2(int X);
+int log2_fast_long(unsigned long long int n);
 
 //For printing process information
 void printProcessInfo(processInfo* process);
