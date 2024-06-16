@@ -46,7 +46,7 @@ void clear_sem(int index) {
   if (index < 0 || index >= SEM_AMOUNT)
     return;
   while (sem_inst[index].sem.size_list > 0)
-    sem_dq_proc(index);
+    unblock(sem_dq_proc(index));
   sem_inst[index].availability = TRUE;
 }
 
