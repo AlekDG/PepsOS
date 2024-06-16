@@ -314,6 +314,7 @@ int kill(int pid) {
     wasKilled = killReady(pid, &parentPid);
   }
   if (wasKilled) {
+    pcb.processCount--;
     decrementKidsCount(parentPid);
     unblock(parentPid);
   }
@@ -372,6 +373,7 @@ void *priorityScheduler(void *rsp, void *rbp) {
   if (running->state == EXITED) {
     freeMemory(running->memStartAdress);
     freeMemory(running);
+    pcb.processCount--;
     pcb.running = pcb.halt; // si encuentro algun prceso ready despues lo cambio
   } else if (running->state == BLOCKED) {
     pcb.running->next = pcb.blocked;
