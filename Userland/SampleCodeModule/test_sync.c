@@ -58,8 +58,8 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
   if (argc != 2)
     return -1;
 
-  char *argvDec[] = {argv[0], "-1", argv[1], NULL};
-  char *argvInc[] = {argv[0], "1", argv[1], NULL};
+  char *argvDec[] = {argv[1], "-1", argv[2], NULL};
+  char *argvInc[] = {argv[1], "1", argv[2], NULL};
 
   global = 0;
 
@@ -69,10 +69,7 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
     pids[i + TOTAL_PAIR_PROCESSES] = my_create_process(my_process_inc, 3, argvInc);
   }
 
-  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    my_wait(pids[i]);
-    my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
-  }
+  while(my_wait());
 
   call_drawStringFormatted("Final value: ", WHITE, BLACK, 2);
   call_printIntFormatted(global, WHITE, BLACK, 2);

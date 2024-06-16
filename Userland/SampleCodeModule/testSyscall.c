@@ -46,6 +46,6 @@ int64_t my_yield() {
    return 1;
 }
 
-int64_t my_wait(int64_t pid) {
+int64_t my_wait() {
   return call_waitKids();
 }
