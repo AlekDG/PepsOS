@@ -1,183 +1,151 @@
-#include <BuddyMemoryManager.h>
+#include "BuddyMemoryManager.h"
+#include "memMan.h"
 #include <lib.h>
-
-
-typedef struct MemoryManagerCDT {
-  char *startAddress;
-  size_t size;
-  size_t spaceUsed;
-  BlockADT firstBlock;
-  BlockADT freeLists[POWER_OF_TWO_MAX_EXPONENT];
-} MemoryManagerCDT;
-
 typedef struct BlockCDT {
-  char *startAddress;
-  size_t size;
-  struct BlockCDT *nextBlock;
-  char isFree;
+    char *startAddress;
+    size_t size;
+    struct BlockCDT *nextBlock;
+    char isFree;
 } BlockCDT;
 
-MemoryManagerADT
-createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
+typedef struct MemoryManagerCDT {
+    char *startAddress;
+    size_t size;
+    size_t spaceUsed;
+    BlockADT firstBlock;
+    BlockADT freeLists[POWER_OF_TWO_MAX_EXPONENT];
+} MemoryManagerCDT;
+
+MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
 void initManagerImpl(MemoryManagerADT manager);
 void *allocMemoryImpl(MemoryManagerADT manager, size_t size);
+void freeMemoryImpl(MemoryManagerADT manager, void *ptr);
+void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int *freeMemory, unsigned long long int *totalMemory, unsigned long long int *allocatedMemory);
+
 
 MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
-  MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
-  memoryManager->startAddress = managedMemory;
-  memoryManager->spaceUsed = 0;
-  memoryManager->size = USER_MEMORY_SIZE;
-  memoryManager->firstBlock = NULL;
-  initManagerImpl(memoryManager);
-  return memoryManager;
+    MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
+    memoryManager->startAddress = (char *)managedMemory;
+    memoryManager->spaceUsed = 0;
+    memoryManager->size = USER_MEMORY_SIZE;
+    memoryManager->firstBlock = NULL;
+    initManagerImpl(memoryManager);
+    return memoryManager;
 }
 
 void initManagerImpl(MemoryManagerADT manager) {
-  manager->firstBlock = (BlockADT)manager->startAddress;
-  manager->firstBlock->size = manager->size;
-  manager->firstBlock->isFree = TRUE;
-  manager->firstBlock->nextBlock = NULL;
-  int maxBlocks = log2_fast_long(USER_MEMORY_SIZE);
-  int blockSize = 1;
-  for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
-      for(int j = 0; j < maxBlocks; j++){
-          BlockADT newBlock = (BlockADT) manager->startAddress + manager->spaceUsed;
-          newBlock->startAddress = manager->startAddress + manager->spaceUsed + sizeof (BlockCDT);
-          newBlock->size = blockSize;
-          newBlock->isFree = TRUE;
-          manager->spaceUsed += blockSize;
-          newBlock->nextBlock = manager->freeLists[i];
-      }
-
-  }
-}
-
-int findPower2(int size) {
-  int block_size = 1;
-  while (block_size < size) {
-    block_size *= 2;
-  }
-  return block_size;
+    manager->firstBlock = (BlockADT)manager->startAddress;
+    manager->firstBlock->size = manager->size;
+    manager->firstBlock->isFree = TRUE;
+    manager->firstBlock->nextBlock = NULL;
+    int maxBlocks = log2_fast_long(USER_MEMORY_SIZE);
+    int blockSize = 1;
+    for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
+        for (int j = 0; j < maxBlocks; j++) {
+            BlockADT newBlock = (BlockADT)(manager->startAddress + manager->spaceUsed);
+            newBlock->startAddress = manager->startAddress + manager->spaceUsed + sizeof(BlockCDT);
+            newBlock->size = blockSize;
+            newBlock->isFree = TRUE;
+            manager->spaceUsed += sizeof(BlockCDT);
+            newBlock->nextBlock = manager->freeLists[i];
+            manager->freeLists[i] = newBlock;
+        }
+        blockSize *= 2;
+        maxBlocks--;
+        if (maxBlocks < 0) {
+            maxBlocks = 0;
+        }
+    }
 }
 
 void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
-  if (size > manager->size || size <= 0) {
-    return NULL;
-  }
+    if (size > manager->size || size <= 0) {
+        return NULL;
+    }
 
-  int blockSize = findPower2(size);
-  int bsize;
+    int blockSize = 1 << fast_log2(size);
+    int bsize = fast_log2(blockSize);
 
-  bsize = fast_log2(blockSize);
-  if (manager->freeLists[bsize] != NULL) {
+    while (bsize < POWER_OF_TWO_MAX_EXPONENT && manager->freeLists[bsize] == NULL) {
+        bsize++;
+        blockSize *= 2;
+    }
+
+    if (bsize >= POWER_OF_TWO_MAX_EXPONENT) {
+        return NULL;
+    }
+
     BlockADT block = manager->freeLists[bsize];
-    block->isFree = FALSE;
     manager->freeLists[bsize] = block->nextBlock;
+    block->isFree = FALSE;
+
+    while (blockSize > size) {
+        blockSize /= 2;
+        bsize--;
+        BlockADT buddyBlock = (BlockADT)((block->startAddress - manager->startAddress) + blockSize + manager->startAddress);
+        buddyBlock->size = blockSize;
+        buddyBlock->isFree = TRUE;
+        buddyBlock->nextBlock = manager->freeLists[bsize];
+        manager->freeLists[bsize] = buddyBlock;
+    }
+
     return block->startAddress;
-  }
-      BlockADT newBlock = manager->freeLists[bsize];
-      newBlock->startAddress = manager->freeLists[bsize]->startAddress + sizeof(BlockCDT);
-      newBlock->size = blockSize;
-      newBlock->isFree = FALSE;
-      newBlock->nextBlock = NULL;
-      manager->spaceUsed += blockSize;
-
-
-
-  while (newBlock->size > size * 2) {
-    newBlock->size /= 2;
-      BlockADT buddyBlock =  manager->freeLists[bsize];
-      buddyBlock->startAddress = manager->freeLists[bsize]->startAddress + sizeof(BlockCDT);
-    buddyBlock->size = newBlock->size;
-    buddyBlock->isFree = TRUE;
-    buddyBlock->nextBlock = manager->freeLists[fast_log2(buddyBlock->size)];
-    manager->freeLists[fast_log2(buddyBlock->size)]->nextBlock = buddyBlock;
-  }
-
-  if (manager->freeLists[bsize] == NULL) {
-    manager->freeLists[bsize] = newBlock;
-  } else {
-    BlockADT currentBlock = manager->freeLists[bsize];
-    while (currentBlock->nextBlock != NULL) {
-      currentBlock = currentBlock->nextBlock;
-    }
-    currentBlock->nextBlock = newBlock;
-  }
-  return newBlock->startAddress;
-}
-
-BlockADT findBlock(MemoryManagerADT manager, void *ptr) {
-  for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
-    BlockADT currentBlock = manager->freeLists[i];
-    while (currentBlock != NULL) {
-      if (currentBlock->startAddress == ptr) {
-        return currentBlock;
-      }
-      currentBlock = currentBlock->nextBlock;
-    }
-  }
-
-  return NULL;
 }
 
 void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
-  BlockADT block = findBlock(manager, ptr);
-  if (block == NULL || block->isFree) {
-    return;
-  }
-
-  block->isFree = TRUE;
-  int bsize = fast_log2(block->size);
-  BlockADT buddyBlock;
-
-  while (block->size < manager->size) {
-    size_t offset = block->startAddress - manager->startAddress;
-    size_t buddyAddress =
-        (offset ^ block->size) + (size_t)manager->startAddress;
-    buddyBlock = findBlock(manager, (void *)buddyAddress);
-
-    if (buddyBlock && buddyBlock->isFree && buddyBlock->size == block->size) {
-      BlockADT *freeList = &manager->freeLists[bsize];
-      while (*freeList != NULL && *freeList != buddyBlock) {
-        freeList = &(*freeList)->nextBlock;
-      }
-      if (*freeList == buddyBlock) {
-        *freeList = buddyBlock->nextBlock;
-      }
-
-      if (block->startAddress < buddyBlock->startAddress) {
-        block->size *= 2;
-      } else {
-        block = buddyBlock;
-        block->size *= 2;
-      }
-      bsize++;
-    } else {
-      break;
+    if (ptr == NULL) {
+        return;
     }
-  }
 
-  if (buddyBlock != NULL)
+    BlockADT block = (BlockADT)((char *)ptr - sizeof(BlockCDT));
+    block->isFree = TRUE;
+    int bsize = fast_log2(block->size);
+
+    while (bsize < POWER_OF_TWO_MAX_EXPONENT - 1) {
+        size_t offset = (block->startAddress - manager->startAddress);
+        size_t buddyAddress = offset ^ block->size;
+        BlockADT buddyBlock = (BlockADT)(buddyAddress + manager->startAddress);
+
+        if (buddyBlock->isFree && buddyBlock->size == block->size) {
+            if (buddyBlock->startAddress < block->startAddress) {
+                BlockADT tempBlock = block;
+                block = buddyBlock;
+                buddyBlock = tempBlock;
+            }
+            manager->freeLists[bsize] = buddyBlock->nextBlock;
+            block->size *= 2;
+            bsize++;
+        } else {
+            break;
+        }
+    }
+
     block->nextBlock = manager->freeLists[bsize];
-  manager->freeLists[bsize] = block;
+    manager->freeLists[bsize] = block;
 }
 
 void memStateImpl(MemoryManagerADT const restrict memoryManager,
                   unsigned long long int *freeMemory,
                   unsigned long long int *totalMemory,
                   unsigned long long int *allocatedMemory) {
-  if (memoryManager == NULL) {
-    return;
-  }
-  *freeMemory = 0;
-  *totalMemory = memoryManager->size;
-
-  for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
-    BlockADT currentBlock = memoryManager->freeLists[i];
-    while (currentBlock != NULL) {
-      *freeMemory += currentBlock->size;
-      currentBlock = currentBlock->nextBlock;
+    if (memoryManager == NULL) {
+        return;
     }
-  }
-  *allocatedMemory = *totalMemory - *freeMemory;
+
+    *totalMemory = memoryManager->size;
+    *freeMemory = 0;
+    *allocatedMemory = 0;
+
+    for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
+        BlockADT currentBlock = memoryManager->freeLists[i];
+        while (currentBlock != NULL) {
+            if (currentBlock->isFree) {
+                *freeMemory += currentBlock->size;
+            } else {
+                *allocatedMemory += currentBlock->size;
+            }
+            currentBlock = currentBlock->nextBlock;
+        }
+    }
 }
+
