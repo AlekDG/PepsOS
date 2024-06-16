@@ -2,7 +2,7 @@
 #include <UserSyscalls.h>
 #include <user_lib.h>
 
-// Macros
+
 #define MAX_PHILOS 10
 #define MIN_PHILOS 3
 #define SEM_ID "Question"
@@ -23,7 +23,7 @@
 
 typedef enum { NONE = 0, EATING, HUNGRY, THINKING } PHILOSOPHER_STATE;
 
-// Static variables
+
 static uint8_t qtyPhilosophers = MIN_PHILOS;
 static PHILOSOPHER_STATE philoStates[MAX_PHILOS];
 static int16_t philoPids[MAX_PHILOS];
@@ -35,7 +35,7 @@ int xPos = 0;
 
 int messagesXPos = 200;
 
-// Philosopher names
+
 static char *philoNames[] = {
         "Montesqueso",  "Fridge",        "Spinetta",
         "Guillotina",    "Chasquibum",    "Triple",
@@ -49,12 +49,12 @@ static char *philoNames[] = {
         "Kindergarde",  "Canto",         "Teapot",
         "Artistofanes", "Caramel Marks"};
 
-// Utility functions
+
 int my_atoi(const char *str);
 void reverse(char *str, int length);
 char *my_itoa(int num, char *str, int base);
 
-// Philosopher functions
+
 void philosopher(int argc, char **argv);
 void takeForks(int i);
 void putForks(int i);
@@ -199,7 +199,7 @@ void run_Philosophers(int argc, char **argv) {
 
     initializePhilosophers();
 
-    char command = '\0';
+    char command;
     while ((command = (char)call_getChar()) != COMMAND_QUIT) {
         switch (command) {
             case COMMAND_ADD:
@@ -229,7 +229,6 @@ void run_Philosophers(int argc, char **argv) {
                 renderPhilosophers();
                 break;
             default:
-                //call_drawStringFormatted("Please enter a command.\n", WHITE, BLACK, 2);
                 break;
         }
 
@@ -295,7 +294,7 @@ void renderPhilosophers() {
         call_drawStringFormatted(&stateChar, BLACK, A_LOVELY_COLOR_FOR_DINING, 2);
         call_drawStringFormatted("  ", WHITE, A_LOVELY_COLOR_FOR_DINING, 2);
     }
-    yPos += 32; // Move to the next line based on font size
+    yPos += 32;
     xPos = 0;
 }
 
