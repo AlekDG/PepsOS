@@ -275,6 +275,34 @@ int fast_log2(int X) {
   }
   int log2 = 0;
   // Use bit shifting to find the position of the highest set bit
+  if (X >> 16) {
+    X >>= 16;
+    log2 += 16;
+  }
+  if (X >> 8) {
+    X >>= 8;
+    log2 += 8;
+  }
+  if (X >> 4) {
+    X >>= 4;
+    log2 += 4;
+  }
+  if (X >> 2) {
+    X >>= 2;
+    log2 += 2;
+  }
+  if (X >> 1) {
+    log2 += 1;
+  }
+  return log2;
+}
+
+int log2_fast_long(unsigned long long int X) {
+    if (X <= 0) {
+    return -1;
+  }
+  int log2 = 0;
+  // Use bit shifting to find the position of the highest set bit
   if (X >> 32) {
     X >>= 32; //    Este warning impactaria la portabilidad, pero no lo vamos a portear.
     log2 += 32;
@@ -299,19 +327,4 @@ int fast_log2(int X) {
     log2 += 1;
   }
   return log2;
-}
-
-int log2_fast_long(unsigned long long int n) {
-    if (n <= 0) {
-        return -1; // or handle error as appropriate
-    }
-
-    int log = 0;
-
-    // Shift n right until it becomes zero, counting shifts
-    while (n >>= 1) {
-        log++;
-    }
-
-    return log;
 }
