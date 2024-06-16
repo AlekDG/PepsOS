@@ -34,7 +34,7 @@ MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryMan
 }
 
 void initManagerImpl(MemoryManagerADT manager) {
-    manager->firstBlock = (BlockADT)manager->startAddress;
+    manager->firstBlock = (BlockADT)manager->startAddress + sizeof(BlockCDT);
     manager->firstBlock->size = manager->size;
     manager->firstBlock->isFree = TRUE;
     manager->firstBlock->nextBlock = NULL;
