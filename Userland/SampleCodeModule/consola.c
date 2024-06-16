@@ -354,10 +354,13 @@ void printHelp() {
   char text[] =
       "->Mostrar Procesos: ps\n->Crear proceso loop: loop\n->Matar un proceso: "
       "kill (pid)\n->Cambiar prioridad (numero de 0 a 4) de un proceso: nice "
-      "(pid) (prioridad)\n->Testear division por cero: testdivzero\n->Testear "
-      "invalid op code: testinvalidopcode\n->Aumentar tamanio de fuente: "
-      "increasefontsize\n->Reducir tamanio de fuente: reducefontsize\n->Estado "
-      "de la memoria: mem\n->Juego de los filosofos:phylo\n";
+      "(pid) (prioridad)\n->Bloquear un proceso: block (pid)\n->Testear division"
+      " por cero: testdivzero\n->Testear invalid op code: testinvalidopcode\n"
+      "->Reducir tamanio de fuente: reducefontsize\n->Verificar el estado"
+      "de la memoria: mem\n->Aumentar tamanio de fuente: increasefontsize\n->Juego de los"
+      " filosofos:phylo\n->Escribir el input a pantalla:cat\n->Filtrar vocales "
+      "del input: filter \n->Contar lineas del input: wc\n->Pipear dos procesos:"
+      " p1 | p2\n->Iniciar proceso de fondo: &\nVarios testeos de sistema:\ntestsem,testmm,testsch";
   call_setXBuffer(0);
   call_setYBuffer(5);
   for (int i = 0; text[i] != 0; i++) {
