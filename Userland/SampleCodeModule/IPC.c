@@ -53,8 +53,6 @@ void cat(){
       call_kill(call_getPid());
     case EOF:
       cat_active = 0;
-      put_char('\0');
-      break;
     default:
       put_char(current_letter);
       break;

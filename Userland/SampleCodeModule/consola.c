@@ -197,11 +197,11 @@ void interpretCommand(char command[]) {
       call_createForegroundProcess(test, 0, schArgv, 4, NULL);
     return;
   case CMD_TEST_IPC_SEM:
-    char *semArgv[] = {"testsem", arg1};
+    char *semArgv[] = {"testsem", arg1, arg2};
     if(bgFlag(arg1))
-      call_createBackgroundProcess(test_sync, 0, semArgv, 4, NULL);
+      call_createBackgroundProcess(test_sync, 2, semArgv, 4, NULL);
     else
-      call_createForegroundProcess(test_sync, 0, semArgv, 4, NULL);
+      call_createForegroundProcess(test_sync, 2, semArgv, 4, NULL);
     return;
   case CMD_UNKNOWN:
   default:
