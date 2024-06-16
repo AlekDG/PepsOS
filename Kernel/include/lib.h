@@ -9,8 +9,6 @@
 #define FALSE 0
 #define TRUE 1
 
-#define POWER_OF_TWO_MAX_EXPONENT 32
-
 typedef struct regStruct {
   uint64_t rax, rbx, rcx, rdx;
   uint64_t rsi, rdi, rbp, rsp;

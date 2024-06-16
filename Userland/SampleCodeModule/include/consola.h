@@ -2,8 +2,8 @@
 #define CONSOLE_H
 
 #define RED 0xFF0000
-#define ENLARGE_FONT_SIZE_CMD "increasefont"
-#define REDUCE_FONT_SIZE_CMD "reducefont"
+#define ENLARGE_FONT_SIZE_CMD "increasefontsize"
+#define REDUCE_FONT_SIZE_CMD "reducefontsize"
 #define TEST_DIV_ZERO_CMD "testdivzero"
 #define TEST_INVALID_OPCODE_CMD "testinvalidopcode"
 #define PRINT_HELP_CMD "help"
