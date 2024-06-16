@@ -1,15 +1,20 @@
-all:  bootloader kernel userland image
+# Define the global variable
+USE_BUDDY=0
 
-buddy:  bootloader buddy_kernel userland image
+all: USE_BUDDY=0
+all: bootloader kernel userland image
+
+buddy: USE_BUDDY=1
+buddy: bootloader buddy_kernel userland image
 
 bootloader:
 	cd Bootloader; make all
 
 kernel:
-	cd Kernel; make all
+	cd Kernel; make all USE_BUDDY=$(USE_BUDDY)
 
 buddy_kernel:
-	cd Kernel; make buddy
+	cd Kernel; make buddy USE_BUDDY=$(USE_BUDDY)
 
 userland:
 	cd Userland; make all
@@ -24,7 +29,3 @@ clean:
 	cd Userland; make clean
 
 .PHONY: bootloader image collections kernel userland all clean buddy buddy_kernel
-
-# Additional target to build with BuddyMemoryManager
-buddy_kernel:
-	cd Kernel; make CFLAGS+=-DUSE_BUDDY all

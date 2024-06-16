@@ -1,7 +1,6 @@
 #include <BuddyMemoryManager.h>
 #include <lib.h>
-#include <stddef.h>
-#include <stdint.h>
+
 
 typedef struct MemoryManagerCDT {
   char *startAddress;
@@ -19,14 +18,11 @@ typedef struct BlockCDT {
 } BlockCDT;
 
 MemoryManagerADT
-createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
-                        void *const restrict managedMemory);
+createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
 void initManagerImpl(MemoryManagerADT manager);
-void *allocMemoryImpl(MemoryManagerADT manager, int size);
+void *allocMemoryImpl(MemoryManagerADT manager, size_t size);
 
-MemoryManagerADT
-createMemoryManagerImpl(void *const restrict memoryForMemoryManager,
-                        void *const restrict managedMemory) {
+MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
   MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
   memoryManager->startAddress = managedMemory;
   memoryManager->spaceUsed = 0;
@@ -54,7 +50,7 @@ int findPower2(int size) {
   return block_size;
 }
 
-void *allocMemoryImpl(MemoryManagerADT manager, int size) {
+void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
   if (size > manager->size || size <= 0) {
     return NULL;
   }

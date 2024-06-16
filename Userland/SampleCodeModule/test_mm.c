@@ -7,6 +7,7 @@
 #define A_USEFUL_COEFFICIENT 10000
 #define MEGABYTES_COEFFICIENT 1048576
 #define MINIMUM_MEMORY 32
+
 typedef struct MM_rq {
   void *address;
   uint32_t size;
@@ -24,6 +25,7 @@ uint64_t test_mm(uint64_t argc, char *argv[]) {
     call_drawStringFormatted("Received Memory: ", BLACK, LIGHT_GRAY, 2);
     call_printInteger(numberOfMB);
     call_drawStringFormatted("MB\n", BLACK, LIGHT_GRAY, 2);
+    call_wait(20);
     if(numberOfMB < MINIMUM_MEMORY){
         call_drawStringFormatted("The amount of memory provided is too small!!\n", BLACK, LIGHT_GRAY, 2);
         call_exit();
