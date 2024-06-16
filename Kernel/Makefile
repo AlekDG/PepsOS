@@ -10,8 +10,8 @@ LOADERSRC=loader.asm
 LOADEROBJECT=$(LOADERSRC:.asm=.o)
 STATICLIBS=
 
-# Define additional sources based on the target
-ifeq ($(MAKECMDGOALS), buddy)
+# Define additional sources based on the global variable
+ifeq ($(USE_BUDDY), 1)
     MEMORYMANAGER=BuddyMemoryManager.c
 else
     MEMORYMANAGER=BlockMemoryManager.c
@@ -20,9 +20,10 @@ endif
 MEMORYMANAGER_OBJECT=$(MEMORYMANAGER:.c=.o)
 OBJECTS += $(MEMORYMANAGER_OBJECT)
 
-all: $(KERNEL)
+# Pass the USE_BUDDY variable as a preprocessor macro
+GCCFLAGS += -DUSE_BUDDY=$(USE_BUDDY)
 
-buddy: $(KERNEL)
+all: $(KERNEL)
 
 $(KERNEL): $(LOADEROBJECT) $(OBJECTS) $(STATICLIBS) $(OBJECTS_ASM)
 	$(LD) $(LDFLAGS) -T kernel.ld -o $(KERNEL) $(LOADEROBJECT) $(OBJECTS) $(OBJECTS_ASM) $(STATICLIBS)
