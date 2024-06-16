@@ -14,6 +14,8 @@ void wc() {
       print_f_int(count++);
       char text2[] = " Lines long\n";
       print_f(text2);
+      } else if (aux == KILL_SIGNAL){
+        call_kill(call_getPid());
       }
     aux = get_char();
   }
@@ -37,7 +39,9 @@ void filter() {
   char aux = get_char();
   for (int i = 0; aux && aux!=EOF; i++) {
     if (is_a_vowel(aux))
-      put_char(aux);;
+      put_char(aux);
+    else if (aux == KILL_SIGNAL)
+      call_kill(call_getPid());
     aux = get_char();
   }
   call_exit();
@@ -53,8 +57,6 @@ void cat(){
       call_kill(call_getPid());
     case EOF:
       cat_active = 0;
-      put_char('\0');
-      break;
     default:
       put_char(current_letter);
       break;

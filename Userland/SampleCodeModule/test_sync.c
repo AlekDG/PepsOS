@@ -1,5 +1,6 @@
 #include <testSyscall.h>
 #include <test_util.h>
+#include <UserSyscalls.h>
 
 #include <user_lib.h>
 
@@ -21,19 +22,19 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   int8_t use_sem;
 
   if (argc != 3)
-    return -1;
+    call_exit();
 
   if ((n = satoi(argv[0])) <= 0)
-    return -1;
+    call_exit();
   if ((inc = satoi(argv[1])) == 0)
-    return -1;
+    call_exit();
   if ((use_sem = satoi(argv[2])) < 0)
-    return -1;
+    call_exit();
 
   if (use_sem)
     if (!my_sem_open(SEM_ID, 1)) {
       call_drawStringFormatted("test_sync: ERROR opening semaphore\n", RED, BLACK, 2);
-      return -1;
+      call_exit();
     }
 
   uint64_t i;
@@ -48,7 +49,7 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   if (use_sem)
     my_sem_close(SEM_ID);
 
-  return 0;
+  call_exit();
 }
 
 uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
@@ -57,25 +58,23 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
   if (argc != 2)
     return -1;
 
-  char *argvDec[] = {argv[0], "-1", argv[1], NULL};
-  char *argvInc[] = {argv[0], "1", argv[1], NULL};
+  char *argvDec[] = {argv[1], "-1", argv[2], NULL};
+  char *argvInc[] = {argv[1], "1", argv[2], NULL};
 
   global = 0;
 
   uint64_t i;
   for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    pids[i] = my_create_process("my_process_inc", 3, argvDec);
-    pids[i + TOTAL_PAIR_PROCESSES] = my_create_process("my_process_inc", 3, argvInc);
+    pids[i] = my_create_process(my_process_inc, 3, argvDec);
+    pids[i + TOTAL_PAIR_PROCESSES] = my_create_process(my_process_inc, 3, argvInc);
   }
 
-  for (i = 0; i < TOTAL_PAIR_PROCESSES; i++) {
-    my_wait(pids[i]);
-    my_wait(pids[i + TOTAL_PAIR_PROCESSES]);
-  }
+  while(my_wait());
 
   call_drawStringFormatted("Final value: ", WHITE, BLACK, 2);
   call_printIntFormatted(global, WHITE, BLACK, 2);
   call_drawLetterFromChar('\n');
 
-  return 0;
+  call_sleep(20);
+  call_exit();
 }

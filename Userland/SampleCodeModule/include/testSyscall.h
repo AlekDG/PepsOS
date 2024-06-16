@@ -10,4 +10,4 @@ int64_t my_sem_wait(char *sem_id);
 int64_t my_sem_post(char *sem_id);
 int64_t my_sem_close(char *sem_id);
 int64_t my_yield();
-int64_t my_wait(int64_t pid);
+int64_t my_wait();
