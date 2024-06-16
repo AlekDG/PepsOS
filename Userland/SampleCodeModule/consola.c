@@ -64,21 +64,7 @@ void printHelp();
 void printMemState();
 int bgFlag(char *arg);
 int isPipe(char *arg);
-void *getFunctionPtr(CommandType cmd, char *argv) {
-  switch (cmd) {
-  case CMD_IPC_CAT:
-    stringCopyNaive("cat", argv);
-    return cat;
-  case CMD_IPC_FILTER_VOWELS:
-    stringCopyNaive("flt", argv);
-    return filter;
-  case CMD_IPC_LINE_COUNT:
-    stringCopyNaive("wc", argv);
-    return wc;
-  default:
-    return NULL;
-  }
-}
+void *getFunctionPtr(CommandType cmd, char *argv);
 
 void interpretCommand(char command[]) {
   char arg1[ARG_LENGTH] = {0};
@@ -86,6 +72,7 @@ void interpretCommand(char command[]) {
   CommandType cmdType = getCommandType(command, arg1, arg2);
   switch (cmdType) {
   case CMD_PIPED_PAIR:
+    call_clear();
     if (arg2 == NULL)
       return;
     CommandType cmd1 = getCommandType(command, NULL, NULL);
@@ -209,7 +196,13 @@ void interpretCommand(char command[]) {
     else
       call_createForegroundProcess(test, 0, schArgv, 4, NULL);
     return;
-
+  case CMD_TEST_IPC_SEM:
+    char *semArgv[] = {"testsem", arg1};
+    if(bgFlag(arg1))
+      call_createBackgroundProcess(test_sync, 0, semArgv, 4, NULL);
+    else
+      call_createForegroundProcess(test_sync, 0, semArgv, 4, NULL);
+    return;
   case CMD_UNKNOWN:
   default:
     break;
@@ -290,8 +283,38 @@ CommandType getCommandType(const char *command, char *arg1, char *arg2) {
     return CMD_TEST_MM;
   } else if (compareStrings(command, TEST_SCH_CMD) == 0) {
     return CMD_TEST_SCH;
+  } else if (compareStrings(command, TEST_IPC_SEM) == 0) {
+    return CMD_TEST_IPC_SEM;
   } else {
     return CMD_UNKNOWN;
+  }
+}
+
+void *getFunctionPtr(CommandType cmd, char *argv) {
+  switch (cmd) {
+  case CMD_IPC_CAT:
+    stringCopyNaive("cat", argv);
+    return cat;
+  case CMD_IPC_FILTER_VOWELS:
+    stringCopyNaive("flt", argv);
+    return filter;
+  case CMD_IPC_LINE_COUNT:
+    stringCopyNaive("wc", argv);
+    return wc;
+  case CMD_TEST_SCH:
+    stringCopyNaive("tsc", argv);
+    return test;
+  case CMD_TEST_MM:
+    stringCopyNaive("tmm",argv);
+    return test_mm;
+  case CMD_IPC_PHYLO:
+    stringCopyNaive("phy",argv);
+    return run_Philosophers;
+  case CMD_PROCESSES_STATE:
+    stringCopyNaive("ps",argv);
+    return ps;
+  default:
+    return NULL;
   }
 }
 

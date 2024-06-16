@@ -19,6 +19,7 @@
 #define IPC_PHYLO_CMD "phylo"
 #define TEST_MM_CMD "testmm"
 #define TEST_SCH_CMD "testsch"
+#define TEST_IPC_SEM "testsem"
 
 void drawConsole();
 void runConsole();
@@ -45,6 +46,7 @@ typedef enum {
   CMD_TEST_MM,
   CMD_TEST_SCH,
   CMD_PIPED_PAIR,
+  CMD_TEST_IPC_SEM,
   CMD_UNKNOWN
 } CommandType;
 #endif
