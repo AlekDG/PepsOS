@@ -190,11 +190,11 @@ void interpretCommand(char command[]) {
       call_createForegroundProcess(test_mm, 1, mmArgv, 4, NULL);
     return;
   case CMD_TEST_SCH:
-    char *schArgv[] = {"testsch"};
+    char *schArgv[] = {"testsch",arg1};
     if (bgFlag(arg1))
-      call_createBackgroundProcess(test, 0, schArgv, 4, NULL);
+      call_createBackgroundProcess(testShceduler, 1, schArgv, 4, NULL);
     else
-      call_createForegroundProcess(test, 0, schArgv, 4, NULL);
+      call_createForegroundProcess(testShceduler, 1, schArgv, 4, NULL);
     return;
   case CMD_TEST_IPC_SEM:
     char *semArgv[] = {"testsem", arg1, arg2};
@@ -303,7 +303,7 @@ void *getFunctionPtr(CommandType cmd, char *argv) {
     return wc;
   case CMD_TEST_SCH:
     stringCopyNaive("tsc", argv);
-    return test;
+    return testShceduler;
   case CMD_TEST_MM:
     stringCopyNaive("tmm",argv);
     return test_mm;
