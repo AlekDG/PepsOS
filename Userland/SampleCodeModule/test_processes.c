@@ -13,7 +13,7 @@ int64_t test_processes(uint64_t argc, char *argv[]) {
   uint8_t rq;
   uint8_t alive = 0;
   uint8_t action;
-  uint64_t max_processes = 15;
+  uint64_t max_processes = 20;
   char *argvAux[] = {"endless", "100"};
 
   p_rq p_rqs[max_processes];
