@@ -66,13 +66,8 @@ void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
     return block->startAddress;
   }
 
-  BlockADT newBlock =
-      (BlockADT)((char *)manager->startAddress + manager->spaceUsed);
-  newBlock->startAddress = (void *)newBlock + manager->spaceUsed +
-                           sizeof newBlock + sizeof newBlock->startAddress +
-                           sizeof newBlock->size + sizeof newBlock->isFree +
-                           sizeof newBlock->nextBlock;
-
+    BlockADT newBlock = (BlockADT)startAddress;
+    newBlock->startAddress = startAddress + sizeof(BlockCDT);
   newBlock->size = blockSize;
   newBlock->isFree = FALSE;
   newBlock->nextBlock = NULL;
@@ -80,12 +75,8 @@ void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
 
   while (newBlock->size > size * 2) {
     newBlock->size /= 2;
-    BlockADT buddyBlock =
-        (BlockADT)((void *)newBlock + sizeof(BlockCDT) + newBlock->size);
-    buddyBlock->startAddress = (void *)buddyBlock + manager->spaceUsed +
-                               sizeof newBlock + sizeof newBlock->startAddress +
-                               sizeof newBlock->size + sizeof newBlock->isFree +
-                               sizeof newBlock->nextBlock;
+      BlockADT buddyBlock = (BlockADT)startAddress;
+      buddyBlock->startAddress = startAddress + sizeof(BlockCDT);
     buddyBlock->size = newBlock->size;
     buddyBlock->isFree = TRUE;
     buddyBlock->nextBlock = manager->freeLists[fast_log2(buddyBlock->size)];
