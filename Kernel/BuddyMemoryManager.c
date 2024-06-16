@@ -63,7 +63,7 @@ void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
         return NULL;
     }
 
-    int blockSize = 1 << fast_log2(size);
+    int blockSize = (1 << fast_log2(size));
     int bsize = fast_log2(blockSize);
 
     while (bsize < POWER_OF_TWO_MAX_EXPONENT && manager->freeLists[bsize] == NULL) {

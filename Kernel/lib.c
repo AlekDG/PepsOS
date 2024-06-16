@@ -269,20 +269,19 @@ int same_string(char *s1, char *s2) {
   return FALSE;
 }
 
-int fast_log2(int n) {
+int fast_log2(int n){
     if (n <= 0) {
-        return -1; // or handle error as appropriate
+        return -1;
     }
-
-    int log = 0;
-    int num = n; // Cast to unsigned to handle negative values
-
-    // Shift num right until it becomes zero, counting shifts
-    while (num >>= 1) {
-        log++;
-    }
-
-    return log;
+    int log2 = 0;
+    // Use bit shifting to find the position of the highest set bit
+    if (n >> 32) { n >>= 32; log2 += 32; }
+    if (n >> 16) { n >>= 16; log2 += 16; }
+    if (n >> 8)  { n >>= 8;  log2 += 8;  }
+    if (n >> 4)  { n >>= 4;  log2 += 4;  }
+    if (n >> 2)  { n >>= 2;  log2 += 2;  }
+    if (n >> 1)  { log2 += 1; }
+    return log2;
 }
 
 
