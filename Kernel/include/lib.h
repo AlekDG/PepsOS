@@ -9,8 +9,6 @@
 #define FALSE 0
 #define TRUE 1
 
-#define POWER_OF_TWO_MAX_EXPONENT 32
-
 typedef struct regStruct {
   uint64_t rax, rbx, rcx, rdx;
   uint64_t rsi, rdi, rbp, rsp;
@@ -61,7 +59,7 @@ void leave_region(uint64_t *lock_address);
 unsigned int string_length(const char *str);
 void string_copy(char *from, char *to);
 int same_string(char *s1, char *s2);
-int fast_log2(int X);
+int fast_log2(int n);
 int log2_fast_long(unsigned long long int n);
 
 //For printing process information

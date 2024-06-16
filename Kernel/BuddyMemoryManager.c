@@ -1,183 +1,206 @@
-#include <BuddyMemoryManager.h>
+#include "BuddyMemoryManager.h"
+#include "memMan.h"
 #include <lib.h>
+#define IS_POWER_OF_2(x) (!((x)&((x)-1)))
 
+typedef enum MemoryStatus { EMPTY, PARTIAL, FULL } MemoryStatus;
 
-typedef struct MemoryManagerCDT {
-  char *startAddress;
-  size_t size;
-  size_t spaceUsed;
-  BlockADT firstBlock;
-  BlockADT freeLists[POWER_OF_TWO_MAX_EXPONENT];
+#define BLOCK 0x1000
+typedef struct MemNode *MemNodePtr;
+
+typedef struct MemoryManagerCDT{
+    MemNodePtr root;
+    uint64_t memAllocated;
+    uint64_t totalSize;
+    uint64_t freeMemory;
 } MemoryManagerCDT;
 
-typedef struct BlockCDT {
-  char *startAddress;
-  size_t size;
-  struct BlockCDT *nextBlock;
-  char isFree;
-} BlockCDT;
+typedef struct MemNode{
+    MemNodePtr right;
+    MemNodePtr left;
+    uint64_t size;
+    MemoryStatus status;
+} MemNode;
 
-MemoryManagerADT
-createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
-void initManagerImpl(MemoryManagerADT manager);
-void *allocMemoryImpl(MemoryManagerADT manager, size_t size);
 
-MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory) {
-  MemoryManagerADT memoryManager = (MemoryManagerADT)memoryForMemoryManager;
-  memoryManager->startAddress = managedMemory;
-  memoryManager->spaceUsed = 0;
-  memoryManager->size = USER_MEMORY_SIZE;
-  memoryManager->firstBlock = NULL;
-  initManagerImpl(memoryManager);
-  return memoryManager;
+
+MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
+ void *allocMemoryImpl(MemoryManagerADT manager, size_t size);
+ void *genericAllocMemoryRec(MemoryManagerADT memoryManager, MemNodePtr node, unsigned int size);
+void setDescendants(MemoryManagerADT memoryManager, MemNodePtr node);
+int hasDescendants(MemNodePtr node);
+void endRecursiveCall(MemoryManagerADT memoryManager, MemNodePtr node);
+void freeMemoryImpl(MemoryManagerADT manager, void *ptr);
+ void genericFreeRec(MemoryManagerADT memoryManager, MemNodePtr node, void *memoryToFree);
+ uint64_t align(uint64_t size);
+
+
+ void initMemory(MemoryManagerADT memoryManager, void *const init){
+    memoryManager->root = init;
+    memoryManager->root->size = USER_MEMORY_SIZE - sizeof(MemNode);
+    memoryManager->root->status = EMPTY;
+    memoryManager->root->left = NULL;
+    memoryManager->root->right = NULL;
 }
 
-void initManagerImpl(MemoryManagerADT manager) {
-  manager->firstBlock = (BlockADT)manager->startAddress;
-  manager->firstBlock->size = manager->size;
-  manager->firstBlock->isFree = TRUE;
-  manager->firstBlock->nextBlock = NULL;
-  int maxBlocks = log2_fast_long(USER_MEMORY_SIZE);
-  int blockSize = 1;
-  for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
-      for(int j = 0; j < maxBlocks; j++){
-          BlockADT newBlock = (BlockADT) manager->startAddress + manager->spaceUsed;
-          newBlock->startAddress = manager->startAddress + manager->spaceUsed + sizeof (BlockCDT);
-          newBlock->size = blockSize;
-          newBlock->isFree = TRUE;
-          manager->spaceUsed += blockSize;
-          newBlock->nextBlock = manager->freeLists[i];
-      }
-
-  }
+MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory){
+    MemoryManagerADT memoryManager = (MemoryManagerADT) memoryForMemoryManager;
+    initMemory(memoryManager, managedMemory);
+    return memoryManager;
 }
 
-int findPower2(int size) {
-  int block_size = 1;
-  while (block_size < size) {
-    block_size *= 2;
-  }
-  return block_size;
+ uint64_t align(uint64_t size){
+    size |= size >> 1;
+    size |= size >> 2;
+    size |= size >> 4;
+    size |= size >> 8;
+    size |= size >> 16;
+    return size + 1;
 }
 
-void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
-  if (size > manager->size || size <= 0) {
-    return NULL;
-  }
-
-  int blockSize = findPower2(size);
-  int bsize;
-
-  bsize = fast_log2(blockSize);
-  if (manager->freeLists[bsize] != NULL) {
-    BlockADT block = manager->freeLists[bsize];
-    block->isFree = FALSE;
-    manager->freeLists[bsize] = block->nextBlock;
-    return block->startAddress;
-  }
-      BlockADT newBlock = manager->freeLists[bsize];
-      newBlock->startAddress = manager->freeLists[bsize]->startAddress + sizeof(BlockCDT);
-      newBlock->size = blockSize;
-      newBlock->isFree = FALSE;
-      newBlock->nextBlock = NULL;
-      manager->spaceUsed += blockSize;
-
-
-
-  while (newBlock->size > size * 2) {
-    newBlock->size /= 2;
-      BlockADT buddyBlock =  manager->freeLists[bsize];
-      buddyBlock->startAddress = manager->freeLists[bsize]->startAddress + sizeof(BlockCDT);
-    buddyBlock->size = newBlock->size;
-    buddyBlock->isFree = TRUE;
-    buddyBlock->nextBlock = manager->freeLists[fast_log2(buddyBlock->size)];
-    manager->freeLists[fast_log2(buddyBlock->size)]->nextBlock = buddyBlock;
-  }
-
-  if (manager->freeLists[bsize] == NULL) {
-    manager->freeLists[bsize] = newBlock;
-  } else {
-    BlockADT currentBlock = manager->freeLists[bsize];
-    while (currentBlock->nextBlock != NULL) {
-      currentBlock = currentBlock->nextBlock;
+ void *genericAllocMemory(MemoryManagerADT memoryManager, uint64_t size){
+    if(size < BLOCK){
+        size = BLOCK;
     }
-    currentBlock->nextBlock = newBlock;
-  }
-  return newBlock->startAddress;
-}
-
-BlockADT findBlock(MemoryManagerADT manager, void *ptr) {
-  for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
-    BlockADT currentBlock = manager->freeLists[i];
-    while (currentBlock != NULL) {
-      if (currentBlock->startAddress == ptr) {
-        return currentBlock;
-      }
-      currentBlock = currentBlock->nextBlock;
+    else if(size > memoryManager->root->size){
+        return NULL;
     }
-  }
+    if(!IS_POWER_OF_2(size)){
+        size = align(size);
+    }
 
-  return NULL;
+    void * allocAttempt = genericAllocMemoryRec(memoryManager, memoryManager->root, size);
+    return allocAttempt;
 }
 
-void freeMemoryImpl(MemoryManagerADT manager, void *ptr) {
-  BlockADT block = findBlock(manager, ptr);
-  if (block == NULL || block->isFree) {
-    return;
-  }
+ void *genericAllocMemoryRec(MemoryManagerADT memoryManager, MemNodePtr node, unsigned int size){
+    if(node == NULL || node->status == FULL){
+        return NULL;
+    }
 
-  block->isFree = TRUE;
-  int bsize = fast_log2(block->size);
-  BlockADT buddyBlock;
+    if(node->left != NULL || node->right != NULL){
+        void *auxNode = genericAllocMemoryRec(memoryManager, node->left, size);
+        if (auxNode == NULL) {
+            auxNode = genericAllocMemoryRec(memoryManager, node->right, size);
+        }
+        endRecursiveCall(memoryManager, node);
+        return auxNode;
+    }
+    else{
+        if (size > node->size) {
+            return NULL;
+        }
+        if ((node->size / 2) >= size) {
+            setDescendants(memoryManager, node);
+            void *auxNode = genericAllocMemoryRec(memoryManager, node->left, size);
+            endRecursiveCall(memoryManager, node);
+            return auxNode;
+        }
+        node->status = FULL;
+        memoryManager->memAllocated += node->size + sizeof(MemNode);
+        memoryManager->freeMemory -= node->size + sizeof(MemNode);
+        return (void *)((uint64_t)node + sizeof(MemNode));
+    }
+}
 
-  while (block->size < manager->size) {
-    size_t offset = block->startAddress - manager->startAddress;
-    size_t buddyAddress =
-        (offset ^ block->size) + (size_t)manager->startAddress;
-    buddyBlock = findBlock(manager, (void *)buddyAddress);
+ void setDescendants(MemoryManagerADT memoryManager, MemNodePtr node){
+    uint64_t descendantSize = ((uint64_t)(node->size) / 2);
+    node->left = (MemNodePtr)((uint64_t)node + sizeof(MemNode));
 
-    if (buddyBlock && buddyBlock->isFree && buddyBlock->size == block->size) {
-      BlockADT *freeList = &manager->freeLists[bsize];
-      while (*freeList != NULL && *freeList != buddyBlock) {
-        freeList = &(*freeList)->nextBlock;
-      }
-      if (*freeList == buddyBlock) {
-        *freeList = buddyBlock->nextBlock;
-      }
+    uint64_t limit = (uint64_t)memoryManager->root + memoryManager->root->size + sizeof(MemNode);
 
-      if (block->startAddress < buddyBlock->startAddress) {
-        block->size *= 2;
-      } else {
-        block = buddyBlock;
-        block->size *= 2;
-      }
-      bsize++;
+    if ((uint64_t) node->left >= limit) {
+        return;
+    }
+    node->left->size = descendantSize - sizeof(MemNode);
+    node->left->status = EMPTY;
+    memoryManager->memAllocated += sizeof(MemNode);
+    memoryManager->freeMemory -= sizeof(MemNode);
+
+    node->right = (MemNodePtr)((uint64_t)node + descendantSize + sizeof(MemNode));
+    if ((uint64_t) node->right >= limit) {
+        return;
+    }
+    node->right->size = descendantSize - sizeof(MemNode);
+    node->right->status = EMPTY;
+
+    memoryManager->memAllocated += sizeof(MemNode);
+    memoryManager->freeMemory -= sizeof(MemNode);
+}
+
+ int hasDescendants(MemNodePtr node){
+    return node->left == NULL || node->right == NULL;
+}
+
+ void endRecursiveCall(MemoryManagerADT memoryManager, MemNodePtr node){
+    if (hasDescendants(node)) {
+        node->status = EMPTY;
+        memoryManager->freeMemory += node->size;
+        memoryManager->memAllocated -= node->size;
+        return;
+    }
+    if (node->left->status == FULL && node->right->status == FULL) {
+        node->status = FULL;
+    } else if (node->left->status == FULL || node->right->status == FULL
+               || node->left->status == PARTIAL || node->right->status == PARTIAL) {
+        node->status = PARTIAL;
     } else {
-      break;
+        node->status = EMPTY;
+        memoryManager->freeMemory += node->size;
+        memoryManager->memAllocated -= node->size;
     }
-  }
+}
 
-  if (buddyBlock != NULL)
-    block->nextBlock = manager->freeLists[bsize];
-  manager->freeLists[bsize] = block;
+void freeMemoryImpl(MemoryManagerADT MemoryManager, void *memoryToFree){
+    genericFreeRec(MemoryManager, MemoryManager->root, memoryToFree);
+}
+
+ void genericFreeRec(MemoryManagerADT memoryManager, MemNodePtr node, void *memoryToFree){
+    if(node == NULL){
+        return;
+    }
+    if (node->left != NULL || node->right != NULL){
+        if (node->right != NULL && (uint64_t) node->right + sizeof(MemNode) > (uint64_t) memoryToFree){
+            genericFreeRec(memoryManager, node->left, memoryToFree);
+        }
+        else{
+            genericFreeRec(memoryManager, node->right, memoryToFree);
+        }
+        endRecursiveCall(memoryManager, node);
+        if (node->status == EMPTY){
+            node->right = NULL;
+            node->left = NULL;
+            memoryManager->freeMemory += 2*sizeof(MemNode);
+            memoryManager->memAllocated -= 2*sizeof(MemNode);
+        }
+    }
+    else if (node->status == FULL) {
+        if ((void *)((uint64_t)node + sizeof(MemNode)) == memoryToFree) {
+            node->status = EMPTY;
+            memoryManager->memAllocated -= node->size;
+            memoryManager->freeMemory += node->size;
+        }
+    }
+    return;
+}
+void *allocMemoryImpl(MemoryManagerADT manager, size_t size){
+    return genericAllocMemory(manager, size);
+}
+
+uint64_t getFreeMemoryAmount(MemoryManagerADT MemoryManager){
+    return MemoryManager->freeMemory;
+}
+
+uint64_t getUsedMemoryAmount(MemoryManagerADT MemoryManager){
+    return MemoryManager->memAllocated;
 }
 
 void memStateImpl(MemoryManagerADT const restrict memoryManager,
                   unsigned long long int *freeMemory,
                   unsigned long long int *totalMemory,
                   unsigned long long int *allocatedMemory) {
-  if (memoryManager == NULL) {
-    return;
-  }
-  *freeMemory = 0;
-  *totalMemory = memoryManager->size;
-
-  for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
-    BlockADT currentBlock = memoryManager->freeLists[i];
-    while (currentBlock != NULL) {
-      *freeMemory += currentBlock->size;
-      currentBlock = currentBlock->nextBlock;
-    }
-  }
-  *allocatedMemory = *totalMemory - *freeMemory;
+   *freeMemory = getFreeMemoryAmount(memoryManager);
+   *allocatedMemory = getUsedMemoryAmount(memoryManager);
+   *totalMemory = memoryManager->totalSize;
 }
+
