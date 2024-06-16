@@ -37,12 +37,16 @@ max_memory = aux1;
     while (rq < MAX_BLOCKS && total < max_memory) {
       mm_rqs[rq].size = GetUniform(max_memory - total - 1)/A_USEFUL_COEFFICIENT + 1;
       mm_rqs[rq].address = call_malloc((size_t)mm_rqs[rq].size);
+        call_drawStringFormatted("Size requested: ", BLACK, LIGHT_GRAY, 2);
         call_print_long_long_int(mm_rqs[rq].size);
-        call_drawStringFormatted("\n", BLACK, WHITE, 2);
+        call_drawStringFormatted("\n", BLACK, LIGHT_GRAY, 2);
+
 
         if (mm_rqs[rq].address) {
             total += mm_rqs[rq].size;
+            call_drawStringFormatted("Address requested: ", BLACK, LIGHT_GRAY, 2);
             call_printHex(mm_rqs[rq].address);
+            call_drawStringFormatted("\n", BLACK, LIGHT_GRAY, 2);
             rq++;
             call_drawStringFormatted("\nrequest ok\n", BLACK, LIGHT_GRAY, 2);
             call_wait(10);
