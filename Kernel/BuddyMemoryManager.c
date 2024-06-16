@@ -28,6 +28,7 @@ MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryMan
   memoryManager->spaceUsed = 0;
   memoryManager->size = USER_MEMORY_SIZE;
   memoryManager->firstBlock = NULL;
+  initManagerImpl(memoryManager);
   return memoryManager;
 }
 
