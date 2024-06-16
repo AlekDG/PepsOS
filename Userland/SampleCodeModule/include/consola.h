@@ -18,6 +18,7 @@
 #define IPC_FILTER_VOWELS_CMD "filter"
 #define IPC_PHYLO_CMD "phylo"
 #define TEST_MM_CMD "testmm"
+#define TEST_SCH_CMD "testsch"
 
 void drawConsole();
 void runConsole();
@@ -42,6 +43,7 @@ typedef enum {
   CMD_IPC_FILTER_VOWELS,
   CMD_IPC_PHYLO,
   CMD_TEST_MM,
+  CMD_TEST_SCH,
   CMD_PIPED_PAIR,
   CMD_UNKNOWN
 } CommandType;
