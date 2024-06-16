@@ -65,13 +65,16 @@ void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
     manager->freeLists[bsize] = block->nextBlock;
     return block->startAddress;
   }
+  else{
+      BlockADT newBlock = manager->freeLists[bsize];
+      newBlock->startAddress = manager->freeLists[bsize]->startAddress + sizeof(BlockCDT);
+      newBlock->size = blockSize;
+      newBlock->isFree = FALSE;
+      newBlock->nextBlock = NULL;
+      manager->spaceUsed += blockSize;
+  }
 
-    BlockADT newBlock = (BlockADT)startAddress;
-    newBlock->startAddress = startAddress + sizeof(BlockCDT);
-  newBlock->size = blockSize;
-  newBlock->isFree = FALSE;
-  newBlock->nextBlock = NULL;
-  manager->spaceUsed += blockSize;
+
 
   while (newBlock->size > size * 2) {
     newBlock->size /= 2;
