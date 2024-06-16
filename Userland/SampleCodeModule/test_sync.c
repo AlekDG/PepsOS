@@ -46,9 +46,6 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
       my_sem_post(SEM_ID);
   }
 
-  if (use_sem)
-    my_sem_close(SEM_ID);
-
   call_exit();
 }
 
@@ -70,6 +67,8 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
   }
 
   while(my_wait());
+
+  my_sem_close(SEM_ID);
 
   call_drawStringFormatted("Final value: ", WHITE, BLACK, 2);
   call_printIntFormatted(global, WHITE, BLACK, 2);
