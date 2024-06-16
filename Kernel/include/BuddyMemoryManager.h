@@ -6,7 +6,7 @@
 
 #define TRUE 1
 #define FALSE 0
-
+#define POWER_OF_TWO_MAX_EXPONENT 100
 typedef struct MemoryManagerCDT *MemoryManagerADT;
 MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
 void initManagerImpl(MemoryManagerADT manager);
