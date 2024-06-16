@@ -94,6 +94,7 @@ MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryMan
             setDescendants(memoryManager, node);
             void *auxNode = genericAllocMemoryRec(memoryManager, node->left, size);
             endRecursiveCall(memoryManager, node);
+            node->status = PARTIAL;
             return auxNode;
         }
         node->status = FULL;
