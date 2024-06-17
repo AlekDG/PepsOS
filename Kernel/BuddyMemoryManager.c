@@ -12,8 +12,7 @@ typedef struct MemoryManagerCDT {
     char *startAddress;
     size_t size;
     size_t spaceUsed;
-    BlockADT firstBlock;
-    BlockADT freeLists[POWER_OF_TWO_MAX_EXPONENT];
+    BlockCDT freeLists[POWER_OF_TWO_MAX_EXPONENT];
 } MemoryManagerCDT;
 
 MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryManager, void *const restrict managedMemory);
@@ -28,52 +27,37 @@ MemoryManagerADT createMemoryManagerImpl(void *const restrict memoryForMemoryMan
     memoryManager->startAddress = (char *)managedMemory;
     memoryManager->spaceUsed = 0;
     memoryManager->size = USER_MEMORY_SIZE;
-    memoryManager->firstBlock = NULL;
     initManagerImpl(memoryManager);
     return memoryManager;
 }
 
 void initManagerImpl(MemoryManagerADT manager) {
-    manager->firstBlock = (BlockADT)manager->startAddress + sizeof(BlockCDT);
-    manager->firstBlock->size = manager->size;
-    manager->firstBlock->isFree = TRUE;
-    manager->firstBlock->nextBlock = NULL;
-    int maxBlocks = log2_fast_long(USER_MEMORY_SIZE);
-    int blockSize = 1;
-    for (int i = 0; i < POWER_OF_TWO_MAX_EXPONENT; i++) {
-        for (int j = 0; j < maxBlocks; j++) {
-            BlockADT newBlock = (BlockADT)(manager->startAddress + manager->spaceUsed);
-            newBlock->startAddress = manager->startAddress + manager->spaceUsed + sizeof(BlockCDT);
-            newBlock->size = blockSize;
-            newBlock->isFree = TRUE;
-            manager->spaceUsed += sizeof(BlockCDT);
-            newBlock->nextBlock = manager->freeLists[i];
-            manager->freeLists[i] = newBlock;
-        }
-        blockSize *= 2;
-        maxBlocks--;
-        if (maxBlocks < 0) {
-            maxBlocks = 0;
-        }
+    for(int i = 0 ; i < POWER_OF_TWO_MAX_EXPONENT -2 ; i++){
+        manager->freeLists[i].isFree = FALSE;
     }
+    manager->freeLists[POWER_OF_TWO_MAX_EXPONENT-1].isFree = TRUE ;
 }
 
 void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
-    if (size > manager->size || size <= 0) {
+    if (size > manager->size || size <= 0) {  //MEMO: ver si puedo alocarlo, yo me entiendo
         return NULL;
     }
 
-    int blockSize = (1<< (fast_log2(size)+1));
-    int bsize = fast_log2(blockSize)+1;
 
-    while (bsize < POWER_OF_TWO_MAX_EXPONENT && manager->freeLists[bsize] == NULL) {
-        bsize++;
-        blockSize *= 2;
+    int bsize = fast_log2(size)+1;
+
+    BlockADT current = &manager->freeLists[bsize];
+    while(current != NULL){
+        if(current->isFree){
+            //hacemos devolvemos este
+        }else{
+            current = current->nextBlock;
+        }
     }
 
-    if (bsize >= POWER_OF_TWO_MAX_EXPONENT) {
-        return NULL;
-    }
+    
+
+
 
     BlockADT block = manager->freeLists[bsize];
     manager->freeLists[bsize] = block->nextBlock;

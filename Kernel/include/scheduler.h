@@ -1,6 +1,6 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
-
+//TODO: revisar codigo y hacer format. Hacer informe. Ver porque se rompe test con maxProcesses = 50
 #include "../../Shared/include/ps.h"
 #include <stdint.h>
 

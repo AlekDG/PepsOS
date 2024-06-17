@@ -3,7 +3,12 @@
 #include <stddef.h>
 
 #define STARTING_ADRESS 0x50000
+#ifdef USE_BUDDY
+#define USER_MEMORY_SIZE  0x24FFFFF
+#else
 #define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
+#endif
+
 #define BLOCK_MAX_SIZE 4294967295 //    biggest number that fits in a size_t
 
 typedef struct MemoryManagerCDT *MemoryManagerADT;
