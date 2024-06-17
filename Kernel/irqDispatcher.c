@@ -10,7 +10,7 @@
 
 static void int_20();
 static void int_21();
-static int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
+static uint64_t int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx,
                   uint64_t r8, uint64_t r9);
 
 typedef void (*InterruptHandler)(uint64_t rdi, uint64_t rsi, uint64_t rdx,
@@ -37,7 +37,7 @@ void int_20() { timer_handler(); }
 
 void int_21() { keyAct(); }
 
-int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
+uint64_t int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
            uint64_t r9) {
   switch (rdi) {
   case 1:
@@ -104,13 +104,13 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     return getFGColor();
     break;
   case 22:
-    return getFGColorPointer();
+    return (uint64_t) getFGColorPointer();
     break;
   case 23:
-    return getXBufferPointer();
+    return (uint64_t) getXBufferPointer();
     break;
   case 24:
-    return getYBufferPointer();
+    return (uint64_t) getYBufferPointer();
     break;
   case 25:
     setFGColor(rsi);
@@ -131,10 +131,10 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     printInteger(rsi);
     break;
   case 31:
-    drawLetterFormatted(rsi, rdx, rcx, r8);
+    drawLetterFormatted((uint64_t)rsi, rdx, rcx, r8);
     break;
   case 32:
-    drawStringFormatted(rsi, rdx, rcx, r8);
+    drawStringFormatted((char *)rsi, rdx, rcx, r8);
     break;
   case 33:
     printIntFormatted(rsi, rdx, rcx, r8);
@@ -155,31 +155,31 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     return year();
     break;
   case 39:
-    return allocMemory(rsi);
+    return (uint64_t) allocMemory(rsi);
     break;
   case 41:
     return getPid();
     break;
   case 42:
-    return createBackgroundProcess(rsi, rdx, rcx, r8, r9);
+    return createBackgroundProcess((newProcess) rsi, rdx, (char **)rcx, r8, (int *)r9);
     break;
   case 43:
-    return createForegroundProcess(rsi, rdx, rcx, r8, r9);
+    return createForegroundProcess((newProcess) rsi, rdx, (char **)rcx, r8, (int *)r9);
     break;
   case 44:
     exit();
     break;
   case 45:
-    freeMemory(rsi);
+    freeMemory((void *) rsi);
     break;
   case 46:
-    return sem_open(rsi, rdx);
+    return sem_open(rsi,(char *) rdx);
     break;
   case 47:
-    sem_close(rsi);
+    sem_close((char *) rsi);
     break;
   case 48:
-    return create_sem(rsi, rdx);
+    return create_sem(rsi,(char *) rdx);
     break;
   case 49:
     sem_post(rsi);
@@ -188,13 +188,13 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     sem_wait(rsi);
     break;
   case 51:
-    return open_pipe(rsi);
+    return open_pipe((char *)rsi);
     break;
   case 52:
     close_pipe(rsi);
     break;
   case 53:
-    write_to_pipe(rsi, rdi);
+    write_to_pipe(rsi,(char *) rdi);
     break;
   case 54:
     return read_pipe(rsi);
@@ -203,7 +203,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     return changePriority(rsi, rdx);
     break;
   case 56:
-    return getAllProcessInfo(rsi);
+    return (uint64_t) getAllProcessInfo((int *)rsi);
     break;
   case 57:
     return kill(rsi);
@@ -218,10 +218,10 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     yield();
     break;
   case 61:
-    memState(rsi, rdx, rcx);
+    memState((long long unsigned int *)rsi,(long long unsigned int *)rdx,(long long unsigned int *)rcx);
     break;
   case 62:
-    printProcessInfo(rsi);
+    printProcessInfo((processInfo *)rsi);
     break;
   case 63:
     sleep(rsi);
@@ -245,13 +245,13 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     newLine();
     break;
   case 70:
-    return (get_sem_indx(rsi));
+    return (get_sem_indx((char *)rsi));
     break;
   case 71:
-    system_write(rsi);
+    system_write((char *)rsi);
     break;
   case 72:
-    system_read(rsi, rdx);
+    system_read((char *)rsi, rdx);
     break;
   case 73:
     colorReset();
@@ -260,7 +260,7 @@ int int_80(uint64_t rdi, uint64_t rsi, uint64_t rdx, uint64_t rcx, uint64_t r8,
     setColor(rsi, rdx);
     break;
   case 75:
-    createProcessWithPipes(rsi, rdx, rcx, r8, r9);
+    createProcessWithPipes((newProcess)rsi,(newProcess) rdx,(int *) rcx,(char ***) r8,(int **) r9);
   default:
     return 0;
   }
