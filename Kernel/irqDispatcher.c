@@ -282,7 +282,7 @@ void system_read(char *retAddress, int length) {
   if (current_proc->in_pipe == STDIN_PIPE && currentProcType()) {
     do {
       retAddress[indx++] = read_pipe(STDIN_PIPE);
-    } while (retAddress[indx] != NULL && retAddress[indx] != EOF &&
+    } while ((uint64_t)retAddress[indx] !=(uint64_t) NULL &&(uint64_t) retAddress[indx] !=(uint64_t) EOF &&
              indx < length);
   } else {
     while (indx < length) {
