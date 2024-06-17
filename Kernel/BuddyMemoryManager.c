@@ -52,26 +52,22 @@ void initManagerImpl(MemoryManagerADT manager) {
         manager->freeLists[i].isFree = FALSE;
         manager->freeLists[i].nextBlock = NULL;
         manager->freeLists[i].size = pow2(i+MIN_EXP);
-        if(i != 0){
-            manager->freeLists[i].startAddress = (char *)(manager->freeLists[i-1].startAddress + manager->freeLists[i-1].size + sizeof (BlockCDT));
-        } else{
-            manager->freeLists[i].startAddress = (char *)(manager->startAddress + sizeof (MemoryManagerCDT));
-        }
-
+        manager->freeLists[i].startAddress = NULL;
     }
-    manager->freeLists[POWER_OF_TWO_MAX_EXPONENT-1-MIN_EXP].isFree = TRUE ;
+    manager->freeLists[POWER_OF_TWO_MAX_EXPONENT-MIN_EXP-1].isFree = TRUE;
+    manager->freeLists[POWER_OF_TWO_MAX_EXPONENT-MIN_EXP-1].startAddress = manager + sizeof(MemoryManagerCDT) +  manager->freeLists[POWER_OF_TWO_MAX_EXPONENT-MIN_EXP-1].size;
 }
 
 void split_block(MemoryManagerADT manager, int level, BlockADT toSplit) {
     size_t size = toSplit->size / 2;
 
     // Calculate buddy block correctly
-    BlockADT buddy = (BlockADT)((char *)toSplit->startAddress + size + sizeof(BlockCDT));
+    BlockADT buddy = (BlockADT)((char *)toSplit->startAddress - size + sizeof(BlockCDT));
     buddy->size = size;
     buddy->isFree = TRUE;
     buddy->nextBlock = NULL;
     toSplit->nextBlock = buddy;
-    toSplit->size = size;
+    toSplit->size = size - sizeof(BlockCDT);
 
     add_to_free_list(manager, buddy, level - 1);
 }
