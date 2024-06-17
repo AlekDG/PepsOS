@@ -3,7 +3,7 @@
 #include <user_lib.h>
 
 
-#define MAX_PHILOS 10
+#define MAX_PHILOS 8
 #define MIN_PHILOS 3
 #define SEM_ID "Question"
 #define MAX_PHILO_BUFFER 3

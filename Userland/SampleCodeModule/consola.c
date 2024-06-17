@@ -56,7 +56,7 @@ void runConsole() {
   }
 }
 
-CommandType getCommandType(const char *command, char *arg1, char *arg2);
+CommandType getCommandType(char *command, char *arg1, char *arg2);
 void askForAnyletter();
 void enlargeFontSize();
 void decreaseFontSize();
@@ -73,8 +73,6 @@ void interpretCommand(char command[]) {
   switch (cmdType) {
   case CMD_PIPED_PAIR:
     call_clear();
-    if (arg2 == NULL)
-      return;
     CommandType cmd1 = getCommandType(command, NULL, NULL);
     CommandType cmd2 = getCommandType(arg2, NULL, NULL);
     char argc[4] = {0};
@@ -239,7 +237,7 @@ int isNiceComand(char *command, char *arg1, char *arg2) {
   return TRUE;
 }
 
-CommandType getCommandType(const char *command, char *arg1, char *arg2) {
+CommandType getCommandType(char *command, char *arg1, char *arg2) {
   stringTokenizer(command, arg1, arg2, ' ');
   if (isPipe(arg1)) {
     return CMD_PIPED_PAIR;

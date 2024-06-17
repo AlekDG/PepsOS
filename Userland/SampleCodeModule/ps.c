@@ -32,7 +32,7 @@ void ps() {
 
   call_drawStringFormatted("PS for PepsOS - 2024 All Rights Not Reserved",
                            WHITE, PEPSIBLUE, FONT_SIZE);
-  call_drawLetterFormatted("\n", WHITE, PEPSIBLUE, FONT_SIZE);
+  call_drawStringFormatted("\n", WHITE, PEPSIBLUE, FONT_SIZE);
   call_drawLetterFromChar('\n');
   call_drawStringFormatted(
       "NAME - PID - PARENT PID - PRIORITY - STATE - TYPE - RSP - RBP", WHITE,

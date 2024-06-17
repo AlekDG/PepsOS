@@ -16,24 +16,41 @@ void slowInc(int64_t *p, int64_t inc) {
   *p = aux;
 }
 
-uint64_t my_process_inc(uint64_t argc, char *argv[]) {
+void my_process_inc(uint64_t argc, char *argv[]) {
   uint64_t n;
   int8_t inc;
   int8_t use_sem;
 
-  if (argc != 3)
-    call_exit();
+  if (argc != 3){
+      call_drawStringFormatted("Wrong number of arguments\n", WHITE, LIGHT_GRAY, 2);
+      call_sleep(40);
+      call_exit();
+  }
 
-  if ((n = satoi(argv[0])) <= 0)
-    call_exit();
-  if ((inc = satoi(argv[1])) == 0)
-    call_exit();
-  if ((use_sem = satoi(argv[2])) < 0)
-    call_exit();
+
+  if ((n = satoi(argv[0])) <= 0){
+      call_drawStringFormatted("Wrong argument 0\n", WHITE, LIGHT_GRAY, 2);
+      call_sleep(40);
+      call_exit();
+  }
+
+  if ((inc = satoi(argv[1])) == 0){
+      call_drawStringFormatted("Wrong argument 1\n", WHITE, LIGHT_GRAY, 2);
+      call_sleep(40);
+      call_exit();
+  }
+
+  if ((use_sem = satoi(argv[2])) < 0){
+      call_drawStringFormatted("Wrong argument 2\n", WHITE, LIGHT_GRAY, 2);
+      call_sleep(40);
+      call_exit();
+  }
+
 
   if (use_sem)
     if (!my_sem_open(SEM_ID, 1)) {
       call_drawStringFormatted("test_sync: ERROR opening semaphore\n", RED, BLACK, 2);
+        call_sleep(40);
       call_exit();
     }
 
@@ -47,13 +64,14 @@ uint64_t my_process_inc(uint64_t argc, char *argv[]) {
   }
 
   call_exit();
+
 }
 
-uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
+void test_sync(uint64_t argc, char *argv[]) {
   uint64_t pids[2 * TOTAL_PAIR_PROCESSES];
 
   if (argc != 2)
-    return -1;
+    call_exit();
 
   char *argvDec[] = {argv[1], "-1", argv[2], NULL};
   char *argvInc[] = {argv[1], "1", argv[2], NULL};
@@ -74,6 +92,6 @@ uint64_t test_sync(uint64_t argc, char *argv[]) { //{n, use_sem, 0}
   call_printIntFormatted(global, WHITE, BLACK, 2);
   call_drawLetterFromChar('\n');
 
-  call_sleep(20);
+  call_sleep(40);
   call_exit();
 }

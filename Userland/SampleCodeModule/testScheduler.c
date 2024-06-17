@@ -1,6 +1,7 @@
 #include <UserSyscalls.h>
 #include <io.h>
 #include <test.h>
+#include <user_lib.h>
 
 void testShceduler(int argc, char *argv[]) {
   call_clear();
@@ -40,9 +41,6 @@ void testShceduler(int argc, char *argv[]) {
 
   call_sleep(20);
 
-  /* call_drawRectangle(BLACK,0,0,call_getWidth(), call_getHeight());
-       call_setXBuffer(0);
-   call_setYBuffer(0);*/
   call_drawStringFormatted("START TEST PRIO :\n", WHITE, BLACK, 2);
   test_prio();
 
