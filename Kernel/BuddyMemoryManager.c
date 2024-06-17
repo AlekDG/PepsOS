@@ -42,28 +42,48 @@ void initManagerImpl(MemoryManagerADT manager) {
 
 BlockADT recListSearch(MemoryManagerADT manager, int order, int split){
     BlockADT current = &manager->freeLists[order];
+    BlockADT previous = NULL;
     while(current != NULL){
         if(current->isFree){
+            if(previous!=NULL&&current->nextBlock!=NULL)
+                previous->nextBlock=current->nextBlock;
             if(split){
-                //Partirlo a la mitad
-                //en block y block2
-                BlockADT block2;
-                insertIntoList(block2,order-1);
-                //Return la primera
+                int aux = current->size;
+                aux = aux/2;
+                BlockADT block2=(BlockADT)current+aux;
+                block2->startAddress=current+aux+sizeof(BlockCDT);
+                block2->size=aux-sizeof(BlockCDT);
+                block2->isFree=true;
+                block2->nextBlock=NULL;
+                current->nextBlock=block2;
+                current->size=aux;
+                current->isFree=false;
+                return current;
             } else {
                 return current;
             }
         }else{
+            if(current->nextBlock!=NULL)
+                previous = current;
             current = current->nextBlock;
         }
     }
     BlockADT newBlock = recListSearch(manager,order+1,TRUE);
+    if(previous!=NULL&&newBlock->nextBlock!=NULL)
+        previous->nextBlock=newBlock->nextBlock;
+    else if (previous==NULL)
+        //Asignar el newBlock como el primero
     if(split){
-        //Partirlo a la mitad
-        //en block y block2
-        BlockADT block2;
-        insertIntoList(block2,order-1);
-        //Return la primera
+        int aux = newBlock->size;
+        aux = aux/2;
+        BlockADT block2=(BlockADT)newBlock+aux;
+        block2->startAddress=newBlock+aux+sizeof(BlockCDT);
+        block2->size=aux-sizeof(BlockCDT);
+        block2->isFree=true;
+        block2->nextBlock=NULL;
+        newBlock->nextBlock=block2;
+        newBlock->size=aux;
+        newBlock->isFree=false;
     }
     return newBlock;
 }
