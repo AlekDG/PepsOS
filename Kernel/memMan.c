@@ -26,13 +26,14 @@ MemoryManagerADT systemMemory;
 MemoryManagerADT
 createMemoryManager(void *const restrict memoryForMemoryManager,
                     void *const restrict managedMemory) {
-  return createMemoryManagerImpl(memoryForMemoryManager, managedMemory);
+    return createMemoryManagerImpl(memoryForMemoryManager, managedMemory);
 }
 
 void initialize_memory(void) {
   systemMemory =
       createMemoryManager((void*)0x0000000000050000,(void*)0x0000000000500000);
 }
+
 
 void *allocMemory(size_t size) {
     if(size > BLOCK_MAX_SIZE)

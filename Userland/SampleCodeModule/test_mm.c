@@ -13,14 +13,14 @@ typedef struct MM_rq {
   uint32_t size;
 } mm_rq;
 
-uint64_t test_mm(uint64_t argc, char *argv[]) {
+void test_mm(uint64_t argc, char *argv[]) {
   mm_rq mm_rqs[MAX_BLOCKS];
   uint8_t rq;
   uint32_t total;
   uint64_t max_memory;
-    int testokflag = 0;
+  int testokflag = 0;
   if (argc != 1)
-    return -1;
+    call_exit();
   int numberOfMB = satoi(argv[1]);
     call_drawStringFormatted("Received Memory: ", BLACK, LIGHT_GRAY, 2);
     call_printInteger(numberOfMB);
@@ -47,7 +47,7 @@ max_memory = aux1;
         if (mm_rqs[rq].address) {
             total += mm_rqs[rq].size;
             call_drawStringFormatted("Address requested: ", BLACK, LIGHT_GRAY, 2);
-            call_printHex(mm_rqs[rq].address);
+            call_print_long_long_int((unsigned long long int)mm_rqs[rq].address);
             call_drawStringFormatted("\n", BLACK, LIGHT_GRAY, 2);
             rq++;
             call_drawStringFormatted("\nrequest ok\n", BLACK, LIGHT_GRAY, 2);
@@ -75,7 +75,7 @@ max_memory = aux1;
         if (!memcheck(mm_rqs[i].address, i, mm_rqs[i].size)) {
             call_drawStringFormatted("test_mm ERROR\n",
                                      WHITE, BLACK, 2);
-          return -1;
+          call_exit();
         }
 
     // Free

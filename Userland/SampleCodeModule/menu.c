@@ -8,23 +8,20 @@
 #include <stdint.h>
 #include <time.h>
 #include <user_lib.h>
-static int p;
 
 void hoverOverOption(Option *option) { option->isHovered = 1; }
 void deactivateHover(Option *option) { option->isHovered = 0; }
 
-// USAR ESTA FUNCION PARA PASAR A LA SIGUIENTE FUNCION DEL MENU
 void hoverOverNextoption(OptionMenu *optionMenu) {
 
-  // voy a iterar sobre el array de opciones para ver cual de todas esta ON
-  // solo habra una a la vez
+
   for (int i = 0; i < 6; i++) {
     if (optionMenu->options[i]->isHovered) {
       deactivateHover(optionMenu->options[i]);
-      if (i == 5) { // estoy en la ultima, salto a la primera
+      if (i == 5) {
         hoverOverOption(optionMenu->options[0]);
       } else {
-        hoverOverOption(optionMenu->options[i + 1]); // resalto la primera
+        hoverOverOption(optionMenu->options[i + 1]);
       }
       break;
     }
@@ -32,38 +29,36 @@ void hoverOverNextoption(OptionMenu *optionMenu) {
 
   call_setXBuffer(50);
   call_setYBuffer(50);
-  drawOptionMenuArray(optionMenu); // tengo que volver a renderizar todo el menu
+  drawOptionMenuArray(optionMenu);
 }
 
 void hoverOverPreviousOption(OptionMenu *optionMenu) {
   for (int i = 0; i < 6; i++) {
     if (optionMenu->options[i]->isHovered) {
       deactivateHover(optionMenu->options[i]);
-      if (i == 0) { // estoy en la primera, salto a la ultima
+      if (i == 0) {
         hoverOverOption(optionMenu->options[5]);
       } else {
-        hoverOverOption(optionMenu->options[i - 1]); // resalto la primera
+        hoverOverOption(optionMenu->options[i - 1]);
       }
       break;
     }
   }
   call_setXBuffer(50);
   call_setYBuffer(50);
-  drawOptionMenuArray(optionMenu); // tengo que volver a renderizar todo el menu
+  drawOptionMenuArray(optionMenu);
 }
 
-// ESTO NO SE SI SE VA A USAR
+
 void clickOption(Option *option) { option->isClicked = 1; }
 void unclickOption(Option *option) { option->isClicked = 0; }
 
-// todo
 
-// drawTriangle(){funcion que dibuja la flechita de las opciones}
 
 void drawOption(Option option, uint32_t *globalFGColor, uint32_t *globalXPos,
                 uint32_t *globalYPos) {
   call_setBGColor(WHITE);
-  call_setFGColor(PEPSIBLUE); // por seguridad
+  call_setFGColor(PEPSIBLUE);
   int globalSize = call_getSize();
   uint32_t globalBGColor = call_getBGColor();
   uint32_t currentFG = call_getFGColor();
@@ -73,35 +68,30 @@ void drawOption(Option option, uint32_t *globalFGColor, uint32_t *globalXPos,
   int borderLength = option.borde.length * letterWidth;
   int borderThickness = option.borde.thickness * globalSize;
 
-  // si esta hovereada tengo que cambiar el color del borde
   if (option.isHovered) {
-    *globalFGColor = RED; // hacer un define de colores pls xD
+    *globalFGColor = RED;
   }
 
-  // aca adentro asumo que tengo el buffer setedo correctamente, y voy a dibujar
-  // exactamente donde el recuadro
+
   call_drawRectangle(*globalFGColor, *globalXPos, *globalYPos,
                      borderLength + (2 * (borderThickness + gap)),
                      borderHeight + (2 * (borderThickness + gap)));
 
-  // empiezo a dibujar con offset de +thickness
+
   call_drawRectangle(globalBGColor, *globalXPos + borderThickness,
                      *globalYPos + borderThickness, borderLength + (2 * gap),
                      borderHeight + (2 * gap));
 
-  // desplazo el buffer de la esquina sup. izq.
-  // al centro del recuadro, para escribir la opcion
+
   *globalYPos += (borderThickness + gap);
-  *globalXPos += (borderThickness + gap); // dejo espacio de 3 letras
-  // vuelvo a cambiar el color porque el texto deberia ir normal
+  *globalXPos += (borderThickness + gap);
   *globalFGColor = currentFG;
 
-  // buffer seteado
+
   for (int i = 0; option.texto[i] != 0; i++) {
     call_drawLetterFromChar(option.texto[i]);
   }
 
-  // dejo el buffer al ppio del primer recuadro, a la izquierda
   *globalXPos -= (borderLength + borderThickness + gap);
   *globalYPos += (gap + borderThickness);
 }
@@ -111,7 +101,7 @@ void drawOptionMenuArray(OptionMenu *optionMenu) {
   call_setXBuffer(50);
   call_setYBuffer(50);
 
-  // dibujo todas las opciones
+
   for (int i = 0; i < 6; i++) {
     drawOption(*(optionMenu->options[i]), call_getFGColorPointer(),
                call_getXBufferPointer(), call_getYBufferPointer());
@@ -120,8 +110,7 @@ void drawOptionMenuArray(OptionMenu *optionMenu) {
         (2 *
          (call_getSize() *
           (optionMenu->options[0]
-               ->borde.height)))); // globalYPos+= 2*(globalSize *
-                                   // (optionMenu->options[0]->borde.height));
+               ->borde.height))));
   }
 }
 
@@ -132,7 +121,7 @@ void drawMenu() {
   drawPepsiman(width - 500, 0, 5);
   drawPepsos(width - 460, 500, 3);
 
-  // la primer opcion empieza hovereada
+
   Option snake1p = {0, 1, {4, 14, 13}, "Jugar Snake 1p"};
   Option snake2p = {0, 0, {4, 14, 13}, "Jugar Snake 2p"};
   Option hora = {0, 0, {4, 13, 13}, "Imprimir Hora"};
@@ -143,19 +132,14 @@ void drawMenu() {
   OptionMenu optionMenu = {
       {&snake1p, &snake2p, &hora, &registros, &consola, &restart}};
 
-  /*
-  modo de uso de consola de comandos:
-  -los comandos seran un solo string
-  -el espacio se utiliza para introducir el comando (SI LLEGAMOS A NECESITAR
-  ARGUMENTOS HAY QUE HACER AJUSTE)
-  */
+
 
   drawOptionMenuArray(&optionMenu);
   while (1) {
     char letter = call_pipe_read(STDIN);
     switch (letter) {
     case '\n':
-      if (optionMenu.options[0]->isHovered) { // jugar snake 1p
+      if (optionMenu.options[0]->isHovered) {
         char *argv[] = {"snake1"};
         call_createForegroundProcess(start_game, 0, argv, 4, NULL);
         return;
@@ -167,7 +151,6 @@ void drawMenu() {
         char aux[8];
         timeToStr(aux);
         call_drawStringFormatted(aux, WHITE, BLACK, 5);
-        // PEDIR TECLA
         call_setYBuffer(call_getYBuffer() + 130);
         call_setXBuffer(50);
         call_drawStringFormatted("->PRESIONE CUALQUIER TECLA PARA CONTINUAR",
@@ -179,12 +162,11 @@ void drawMenu() {
         call_regRead();
         call_pipe_read(STDIN);
         return;
-      } else if (optionMenu.options[4]->isHovered) { // consola.isHovered
+      } else if (optionMenu.options[4]->isHovered) {
         char *argv[] = {"consola"};
         call_createForegroundProcess(runConsole, 0, argv, 4, NULL);
-        // runConsole(&optionMenu);
         return;
-      } else if (optionMenu.options[5]->isHovered) // restart menu
+      } else if (optionMenu.options[5]->isHovered)
       {
         return;
       }
