@@ -310,9 +310,6 @@ void *getFunctionPtr(CommandType cmd, char *argv) {
   case CMD_IPC_PHYLO:
     stringCopyNaive("phy",argv);
     return run_Philosophers;
-  case CMD_PROCESSES_STATE:
-    stringCopyNaive("ps",argv);
-    return ps;
   default:
     return NULL;
   }
