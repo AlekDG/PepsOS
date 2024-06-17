@@ -20,9 +20,9 @@ void initManagerImpl(MemoryManagerADT manager);
 void *allocMemoryImpl(MemoryManagerADT manager, size_t size);
 void freeMemoryImpl(MemoryManagerADT manager, void *ptr);
 void memStateImpl(MemoryManagerADT const restrict memoryManager, unsigned long long int *freeMemory, unsigned long long int *totalMemory, unsigned long long int *allocatedMemory);
-int fast_log2(int X);
+int fast_log2Buddy(int X);
 uint64_t pow2(int i);
-void split_block(MemoryManagerADT  manager, int level);
+void split_block(MemoryManagerADT  manager, int level, BlockADT toSplit);
 void remove_from_free_list(MemoryManagerADT allocator, BlockADT block, int level);
 void add_to_free_list(MemoryManagerADT allocator, BlockADT block, int level) ;
 
@@ -62,21 +62,17 @@ void initManagerImpl(MemoryManagerADT manager) {
     manager->freeLists[POWER_OF_TWO_MAX_EXPONENT-1-MIN_EXP].isFree = TRUE ;
 }
 
-void split_block(MemoryManagerADT manager, int level) {
-    BlockADT block = &manager->freeLists[level];
-    remove_from_free_list(manager, block, level);
-
-    size_t size = block->size / 2;
+void split_block(MemoryManagerADT manager, int level, BlockADT toSplit) {
+    size_t size = toSplit->size / 2;
 
     // Calculate buddy block correctly
-    BlockADT buddy = (BlockADT)((char *)block->startAddress + size + sizeof(BlockCDT));
+    BlockADT buddy = (BlockADT)((char *)toSplit->startAddress + size + sizeof(BlockCDT));
     buddy->size = size;
     buddy->isFree = TRUE;
     buddy->nextBlock = NULL;
+    toSplit->nextBlock = buddy;
+    toSplit->size = size;
 
-    block->size = size;
-
-    add_to_free_list(manager, block, level - 1);
     add_to_free_list(manager, buddy, level - 1);
 }
 
@@ -87,18 +83,7 @@ void add_to_free_list(MemoryManagerADT allocator, BlockADT block, int level) {
     allocator->freeLists[level] = *block;
 }
 
-// Remove a block from the free list
-void remove_from_free_list(MemoryManagerADT allocator, BlockADT block, int level) {
-    BlockADT current = &allocator->freeLists[level];
 
-    while (current != NULL && current != block) {
-        current = current->nextBlock;
-    }
-
-    if (current == block) {
-        current = block->nextBlock;
-    }
-}
 
 
 
@@ -107,43 +92,23 @@ BlockADT recListSearch(MemoryManagerADT manager, int order, int split){
     BlockADT previous = NULL;
     while(current != NULL){
         if(current->isFree){
-            if(previous!=NULL&&current->nextBlock!=NULL)
+            if(previous!=NULL)
                 previous->nextBlock=current->nextBlock;
             if(split){
-                uint64_t aux = current->size;
-                aux = aux/2;
-                /*BlockADT block2=(BlockADT)current+aux;
-                block2->startAddress=(char *)current+aux+sizeof(BlockCDT);
-                block2->size=aux-sizeof(BlockCDT);
-                block2->isFree=TRUE;
-                block2->nextBlock=NULL;
-                current->nextBlock=block2;*/
-                split_block(manager, order);
-                current->size=aux;
-
-                current->isFree=FALSE;
-                return current;
-            } else {
-                return current;
+                split_block(manager, order, current);
             }
+            return current;
         }else{
-            if(current->nextBlock!=NULL)
-                previous = current;
+            previous = current;
             current = current->nextBlock;
         }
     }
     BlockADT newBlock = recListSearch(manager,order+1,TRUE);
-    if(previous!=NULL&&newBlock->nextBlock!=NULL)
+    if(previous!=NULL)
         previous->nextBlock=newBlock->nextBlock;
-    else if (previous==NULL)
-        //Asignar el newBlock como el primero
-        if(split){
-            uint64_t aux = newBlock->size;
-            aux = aux/2;
-            split_block(manager, order);
-            newBlock->size=aux;
-            newBlock->isFree=FALSE;
-        }
+    if(split){
+        split_block(manager, order, newBlock);
+    }
     return newBlock;
 }
 
@@ -155,7 +120,7 @@ void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
     }
 
 
-    int bsize = fast_log2(size);
+    int bsize = fast_log2Buddy(size);
 
     return recListSearch(manager, bsize, 0);
     /*BlockADT current = &manager->freeLists[bsize];
@@ -244,35 +209,16 @@ void memStateImpl(MemoryManagerADT const restrict memoryManager,
 		}
 	}*/
 }
+
+
 int fast_log2Buddy(int X) {
     if (X <= 0) {
         return -1;
     }
-    int log2 = 0;
-    // Use bit shifting to find the position of the highest set bit
-    if (X >> 16) {
-        X >>= 16;
-        log2 += 16;
-    }
-    if (X >> 8) {
-        X >>= 8;
-        log2 += 8;
-    }
-    if (X >> 4) {
-        X >>= 4;
-        log2 += 4;
-    }
-    if (X >> 2) {
-        X >>= 2;
-        log2 += 2;
-    }
-    if (X >> 1) {
-        log2 += 1;
-    }
+    int log2 = fast_log2(X);
     log2 = log2-MIN_EXP;
     if(log2 < 0){
         log2 = 0;
     }
     return log2;
 }
-
