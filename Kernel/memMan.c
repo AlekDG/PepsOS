@@ -1,4 +1,4 @@
-#ifdef USE_BUDDY
+#if USE_BUDDY==1
 #include <BuddyMemoryManager.h>
 #include <stddef.h>
 
@@ -23,15 +23,15 @@ void memState(unsigned long long int * freeMemory, unsigned long long int * tota
 
 MemoryManagerADT systemMemory;
 
-void initialize_memory(void) {
-  systemMemory =
-      createMemoryManager((void *)0x0000000000600000, 0x0000000002700000);
-}
-
 MemoryManagerADT
 createMemoryManager(void *const restrict memoryForMemoryManager,
                     void *const restrict managedMemory) {
   return createMemoryManagerImpl(memoryForMemoryManager, managedMemory);
+}
+
+void initialize_memory(void) {
+  systemMemory =
+      createMemoryManager((void *)0x0000000000600000, 0x0000000002700000);
 }
 
 void *allocMemory(size_t size) {
