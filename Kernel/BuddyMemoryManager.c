@@ -38,6 +38,38 @@ void initManagerImpl(MemoryManagerADT manager) {
     manager->freeLists[POWER_OF_TWO_MAX_EXPONENT-1].isFree = TRUE ;
 }
 
+
+
+BlockADT recListSearch(MemoryManagerADT manager, int order, int split){
+    BlockADT current = &manager->freeLists[order];
+    while(current != NULL){
+        if(current->isFree){
+            if(split){
+                //Partirlo a la mitad
+                //en block y block2
+                BlockADT block2;
+                insertIntoList(block2,order-1);
+                //Return la primera
+            } else {
+                return current;
+            }
+        }else{
+            current = current->nextBlock;
+        }
+    }
+    BlockADT newBlock = recListSearch(manager,order+1,TRUE);
+    if(split){
+        //Partirlo a la mitad
+        //en block y block2
+        BlockADT block2;
+        insertIntoList(block2,order-1);
+        //Return la primera
+    }
+    return newBlock;
+}
+
+
+
 void *allocMemoryImpl(MemoryManagerADT manager, size_t size) {
     if (size > manager->size || size <= 0) {  //MEMO: ver si puedo alocarlo, yo me entiendo
         return NULL;
