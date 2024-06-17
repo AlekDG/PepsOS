@@ -180,7 +180,7 @@ void copyArgvOnStack(char *rsp, int argc, char *argv[]) {
   for (int i = 0; i <= argc; i++) {
     int j = 0;
     newArgv[i] = rsp + charsCopyCount;
-    while (argv[i][j] != NULL) {
+    while (argv[i][j] != (uint64_t) NULL) {
       rsp[charsCopyCount++] = argv[i][j];
       j++;
     }
@@ -550,8 +550,8 @@ void sleep(int numberOfTicks) {
   }
 }
 
-int *getRunningProcessStdin() {
-  int toRet[2];
+int *getRunningProcessStdin() {   // hacer free
+  int* toRet = allocMemory(2);;
   toRet[0] = pcb.running->in_pipe;
   toRet[1] = pcb.running->out_pipe;
   return toRet;

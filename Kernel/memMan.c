@@ -29,6 +29,11 @@ createMemoryManager(void *const restrict memoryForMemoryManager,
     return createMemoryManagerImpl(memoryForMemoryManager, managedMemory);
 }
 
+void initialize_memory(void) {
+  systemMemory =
+      createMemoryManager((void *)0x0000000000600000,(void*) 0x0000000002700000);
+}
+
 
 void initialize_memory(void) {
   systemMemory =
