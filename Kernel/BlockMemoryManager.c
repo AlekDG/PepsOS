@@ -1,6 +1,8 @@
 #include <BlockMemoryManager.h>
 #include <lib.h>
 
+#define USER_MEMORY_SIZE  0xFFFFFFFFFFFAFFFF
+
 typedef struct MemoryManagerCDT {
   char *startAddress;
   unsigned long long int size;
