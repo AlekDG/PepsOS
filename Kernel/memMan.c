@@ -31,7 +31,7 @@ createMemoryManager(void *const restrict memoryForMemoryManager,
 
 void initialize_memory(void) {
   systemMemory =
-      createMemoryManager((void *)0x0000000000600000, 0x0000000002700000);
+      createMemoryManager((void *)0x0000000000600000,(void*) 0x0000000002700000);
 }
 
 void *allocMemory(size_t size) {
