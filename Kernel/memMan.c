@@ -35,12 +35,6 @@ void initialize_memory(void) {
 }
 
 
-void initialize_memory(void) {
-  systemMemory =
-      createMemoryManager((void *)0x0000000000600000, 0x0000000002700000);
-}
-
-
 void *allocMemory(size_t size) {
     if(size > BLOCK_MAX_SIZE)
         return NULL;
