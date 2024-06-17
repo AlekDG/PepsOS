@@ -20,6 +20,7 @@ typedef struct {
 
 int sem_for_pipe_man;
 instance pipe_inst[PIPES_AMOUNT];
+int get_free_instance();
 
 int create_pipe(char *id) {
     int length = string_length(id);
@@ -34,7 +35,7 @@ int create_pipe(char *id) {
 
         string_copy(id, new_pipe->read_sem_name);
         new_pipe->read_sem_name[length] = 'R';
-        new_pipe->read_sem_name[length + 1] = NULL;
+        new_pipe->read_sem_name[length + 1] = 0;
         int sem_read = create_sem(0, new_pipe->read_sem_name);
         if (sem_read == -1)
             return -1;

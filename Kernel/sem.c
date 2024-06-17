@@ -42,6 +42,8 @@ uint64_t create_sem(uint64_t val, char *id) {
   return indx;
 }
 
+int sem_dq_proc(int indx);
+
 void clear_sem(int index) {
   if (index < 0 || index >= SEM_AMOUNT)
     return;

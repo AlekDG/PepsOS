@@ -15,7 +15,7 @@ void freeMemory(void *ptr){
 }
 
 void memState(unsigned long long int * freeMemory, unsigned long long int * totalMemory, unsigned long long int * allocatedMemory){
-  buddyState(freeMemory,totalMemory,allocatedMemory);
+  buddyState((long unsigned int*)freeMemory,(long unsigned int*)totalMemory,(long unsigned int*)allocatedMemory);
 }
 
 #else
