@@ -2,10 +2,10 @@
 #define LIB_H
 #include <stdbool.h>
 #include <stdint.h>
-
+#include <stddef.h>
 #include "../../Shared/include/ps.h"
 
-#define NULL 0
+
 #define FALSE 0
 #define TRUE 1
 

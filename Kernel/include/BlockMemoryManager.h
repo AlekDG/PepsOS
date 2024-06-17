@@ -1,7 +1,7 @@
 #ifndef BLOCK_MEMORY_MANAGER_H
 #define BLOCK_MEMORY_MANAGER_H
 
-#include "memMan.h"
+#include <memMan.h>
 typedef struct BlockCDT *BlockADT;
 
 MemoryManagerADT
