@@ -110,7 +110,7 @@ int changePriority(int pid, int priority);
 /**
  * Makes an array with the information of each process on the system.
  * @return An array cointaning the information of the procceses null terminated.
- * Must be free by calee when its no longer needed
+ * Must be free by calee when its no longer needed                           -> verificar si hago eso en ps
  */
 processInfo *getAllProcessInfo(int *count);
 
