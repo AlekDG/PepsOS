@@ -137,10 +137,10 @@ void printProcessInfo(processInfo *process) {
   }
   drawStringDef("  ");
   drawStringDef("0x");
-  printHex(process->rsp);
+  printHex((uint64_t) process->rsp);
   drawStringDef("  ");
   drawStringDef("0x");
-  printHex(process->rbp);
+  printHex((uint64_t) process->rbp);
   newLine();
 }
 
