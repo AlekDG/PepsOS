@@ -356,7 +356,7 @@ void print_long_long_int(unsigned long long int num) {
   }
 }
 
-void printHex(int num) {
+void printHex(uint64_t num) {
   char buffer[8];
   int index = 0;
 
