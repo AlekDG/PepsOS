@@ -219,27 +219,6 @@ void drawLetterResizable(uint8_t letter[13][8], uint32_t x_offset,
   }
 }
 
-void write(char string[], uint32_t x_offset, uint32_t y_offset) {
-  uint16_t myHeight = VBE_mode_info->height;
-  uint16_t myWidth = VBE_mode_info->width;
-
-  uint8_t letterBuffer[13][8] = {0};
-
-  for (int i = 0; string[i] != 0; i++) {
-    if (x_offset + (globalSize * 8) >=
-        myWidth) { // si se pasa ya se que la letra no va a entrar
-      x_offset = 0;
-      y_offset += (13 * globalSize);
-      if (y_offset >= myHeight) {
-        return;
-      }
-    }
-    getLetter(string[i], letterBuffer);
-    drawLetterResizable(letterBuffer, x_offset, y_offset);
-    x_offset += (8 * globalSize);
-  }
-}
-
 void moveBuffer() {
   if (globalXPos + (globalSize * 8) >= width) {
     if (globalYPos + (globalSize * 13) >= height) {
@@ -270,7 +249,7 @@ char drawLetterBuffered() {
     return 0 ;
   }
   uint8_t buffer[13][8] = {0};
-  getLetter(letter, buffer);
+  getLetter(letter,buffer);
   drawLetterResizable(buffer, globalXPos, globalYPos);
   moveBuffer();
   return letter;
@@ -287,7 +266,7 @@ void drawLetterFromChar(char letter) {
     return;
   } 
   uint8_t buffer[13][8] = {0};
-  getLetter(letter, buffer);
+  getLetter(letter,buffer);
   drawLetterResizable(buffer, globalXPos, globalYPos);
   moveBuffer();
 }

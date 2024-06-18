@@ -1,6 +1,8 @@
 #ifndef FONT_H
 #define FONT_H
 
-void getLetter(unsigned int offset, int toReturn[8][13]);
+#include <stdint.h>
+
+void getLetter(unsigned int offset, uint8_t toReturn[13][8]);
 
 #endif
