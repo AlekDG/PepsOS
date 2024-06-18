@@ -41,7 +41,7 @@ struct vbe_mode_info_structure {
   uint8_t reserved_position;
   uint8_t direct_color_attributes;
 
-  uint32_t framebuffer; // physical address of the linear frame buffer; write
+  uint64_t framebuffer; // physical address of the linear frame buffer; write
                         // here to draw to the screen
   uint32_t off_screen_mem_off;
   uint16_t off_screen_mem_size; // size of memory in the framebuffer but not
@@ -189,10 +189,6 @@ void drawLetter(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset,
 
 void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size) {
   uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
-  uint64_t offset = (x * (VBE_mode_info->bpp / 8)) + (y * VBE_mode_info->pitch);
-
-  uint16_t myWidth = (uint16_t )VBE_mode_info->width;
-  uint16_t myHeight = (uint16_t )VBE_mode_info->height;
   uint16_t myPitch = (uint16_t )VBE_mode_info->pitch;
 
   // dibujo un cuadrado de tamaño size*size ---> cuando size=1 es equivalente a
@@ -224,8 +220,8 @@ void drawLetterResizable(uint8_t letter[13][8], uint32_t x_offset,
 }
 
 void write(char string[], uint32_t x_offset, uint32_t y_offset) {
-  uint16_t myHeight = (uint16_t *)VBE_mode_info->height;
-  uint16_t myWidth = (uint16_t *)VBE_mode_info->width;
+  uint16_t myHeight = VBE_mode_info->height;
+  uint16_t myWidth = VBE_mode_info->width;
 
   uint8_t letterBuffer[13][8] = {0};
 
@@ -271,7 +267,7 @@ char drawLetterBuffered() {
     return 0;
   else if (letter == '\n') {
     newLine();
-    return;
+    return 0 ;
   }
   uint8_t buffer[13][8] = {0};
   getLetter(letter, buffer);
