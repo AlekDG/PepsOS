@@ -138,7 +138,7 @@ void philosopher(int argc, char **argv) {
 }
 
 void startPhilosopher(int index) {
-    if(index > 32){
+    if(index >= 32){
         index %= 32;
     }
     call_setXBuffer(messagesXPos);
@@ -153,6 +153,9 @@ void startPhilosopher(int index) {
     my_itoa(index, philoIndexStr, 10);
 
     char *params[] = {philoIndexStr, NULL};
+    if(index >= 8){
+         index %= 8;
+    }
     philoPids[index] = call_createBackgroundProcess(philosopher, 1, params, 4, 0);
 }
 
@@ -170,7 +173,7 @@ void initializePhilosophers() {
 }
 
 void stopPhilosopher(int index) {
-    if(index > 32){
+    if(index >= 32){
         index %= 32;
     }
     call_setXBuffer(messagesXPos);
@@ -181,6 +184,9 @@ void stopPhilosopher(int index) {
     call_drawStringFormatted("\n", WHITE, BLACK, 2);
     call_wait(SHORT_WAIT);
     needToPaintTheScreen = 1;
+        if(index >= 8){
+         index %= 8;
+    }
     if (philoPids[index] != -1) {
         call_kill(philoPids[index]);
         philoPids[index] = -1;
