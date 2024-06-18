@@ -15,9 +15,9 @@ void interpretCommand(char command[]);
 void runConsole() {
   call_set_color(DARK_GRAY, LIGHT_GRAY);
   call_clear();
-  char internalBuffer[50] = {0}; // tamaño maximo de 50 chars
+  char internalBuffer[50] = {0};
   int bufferSize = 0;
-  int consoleRunning = 1; // flag de corte de ejecucion
+  int consoleRunning = 1;
   char currentLetter;
 
   while (consoleRunning) {
@@ -33,18 +33,18 @@ void runConsole() {
       call_setXBuffer(0);
       call_setYBuffer(10);
       break;
-    case 0: // omite teclas no asignadas
+    case 0:
       break;
-    case 27: // current letter=esc
+    case 27:
       call_exit();
-    case '\b': // borrado de caracter
+    case '\b':
       if (bufferSize <= 0) {
         bufferSize = 0;
         break;
       }
       call_deleteLetterBuffered();
       internalBuffer[bufferSize--] =
-          0; // borra el ultimo caracter y reduce el tamaño del buffer
+          0;
       break;
     default:
       if (bufferSize >= 50) {
@@ -52,7 +52,7 @@ void runConsole() {
       }
       call_drawLetterFromChar(currentLetter);
       internalBuffer[bufferSize++] =
-          currentLetter; // se guarda la letra escrita
+          currentLetter;
       break;
     }
   }
@@ -317,7 +317,7 @@ void *getFunctionPtr(CommandType cmd, char *argv) {
 
 void drawConsole() {
   call_drawRectangle(LIGHT_GRAY, 0, 0, call_getWidth(),
-                     call_getHeight()); // justo al final de pepsiman
+                     call_getHeight());
   call_setFGColor(DARK_GRAY);
   call_setBGColor(LIGHT_GRAY);
   int currentsize = call_getSize();
@@ -366,9 +366,8 @@ void printHelp() {
   call_setSize(currentsize);
 }
 void enlargeFontSize() { call_setSize(call_getSize() + 1); }
-void decreaseFontSize() { // no actualiza el tamño del menu mientras este en la
-                          // consola
-  call_setSize(call_getSize() - 1); // es comportamiento esperado
+void decreaseFontSize() {
+  call_setSize(call_getSize() - 1);
 }
 
 void printMemState() {

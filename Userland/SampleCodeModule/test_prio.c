@@ -4,11 +4,9 @@
 #include <test_util.h>
 
 #define MINOR_WAIT                                                             \
-  1000000 // TODO: Change this value to prevent a process from flooding the
-          // screen
+  1000000
 #define WAIT                                                                   \
-  20// TODO: Change this value to make the wait long enough to see theese
-           // processes beeing run at least twice
+  20
 
 #define TOTAL_PROCESSES 3
 #define LOWEST 0  // TODO: Change as required

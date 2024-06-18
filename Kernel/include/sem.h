@@ -22,7 +22,6 @@ typedef struct {
 } semaphore;
 
 void start_sems(void);
-// Save the return value to use as an argument for post and wait
 uint64_t create_sem(uint64_t val, char *id);
 uint64_t sem_post(int index);
 uint64_t sem_wait(int index);

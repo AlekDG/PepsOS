@@ -5,10 +5,10 @@
 #include <interrupts.h>
 
 
-#pragma pack(push) /* Push de la alineación actual. Warning inevitable porque el stack termina vacio */
-#pragma pack(1)    /* Alinear las siguiente estructuras a 1 byte */
+#pragma pack(push)
+#pragma pack(1)
 
-/* Descriptor de interrupcion */
+
 typedef struct {
   uint16_t offset_l, selector;
   uint8_t cero, access;
@@ -16,9 +16,9 @@ typedef struct {
   uint32_t offset_h, other_cero;
 } DESCR_INT;
 
-#pragma pack(pop) /* Reestablece la alinceación actual */
+#pragma pack(pop)
 
-DESCR_INT *idt = (DESCR_INT *)0; // IDT de 255 entradas
+DESCR_INT *idt = (DESCR_INT *)0;
 
 static void setup_IDT_entry(int index, uint64_t offset);
 
@@ -31,7 +31,6 @@ void load_idt() {
   setup_IDT_entry(0x00, (uint64_t)&_exception00Handler);
   setup_IDT_entry(0x06, (uint64_t)&_exception06Handler);
 
-  // Solo interrupcion timer tick habilitadas
   picMasterMask(0xFC);
   picSlaveMask(0xFF);
 }

@@ -18,8 +18,7 @@ uint32_t faceStartingX2;
 uint32_t faceStartingY2;
 
 uint8_t delayTicksTwo =
-    DEFAULT_DIFFICULTY_LEVEL; // Modificarlo segun el grado de dificultad,
-                              // cuanto mas alto mas dificil
+    DEFAULT_DIFFICULTY_LEVEL;
 
 void start_gameTwo() {
   call_begin_gameplay();
@@ -108,7 +107,7 @@ uint32_t seedTwo;
 
 uint32_t randTwo_() {
   seedTwo = (seedTwo * 1664525 + 1013904223) &
-            0xFFFFFFFF; // Linear Congruential Generator
+            0xFFFFFFFF;
   return seedTwo;
 }
 
@@ -151,7 +150,7 @@ uint8_t checkSelfCollisionTwo(uint32_t x, uint32_t y, struct Snake *snake) {
         x + SQUARE_SIZE > snake->body[i].x &&
         y < snake->body[i].y + SQUARE_SIZE &&
         y + SQUARE_SIZE > snake->body[i].y) {
-      return 1; // Colisiona
+      return 1;
     }
   }
   return 0;

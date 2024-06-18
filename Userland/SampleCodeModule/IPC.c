@@ -23,7 +23,6 @@ void wc() {
   }
   call_exit();
 }
-// Only meant to be used in is_a_vowel so we assume that c is at least 65
 char to_lowercase(char c) {
   if (c < 90)
     return c += 32;

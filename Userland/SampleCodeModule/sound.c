@@ -1,7 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <UserSyscalls.h>
-#include <stdint.h>
 
 void playSound(uint32_t freq, uint32_t ticks) { call_beep(freq, ticks); }
 
@@ -74,7 +73,6 @@ void playEndingSound() {
   playDSharp4(18);
 }
 
-// c5 e5 g5 c6 g5 c6
 
 void playStartingSound() {
   playC5(4);
@@ -85,8 +83,7 @@ void playStartingSound() {
   playC6(9);
 }
 
-// megalovania
-// d4 d5 a4 g#4 g4 f4 d4 f4 g4
+
 void playMegalovania() {
   playD4(2);
   playD4(2);

@@ -207,7 +207,7 @@ void drawFancyMenu(int x_start, int y_start, int size)
         for (int y = y_start, j = 0; y < y_start + 25 * size; j++)
         {
             if (fancymenu[j][i] != 0)
-            { // deberia skippear el espacio vacio
+            {
                 call_putpixelResizable(fancycolors[fancymenu[j][i]], x, y, size);
             }
             y += size;

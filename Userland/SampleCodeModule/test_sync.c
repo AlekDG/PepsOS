@@ -9,11 +9,11 @@
 #define SEM_ID "sem"
 #define TOTAL_PAIR_PROCESSES 2
 
-int64_t global; // shared memory
+int64_t global;
 
 void slowInc(int64_t *p, int64_t inc) {
   uint64_t aux = *p;
-  my_yield(); // This makes the race condition highly probable
+  my_yield();
   aux += inc;
   *p = aux;
 }

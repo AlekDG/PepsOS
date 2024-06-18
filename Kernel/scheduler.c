@@ -14,13 +14,6 @@ static int nextPid = 0;
 
 static processTable pcb;
 
-/*
-la idea es tener una lista de procesos ready. B -> C -> D donde runningProcess =
-A y cuando se cumple el quantum A pasa al final de la lista entonces queda
-running = B y lastProc = A quedando la lista D -> C -> A (osea aplicamos round
-robin). Cuando un proc se bloquea pasa a la lista de bloqueados, al desbloquear
-pasa o al final o al principio de ready y se llama al scheduler
-*/
 
 Process *createProcessStruct(newProcess process, int argc, char *argv[]);
 
@@ -31,10 +24,6 @@ void setPriorityQueuesNull() {
   }
 }
 
-/**
- * Create a new process table
- * @return a new process table
- */
 processTable *createPCB(void) {
   pcb.processCount = 0;
   pcb.running = NULL;
@@ -95,13 +84,9 @@ void decrementKidsCount(int pid) {
  */
 int getPid() { return pcb.running->pid; }
 
-// ret 1 si lo bloqueo, 0 si no
 int block(int pid) {
-  // busco el proceso en las listas de ready y lo paso a blocked
-  // si el proceso no esta en ready, no hago nada
   if (pcb.running->pid == pid) {
     pcb.running->state = BLOCKED;
-    // Interrupt 0x20 para hacer el cambio de contexto
     fireTimerInt();
     return 1;
   }
@@ -135,10 +120,7 @@ int block(int pid) {
   return 0;
 }
 
-// ret 1 si lo paso a ready, 0 si no
 int unblock(int pid) {
-  // busco el proceso en la lista de block y lo paso a ready
-  // si el proceso no esta en block, no hago nada
   Process *aux = pcb.blocked;
   if (aux != NULL && aux->pid == pid) {
     aux->state = READY;
@@ -196,14 +178,14 @@ Process *createProcessStruct(newProcess process, int argc, char *argv[]) {
   copyArgvOnStack((char *)startAdress, argc, argv);
   void *newProcessStack =
       startAdress +
-      PROCESS_STACK_SIZE; // VER DE AGREGAR VERIFICACION ret == NULL
+      PROCESS_STACK_SIZE;
   newProcessStack =
       prepareStack(newProcessStack, (uint64_t)process, argc, startAdress);
-  Process *newProcess = allocMemory(sizeof(Process)); // ACA SAME
+  Process *newProcess = allocMemory(sizeof(Process));
   newProcess->pid = nextPid++;
   newProcess->priority = 0;
   newProcess->state = READY;
-  newProcess->rsp = newProcessStack /*+ lo que agregue en prepareStack*/;
+  newProcess->rsp = newProcessStack;
   newProcess->rbp = newProcessStack;
   newProcess->next = NULL;
   newProcess->memStartAdress = startAdress;
@@ -217,9 +199,9 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,
   Process *newProcess;
   if (0 <= priority && priority < MAX_PRIORITY) {
     newProcess = createProcessStruct(
-        process, argc, argv); // AGREGAR CHECK si es null hay error
+        process, argc, argv);
     newProcess->tipo =
-        tipo; // AGREGAR COMO ARGUMENTO, ESTO ES PARA DEBUG RAPIDO
+        tipo;
     pcb.processCount++;
     newProcess->priority = priority;
     if (rw_pipes == 0) {
@@ -230,14 +212,13 @@ int createProcess(newProcess process, int argc, char *argv[], int priority,
       newProcess->out_pipe = rw_pipes[1];
     }
   } else {
-    return -1; // ERROR
+    return -1;
   }
 
   if (pcb.running != NULL) {
     newProcess->parentPID = pcb.running->pid;
     pcb.running->kidsCount++;
   } else {
-    // es el primer proceso
     newProcess->parentPID = 0;
   }
   if (pcb.priorityQueue[priority].ready == NULL) {
@@ -302,7 +283,7 @@ int killReady(int pid, int *parent) {
   }
   return 0;
 }
-// retorna 1 si lo mato, 0 si no
+
 int kill(int pid) {
   int parentPid;
   if (pcb.running->pid == pid) {
@@ -330,13 +311,11 @@ void startFirstProcess() {
 
 int createBackgroundProcess(newProcess process, int argc, char *argv[],
                             int priority, int *rw_pipes) {
-  // no bloqueo el actual
   return createProcess(process, argc, argv, priority, BACKGROUND, rw_pipes);
 }
 
 int createForegroundProcess(newProcess process, int argc, char *argv[],
                             int priority, int *rw_pipes) {
-  // bloqueo el actual
   int pid = createProcess(process, argc, argv, priority, FOREGROUND, rw_pipes);
   block(pcb.running->pid);
   return pid;
@@ -357,16 +336,9 @@ void exit() {
   fireTimerInt();
 }
 
-/**
- * Renunciar al cpu
- * Si no hay procesos libres se asegura que seguira ejecutando el proceso
- * llamador
- */
+
 void yield() { fireTimerInt(); }
 
-/// @brief
-/// @param rsp
-/// @return
 void *priorityScheduler(void *rsp, void *rbp) {
   Process *running = pcb.running;
   running->rbp = rbp;
@@ -375,31 +347,27 @@ void *priorityScheduler(void *rsp, void *rbp) {
     freeMemory(running->memStartAdress);
     freeMemory(running);
     pcb.processCount--;
-    pcb.running = pcb.halt; // si encuentro algun prceso ready despues lo cambio
+    pcb.running = pcb.halt;
   } else if (running->state == BLOCKED) {
     pcb.running->next = pcb.blocked;
     pcb.blocked = pcb.running;
     pcb.running = pcb.halt;
   }
 
-  // el proceso cumplio su quantum
   if (pcb.running->priority > 0)
     pcb.running->priority--;
 
-  // busco el primer ready con mayor prioridad para hacer el switch
   for (int i = MAX_PRIORITY - 1; 0 <= i; i--) {
-    // Process* ready = pcb.priorityQueue[i].ready;
-    // Process* lastReady = pcb.priorityQueue[i].lastReady;
+
     if (pcb.priorityQueue[i].ready == NULL) {
-      // No hay procs ready con prioridad i
       if (pcb.running->priority == i) {
-        return pcb.running->rsp; // Le doy un quantum mas
+        return pcb.running->rsp;
       }
-      continue; // busco en prioridad i-1
+      continue;
     }
 
     if (pcb.running ==
-        pcb.halt) { // si es halt,no quiero ponerlo en la lista de ready
+        pcb.halt) {
       pcb.running = pcb.priorityQueue[i].ready;
       pcb.priorityQueue[i].ready = pcb.priorityQueue[i].ready->next;
       if (pcb.priorityQueue[i].ready == NULL) {
@@ -483,12 +451,6 @@ int changeReadyProcessPriority(int pid, int priority) {
   return 0;
 }
 
-/**
- * Change the priority of a process
- * @param pid the process id
- * @param priority the new priority
- * @return 1 if the priority was changed, 0 if not
- */
 int changePriority(int pid, int priority) {
   if (priority < 0 || priority >= MAX_PRIORITY) {
     return 0;
@@ -525,11 +487,7 @@ void copyListOnArrayFromIndex(int *indexCount, processInfo *procs,
   }
 }
 
-/**
- * Makes an array with the information of each process on the system.
- * @return An array cointaning the information of the procceses null terminated.
- * Must be free by calee when its no longer needed
- */
+
 processInfo *getAllProcessInfo(int *count) {
   processInfo *procs = allocMemory(pcb.processCount * sizeof(processInfo));
   int indexCount = 0;
@@ -552,8 +510,8 @@ void sleep(int numberOfTicks) {
   }
 }
 
-int *getRunningProcessStdin() {   // hacer free
-  int* toRet = allocMemory(2);;
+int *getRunningProcessStdin() {
+  int* toRet = allocMemory(2);
   toRet[0] = pcb.running->in_pipe;
   toRet[1] = pcb.running->out_pipe;
   return toRet;

@@ -2,34 +2,28 @@
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <font.h>
 #include <lib.h>
-#include <naiveConsole.h>
-#include <stdint.h>
-#include <time.h>
 #include <video.h>
 
 struct vbe_mode_info_structure {
   uint16_t
-      attributes; // deprecated, only bit 7 should be of interest to you, and it
-                  // indicates the mode supports a linear frame buffer.
-  uint8_t window_a;     // deprecated
-  uint8_t window_b;     // deprecated
-  uint16_t granularity; // deprecated; used while calculating bank numbers
+      attributes;
+  uint8_t window_a;
+  uint8_t window_b;
+  uint16_t granularity;
   uint16_t window_size;
   uint16_t segment_a;
   uint16_t segment_b;
-  uint32_t win_func_ptr; // deprecated; used to switch banks from protected mode
-                         // without returning to real mode
-  uint16_t pitch;        // number of bytes per horizontal line
-  uint16_t width;        // width in pixels
-  uint16_t height;       // height in pixels
-  uint8_t w_char;        // unused...
-  uint8_t y_char;        // ...
+  uint32_t win_func_ptr;
+  uint16_t pitch;
+  uint16_t width;
+  uint16_t height;
+  uint8_t w_char;
+  uint8_t y_char;
   uint8_t planes;
-  uint8_t bpp;   // bits per pixel in this mode
-  uint8_t banks; // deprecated; total number of banks in this mode
+  uint8_t bpp;
+  uint8_t banks;
   uint8_t memory_model;
-  uint8_t bank_size; // deprecated; size of a bank, almost always 64 KB but may
-                     // be 16 KB...
+  uint8_t bank_size;
   uint8_t image_pages;
   uint8_t reserved0;
 
@@ -43,11 +37,9 @@ struct vbe_mode_info_structure {
   uint8_t reserved_position;
   uint8_t direct_color_attributes;
 
-  uint64_t framebuffer; // physical address of the linear frame buffer; write
-                        // here to draw to the screen
+  uint64_t framebuffer;
   uint32_t off_screen_mem_off;
-  uint16_t off_screen_mem_size; // size of memory in the framebuffer but not
-                                // being displayed on the screen
+  uint16_t off_screen_mem_size;
   uint8_t reserved1[206];
 } __attribute__((packed));
 
@@ -98,7 +90,7 @@ void setYBuffer(uint16_t yPos) { globalYPos = yPos; }
 
 void putpixel(uint32_t hexColor, uint32_t x, uint32_t y) {
   uint8_t *framebuffer =
-      (uint8_t *)VBE_mode_info->framebuffer; // FRAMEBUFFER ES VRAM
+      (uint8_t *)VBE_mode_info->framebuffer;
 
   uint64_t offset = (x * (VBE_mode_info->bpp / 8)) + (y * VBE_mode_info->pitch);
 
@@ -175,15 +167,12 @@ void drawLetter(uint8_t letter[13][8], uint32_t hexColor, uint32_t x_offset,
 
   for (int i = 0; i < 13; i++) {
     for (int j = 0; j < 8;
-         j++) { // cada elemento de la matriz lo represento con 2 pixeles
+         j++) {
       if (letter[12 - i][7 - j] == 1) {
         putpixel(hexColor, j + x_offset, i + y_offset);
-        // i++;
-        // putpixel(hexColor, i+x_offset, j+y_offset);
+
       } else {
         putpixel(0xFFFFFF, j + x_offset, i + y_offset);
-        // i++;
-        // putpixel(0xFFFFFF, i+x_offset, j+y_offset);
       }
     }
   }
@@ -193,8 +182,6 @@ void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size) {
   uint8_t *framebuffer = (uint8_t *)VBE_mode_info->framebuffer;
   uint16_t myPitch = (uint16_t )VBE_mode_info->pitch;
 
-  // dibujo un cuadrado de tamaño size*size ---> cuando size=1 es equivalente a
-  // hacer putpixel
   for (int i = 0; i < size; i++) {
     for (int j = 0; j < size; j++) {
       uint64_t offset =
@@ -203,7 +190,6 @@ void putpixelResizable(uint32_t hexColor, uint32_t x, uint32_t y, int size) {
       framebuffer[offset + 1] = (hexColor >> 8) & 0xFF;
       framebuffer[offset + 2] = (hexColor >> 16) & 0xFF;
     }
-    // framebuffer+=myPitch;
   }
 }
 void drawLetterResizable(uint8_t letter[13][8], uint32_t x_offset,
@@ -224,7 +210,7 @@ void drawLetterResizable(uint8_t letter[13][8], uint32_t x_offset,
 void moveBuffer() {
   if (globalXPos + (globalSize * 8) >= width) {
     if (globalYPos + (globalSize * 13) >= height) {
-      clear(); // estoy al final, limpio la pantalla
+      clear();
     } else {
       globalYPos += (globalSize * 13);
       globalXPos = 0;
@@ -234,7 +220,6 @@ void moveBuffer() {
   }
 }
 
-// posiciona el buffer en la nueva linea-->vertical tab+carriage return
 void newLine() {
   if (globalYPos + 13 * globalSize < height) {
     globalXPos = 0;
@@ -274,13 +259,9 @@ void drawLetterFromChar(char letter) {
 }
 
 void backtrackBuffer() {
-  // tengo que hacer putpixel del color del bg
-  // mover el buffer para atras con 1*size
   if (globalXPos < globalSize * 8) {
-    // estoy al ppio del buffer con x=0
-    // o borre el primer caracter y X vale mas que width xq es unsigned
     if (globalYPos < globalSize * 13) {
-      return; // nada que borrar
+      return;
     } else {
       globalYPos -= globalSize * 13;
       globalXPos = ((getFullWidth() * 8) / 8) - (globalSize * 8);
@@ -293,7 +274,7 @@ void backtrackBuffer() {
 void deleteLetterBuffered() {
   backtrackBuffer();
   drawRectangle(globalBGColor, globalXPos, globalYPos, globalSize * 8,
-                globalSize * 13); // dibujo un rectangulo de color BGColor
+                globalSize * 13);
 }
 
 void printInteger(int num) {
@@ -307,7 +288,6 @@ void printInteger(int num) {
     index++;
   }
 
-  // Reverse the hexadecimal array
   for (int i = index - 1; i >= 0; i--)
     drawLetterFromChar(buffer[i]);
 }
@@ -347,7 +327,6 @@ void printHex(uint64_t num) {
     index++;
   }
 
-  // Reverse the hexadecimal array
   for (int i = index - 1; i >= 0; i--)
     drawLetterFromChar(buffer[i]);
 }
@@ -361,7 +340,6 @@ void drawLetterFormatted(char letter, uint32_t fg, uint32_t bg, uint32_t size) {
   globalSize = size;
   drawLetterFromChar(letter);
 
-  // dejo los valores como estaban
   globalFGColor = currentfg;
   globalBGColor = currentbg;
   globalSize = currentsize;
@@ -380,7 +358,6 @@ void drawStringFormatted(char str[], uint32_t fg, uint32_t bg, uint32_t size) {
     drawLetterFromChar(str[i]);
   }
 
-  // dejo los valores como estaban
   globalFGColor = currentfg;
   globalBGColor = currentbg;
   globalSize = currentsize;
@@ -395,7 +372,6 @@ void printIntFormatted(int num, uint32_t fg, uint32_t bg, uint32_t size) {
   globalSize = size;
   printInteger(num);
 
-  // dejo los valores como estaban
   globalFGColor = currentfg;
   globalBGColor = currentbg;
   globalSize = currentsize;

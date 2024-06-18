@@ -187,9 +187,6 @@ void drawMenu() {
   }
 }
 
-/*===========================
-Menu para el snake
-=============================*/
 
 void drawEndingContext() {
   int half_width = call_getWidth() / 2;

@@ -17,18 +17,6 @@ void *memset(void *destination, int32_t c, uint64_t length) {
 }
 
 void *memcpy(void *destination, const void *source, uint64_t length) {
-  /*
-   * memcpy does not support overlapping buffers, so always do it
-   * forwards. (Don't change this without adjusting memmove.)
-   *
-   * For speedy copying, optimize the common case where both pointers
-   * and the length are word-aligned, and copy word-at-a-time instead
-   * of byte-at-a-time. Otherwise, copy by bytes.
-   *
-   * The alignment logic below should be portable. We rely on
-   * the compiler to be reasonably intelligent about optimizing
-   * the divides and modulos out. Fortunately, it is.
-   */
   uint64_t i;
 
   if ((uint64_t)destination % sizeof(uint32_t) == 0 &&
@@ -224,7 +212,7 @@ void printRegs(void) {
 #define MONTH 0x08
 #define YEAR 0x09
 
-unsigned char clock(unsigned char mode); // esta en clock.asm
+unsigned char clock(unsigned char mode);
 
 unsigned int decode(unsigned char time) {
   return (time >> 4) * 10 + (time & 0x0F);
@@ -248,17 +236,12 @@ unsigned int string_length(const char *str) {
     ;
   return length;
 }
-/*Warning: Unsafe
- * Only use when you know "to" has more memory allocated to it than "from"
- * Or you will be writing over stuff you don't mean to
- */
+
 void string_copy(char *from, char *to) {
   int i = 0;
-  // Copy string contents
   for (; from[i]; i++) {
     to[i] = from[i];
   }
-  // copy NULL termination
   to[i] = from[i];
 }
 int same_string(char *s1, char *s2) {
@@ -276,7 +259,6 @@ int fast_log2(int X) {
     return -1;
   }
   int log2 = 0;
-  // Use bit shifting to find the position of the highest set bit
   if (X >> 16) {
     X >>= 16;
     log2 += 16;
@@ -304,9 +286,8 @@ int log2_fast_long(unsigned long long int X) {
     return -1;
   }
   int log2 = 0;
-  // Use bit shifting to find the position of the highest set bit
   if (X >> 32) {
-    X >>= 32; //    Este warning impactaria la portabilidad, pero no lo vamos a portear.
+    X >>= 32;
     log2 += 32;
   }
   if (X >> 16) {

@@ -1,6 +1,5 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
-//TODO: revisar codigo y hacer format. Hacer informe. Ver porque se rompe test con maxProcesses = 50
 #include "../../Shared/include/ps.h"
 #include <stdint.h>
 
@@ -121,6 +120,7 @@ int wait();
 int *getRunningProcessPipes();
 
 Process *get_current_proc();
+
 // 1 for Foreground, 0 for background
 int currentProcType();
 

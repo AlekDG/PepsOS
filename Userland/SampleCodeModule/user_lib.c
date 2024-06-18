@@ -4,11 +4,9 @@
 
 void copyString(char *from, char *to) {
   int i = 0;
-  // Copy string contents
   for (; from[i]; i++) {
     to[i] = from[i];
   }
-  // copy NULL termination
   to[i] = from[i];
 }
 
@@ -22,7 +20,7 @@ int compareStrings(char *s1, char *s2) {
       return -1;
     }
     s1++;
-    s2++; // sigo comparando
+    s2++;
   }
   if (*s1 != 0 && *s2 == 0) {
     return 1;
@@ -30,7 +28,7 @@ int compareStrings(char *s1, char *s2) {
   if (*s1 == 0 && *s2 != 0) {
     return -1;
   }
-  return 0; // ambos son iguales
+  return 0;
 }
 
 void stringTokenizer(char *string, char *s1, char *s2, char token) {
@@ -90,7 +88,6 @@ unsigned long long hexToULL(const char *hexStr) {
   for (int i = 0; i < len; i++) {
     int value = hexCharToInt(hexStr[i]);
     if (value == -1) {
-      // Invalid character in the hex string
       return -1;
     }
     result = (result << 4) | value;
@@ -99,7 +96,6 @@ unsigned long long hexToULL(const char *hexStr) {
   return result;
 }
 
-// Parameters
 int64_t satoi(char *str) {
   uint64_t i = 0;
   int64_t res = 0;

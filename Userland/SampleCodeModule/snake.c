@@ -7,7 +7,7 @@
 
 struct Snake snake;
 uint32_t delayTicks =
-    1; // Modificarlo segun el grado de dificultad, cuanto mas alto mas dificil
+    1;
 
 uint32_t faceStartingX;
 uint32_t faceStartingY;
@@ -131,7 +131,7 @@ int checkSnakeEatRevamped(uint32_t headX, uint32_t headY, int gameMode,
   int headYCondition =
       (headY >= faceY - SQUARE_SIZE) && (headY <= faceY + SQUARE_SIZE);
   if (headXCondition && headYCondition) {
-    if (gameMode == 1) { // Estamos en el juego para 2 jugadores
+    if (gameMode == 1) {
       return 1;
     }
     call_beep(EAT_FREQ, 1);
@@ -203,7 +203,7 @@ uint32_t seed;
 
 uint32_t rand_() {
   seed = (seed * 1664525 + 1013904223) &
-         0xFFFFFFFF; // Linear Congruential Generator
+         0xFFFFFFFF;
   return seed;
 }
 
@@ -217,7 +217,7 @@ uint8_t checkSelfCollision(uint32_t x, uint32_t y, struct Snake *snake) {
         x + SQUARE_SIZE > snake->body[i].x &&
         y < snake->body[i].y + SQUARE_SIZE &&
         y + SQUARE_SIZE > snake->body[i].y) {
-      return 1; // Colisiona
+      return 1;
     }
   }
   return 0;

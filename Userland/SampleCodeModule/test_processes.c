@@ -22,7 +22,6 @@ int64_t test_processes(int maxProcesses) {
 
 
 
-    // Create max_processes processes
     for (rq = 0; rq < max_processes; rq++) {
       p_rqs[rq].pid = my_create_process(endless_loop_print, 1, argvAux);
       if (p_rqs[rq].pid == -1) {
@@ -35,8 +34,7 @@ int64_t test_processes(int maxProcesses) {
     }
   
 
-  // Randomly kills, blocks or unblocks processes until every one has been
-  // killed
+
   while (alive > 0) {
 
     for (rq = 0; rq < max_processes; rq++) {
@@ -68,7 +66,6 @@ int64_t test_processes(int maxProcesses) {
       }
     }
 
-    // Randomly unblocks processes
     for (rq = 0; rq < max_processes; rq++) {
       if (p_rqs[rq].state == BLOCKEDt && GetUniform(100) % 2) {
         if (my_unblock(p_rqs[rq].pid) == 0) {

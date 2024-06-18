@@ -8,7 +8,6 @@
 #define ARG_LENGTH 20
 
 int compareStrings(char *s1,char *s2);
-//Breaks up String into String-s1-s2 based on the token
 void stringTokenizer(char* string,char* s1,char* s2, char token);
 void stringCopyNaive(char *from,char *to);
 int strLen(const char *str);

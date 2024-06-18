@@ -37,7 +37,6 @@ max_memory = aux1;
   while (1) {
     rq = 0;
     total = 0;
-    // Request as many blocks as we can
     while (rq < MAX_BLOCKS && total < max_memory) {
       mm_rqs[rq].size = GetUniform(max_memory - total - 1)/A_USEFUL_COEFFICIENT + 1;
       mm_rqs[rq].address = call_malloc((size_t)mm_rqs[rq].size);
@@ -56,21 +55,18 @@ max_memory = aux1;
             call_wait(10);
         } else {
             call_drawStringFormatted("Allocation failed - Block too large or not enough space\n", RED, LIGHT_GRAY, 2);
-            //break;
         }
         call_setXBuffer(0);
         call_setYBuffer(0);
         call_paintScreen(LIGHT_GRAY);
         call_wait(5);
     }
-    // Set
       call_drawStringFormatted("Setting memory...\n", BLACK, LIGHT_GRAY, 2);
     uint32_t i;
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
         memset(mm_rqs[i].address, i, mm_rqs[i].size);
 
-    // Check
       call_drawStringFormatted("Checking memory...\n", BLACK, LIGHT_GRAY, 2);
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)
@@ -80,7 +76,6 @@ max_memory = aux1;
           call_exit();
         }
 
-    // Free
       call_drawStringFormatted("Freeing memory...\n", BLACK, LIGHT_GRAY, 2);
     for (i = 0; i < rq; i++)
       if (mm_rqs[i].address)

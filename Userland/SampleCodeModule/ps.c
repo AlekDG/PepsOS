@@ -1,7 +1,6 @@
 // This is a personal academic project. Dear PVS-Studio, please check it.
 // PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
 #include <UserSyscalls.h>
-#include <user_lib.h>
 
 #define START_POSITION 50
 #define PRINT_INFO_START_POSITION 60
@@ -41,7 +40,6 @@ void ps() {
       DARK_GRAY, FONT_SIZE);
   call_setXBuffer(PRINT_INFO_START_POSITION);
   for (int i = 0; i < processCount; i++) {
-    // imprimo proceso
     call_printProcessInfo(&processList[i]);
   }
 
