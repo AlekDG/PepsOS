@@ -9,7 +9,12 @@ Environment setup:
 
 nasm qemu gcc make
 
-2- Build the Toolchain
+2A- Run the script
+
+Run the compilacion.sh script to instantly build the project. Use -b flag to build with the buddy memory system
+Skip to step 4
+
+2B- Build the Toolchain
 
 Execute the following commands on the PepsOS project directory:
   user@linux:$ cd Toolchain
