@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include <user_lib.h>
 #include <io.h>
 
 uint32_t GetUint();

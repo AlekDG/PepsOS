@@ -10,6 +10,8 @@
 #include <stdint.h>
 #include <time.h>
 
+#define CONSOLAPID 1
+
 static int nextPid = 0;
 
 static processTable pcb;
@@ -285,6 +287,9 @@ int killReady(int pid, int *parent) {
 }
 
 int kill(int pid) {
+  if(pid == CONSOLAPID){
+    return 0;
+  }
   int parentPid;
   if (pcb.running->pid == pid) {
     pcb.running->state = EXITED;
