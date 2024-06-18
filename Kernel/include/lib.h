@@ -34,7 +34,7 @@ uint8_t getKey(void);
 void addToBuffer(char c);
 char getKbChar(void);
 void keyPressed(bool state);
-bool keyIsPressed(void);
+
 
 // clock functionality:
 

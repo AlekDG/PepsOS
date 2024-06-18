@@ -69,7 +69,7 @@ void keyPressed(bool state) {
     keysPressed--;
 }
 
-bool keyIsPressed(void) { return keysPressed >= 0; }
+
 
 char getKbChar(void) {
   if (bufferIndx <= 0)

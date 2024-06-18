@@ -11,11 +11,6 @@ void timeToStr(char *dest)
       unsigned int m = call_minutes();
       unsigned int h = call_hours() + TIME_ZONE;
 
-      if (h < 0)
-      {
-            h += 24;
-      }
-
       dest[0] = (h / 10) % 10 + '0';
       dest[1] = h % 10 + '0';
       dest[2] = ':';
