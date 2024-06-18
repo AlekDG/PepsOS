@@ -90,7 +90,7 @@ int updateSnake(struct Snake *snake, uint32_t mapWidth, uint32_t mapHeight,
     break;
   }
 
-  if (head.x >= mapWidth || head.x < 0 || head.y >= mapHeight ||
+  if (head.x >= mapWidth || head.y >= mapHeight ||
       head.y < INTERFACE_LENGTH) {
     *flagWall = 1;
     return eaten;
