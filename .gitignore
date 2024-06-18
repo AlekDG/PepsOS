@@ -19,3 +19,6 @@ r.sh
 .vscode/
 .idea/
 .config/pulse/
+PVS*
+report.tasks
+strace_out
